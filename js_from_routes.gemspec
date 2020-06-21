@@ -17,9 +17,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'railties'
   s.add_development_dependency 'bundler'
-  s.add_development_dependency 'coveralls'
-  s.add_development_dependency 'pry-byebug'
-  s.add_development_dependency 'rails'
   s.add_development_dependency 'rake'
-  s.add_development_dependency 'rspec-given', '~> 3.0'
 end

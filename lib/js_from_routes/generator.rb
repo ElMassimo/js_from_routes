@@ -20,7 +20,7 @@ module JsFromRoutes
     # Public: Used to check whether the file should be generated again, changes
     # based on the configuration, and route definition.
     def cache_key
-      Digest::MD5.hexdigest(routes.map(&:inspect) + [File.read(@config.template_path), @config.helper_mappings.inspect])
+      Digest::MD5.hexdigest(routes.map(&:inspect).join + [File.read(@config.template_path), @config.helper_mappings.inspect].join)
     end
 
     # Internal: By performing the evaluation here, we ensure only "routes" is
@@ -75,7 +75,7 @@ module JsFromRoutes
       @config = yield if block_given?
       @config ||= OpenStruct.new(
         file_suffix: 'Requests.js',
-        output_folder: ::Rails.root.join('app', 'javascript', 'routes'),
+        output_folder: ::Rails.root.join('app', 'javascript', 'requests'),
         template_path: File.expand_path('template.js.erb', __dir__),
         helper_mappings: { 'index' => 'list', 'show' => 'get' },
       )

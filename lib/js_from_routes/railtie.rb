@@ -6,7 +6,7 @@ class JsFromRoutes::Railtie < Rails::Railtie
 
   # Allows to automatically trigger code generation after updating routes.
   if Rails.env.development?
-    to_prepare do
+    config.to_prepare do
       JsFromRoutes.generate!(Rails.application)
     end
   end
