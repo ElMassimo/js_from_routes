@@ -3,9 +3,9 @@ source 'https://rubygems.org'
 gemspec
 
 group :test do
+  gem 'simplecov'
   gem 'pry-byebug'
   gem 'rspec-given'
-  gem 'codeclimate-test-reporter', require: nil
 
   # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
   gem 'rails', '~> 6.0.3', '>= 6.0.3.2'

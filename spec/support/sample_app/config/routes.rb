@@ -8,10 +8,9 @@ Rails.application.routes.draw do
     patch :add_to_playlist, on: :member
     patch :remove_from_playlist, on: :member
     get :trending, on: :collection
+    get '/thumbnail/:thumbnail_id', as: :thumbnail, action: :thumbnail, on: :member
 
     resources :comments, only: [:show, :index], shallow: true, export: true
-
-    get '/thumbnail/:thumbnail_id', as: :thumbnail, action: :thumbnail, on: :member
   end
 
   resources :user_preferences, only: [], export: true do

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'digest'
+require 'erubi'
 require 'fileutils'
 
 # Public: Automatically generates JS for Rails routes with { export: true }.
@@ -72,17 +73,19 @@ module JsFromRoutes
   class << self
     # Public: Configuration of the code generator.
     def config
-      @config = yield if block_given?
       @config ||= OpenStruct.new(
         file_suffix: 'Requests.js',
-        output_folder: ::Rails.root.join('app', 'javascript', 'requests'),
+        output_folder: ::Rails.root&.join('app', 'javascript', 'requests'),
         template_path: File.expand_path('template.js.erb', __dir__),
         helper_mappings: { 'index' => 'list', 'show' => 'get' },
       )
+      yield(@config) if block_given?
+      @config
     end
 
     # Public: Generates code for the specified routes with { export: true }.
-    def generate!(app_or_routes)
+    def generate!(app_or_routes = Rails.application)
+      raise ArgumentError, 'A Rails app must be defined, or you must specify a custom `output_folder`' if config.output_folder.blank?
       rails_routes = app_or_routes.is_a?(::Rails::Engine) ? app_or_routes.routes.routes : app_or_routes
       @compiled_template = nil # Clear on every code reload in case the template changed.
       exported_routes_by_controller(rails_routes).each do |controller, controller_routes|
