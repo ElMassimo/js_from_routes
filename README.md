@@ -73,7 +73,7 @@ bin/rake js_from_routes:generate
 
 #### 3. Use the generated code in your JS application
 
-This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue#L10), but to illustrate using the example above:
+This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue#L10), but to illustrate using the example above, in combination with [`axios`](https://github.com/axios/axios) or `fetch`:
 
 ```js
 import VideoClipsRequests from '@requests/VideoClipsRequests'
@@ -144,7 +144,11 @@ request methods or path helpers 😃
 
 ### Take this idea 💡
 
-There are plenty of opportunities for automatic code generation, such as keeping
+While the original use cases where to generate code that targes a custom `ApiService`, 
+it can be tweaked to [target jQuery](https://gist.github.com/ElMassimo/cab56e64e20ff797f3054b661a883646),
+or use it only to generate [path helpers](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/requests/UserPreferencesRequests.js#L11-L15).
+
+Also, there are plenty of opportunities for automatic code generation, such as keeping
 enums in sync between Ruby and JS.
 
 Let me know if you come up with new or creative ways to use this technique 😃
