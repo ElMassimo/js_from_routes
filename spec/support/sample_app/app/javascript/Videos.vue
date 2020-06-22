@@ -2,20 +2,23 @@
 import VideoClipsRequests from '@requests/VideoClipsRequests'
 
 export default {
-  name: 'App',
+  name: 'videos',
   data: function () {
     return {
-      message: 'Hello!',
+      title: 'Trending Videos',
       videos: [],
-      request: VideoClipsRequests.trending(),
+      request: VideoClipsRequests.trending().then(videos => { this.videos = videos }),
     }
-  }
+  },
 }
 </script>
 
 <template>
   <div id="app">
-    <p>{{ message }}</p>
+    <p>{{ title }}</p>
+    <ul>
+      <li v-for="video in videos">{{ video.title }}</li>
+    </ul>
   </div>
 </template>
 

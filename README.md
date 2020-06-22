@@ -10,9 +10,22 @@ JS From Rails Routes
 </p>
 </h1>
 
-_JS from Routes_ allows to automatically generate path and API helpers from
+_JS from Routes_ helps you by automatically generating path and API helpers from
 Rails route definitions, allowing you to save development effort and focus on
 the things that matter.
+
+## Why? 🤔
+
+Path helpers in Rails are useful to ensure the constructed URLs match endpoints
+defined in the app.
+
+With this library, it's possible the enjoy the same benefits in JS:
+
+- No need to manually specify the URL, preventing mistakes and saving development time.
+- If an action is renamed or removed, the helper ceases to exist, which causes
+  an error that is easier to detect than a 404.
+- We can embed the the HTTP verb in the helper. Changing the verb in the route causes the JS
+  code to be regenerated, no need to update the consumer!
 
 ### Installation 💿
 
@@ -34,30 +47,33 @@ Or install it yourself as:
 
 #### 1. Specify the Rails routes you want to export
 
-By default this gem uses the `export` attribute to determine which routes should
-be taken into account when generating JS. [Example](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/routes.rb#L6)
+Use the `export` attribute to determine which [routes](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/routes.rb#L6) should be taken into account when generating JS.
 
 ```ruby
 Rails.application.routes.draw do
   resources :video_clips, export: true do
     get :download, on: :member, export: :path_only
-    get :subtitles, on: :collection, export: false
+    get :trending, on: :collection, export: false
   end
 end
 ```
 
-#### 2. Make a request to your Rails application
+#### 2. Generate JS code from your routes
 
 This is usually done automatically the next time you make a request to your
 Rails server (such as when you refresh the page), which causes Rails reloader to
 kick in, and the routes to be generated.
 
 If you are not running a local development server, or prefer to do it manually,
-you can use a rake task instead: `bin/rake js_from_routes:generate`.
+you can use a rake task instead:
+
+```
+bin/rake js_from_routes:generate
+```
 
 #### 3. Use the generated code in your JS application
 
-This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/app.vue#L10), but to illustrate using the example above:
+This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue#L10), but to illustrate using the example above:
 
 ```js
 import VideoClipsRequests from '@requests/VideoClipsRequests'
@@ -67,46 +83,36 @@ VideoClipsRequests.get({ id: 'oHg5SJYRHA0' }).then(displayVideo)
 const path = VideoClipsRequests.downloadPath({ id })
 ```
 
-Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/App.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/App.vue), and how you can [configure](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/webpack/aliases.js#L11) Webpack to your convenience.
+Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue), and how you can [configure](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/webpack/aliases.js#L11) Webpack to your convenience.
 
-Read on to find out how to customize the
-
-### How does it work? ⚙️
-
-By adding a hook to Rails' reload process in development, it's possible to
-automatically generate files from routes when a route is added, modified, or removed.
-
-In order to optimize file generation, the generated JS files are split by
-controller, and add a cache key based on the routes to avoid rewriting the file
-if the route definition hasn't changed.
-
-When the Webpack development server is running, this automatically triggers a
-new build, and the request method (or path helper) is ready to be used!
+Read on to find out how to customize the generated code to suit your needs.
 
 ### Advanced Configuration 📖
 
-Since all projects are different, it's very unlikely that the library defaults
-fulfill all your requirements. The following [settings](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L77-L80) are available:
+Since all projects are different, it's very unlikely that the default settings
+fulfill all your requirements.
 
-##### `file_suffix`, default: `Requests.js`
+The following [settings](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L77-L80) are available:
 
-This suffix is added by default to all generated files, as a way to create a
-convention.
+##### [`file_suffix`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L77), default: `Requests.js`
 
-##### `helper_mappings`
+This suffix is added by default to all generated files. You can modify it to
+if you prefer a different convention.
 
-It allows to map certain actions to a different convention that might be more
-intuitive. By default it maps `index` to `list` and `show` to `get`, which
-helps to make the JS code read more natural.
+##### [`helper_mappings`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L80)
 
-##### `output_folder`, default: `app/javascript/requests`
+By default it maps `index` to `list` and `show` to `get`, which helps to make
+the JS code read more natural.
 
-The location where the generated files are placed. If using `webpacker`, the
-default location can be very convenient if you [add a webpack alias](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/webpack/aliases.js#L11).
+##### [`output_folder`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L78), default: `app/javascript/requests`
 
-##### `template_path`
+The directory where the generated files are created.
 
-A [default template](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/template.js.erb) is provided, but it makes [assumptions](https://github.com/ElMassimo/js_from_routes/tree/master/spec/support/sample_app/app/javascript/requests) about the [available](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/services/ApiService.js#L17) [code](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/helpers/UrlHelper.js#L28).
+Tip: It's highly recommended to [add a webpack alias](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/webpack/aliases.js#L11), to simplify [imports](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue#2).
+
+##### [`template_path`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L79)
+
+A [default template](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/template.js.erb) is provided, but it makes assumptions about the [available](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/services/ApiService.js#L17) [code](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/helpers/UrlHelper.js#L28).
 
 You will probably want to use a custom template, such as:
 
@@ -117,10 +123,30 @@ JsFromRoutes.config do |config|
 end
 ```
 
-As in the [default template](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/template.js.erb),
-a `routes` variable will be available, and will contain the exported endpoints
-for a single controller.
+A `routes` variable will be available in the template, which will contain the
+endpoints exported for a controller.
 
 Each `route` exposes properties such as `verb` and `path`, please [check the
-source code](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L34-L71) for details on the [public API](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L34-L71).
+source code](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L34-L71) for details on the [API](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L34-L71).
+
+### How does it work? ⚙️
+
+By adding a hook to Rails' reload process in development, it's possible to
+automatically generate files from routes when a route is added, modified, or removed.
+
+In order to optimize file generation, the generated JS files are split by
+controller, and add a cache key based on the routes to avoid rewriting the file
+if the route definition hasn't changed.
+
+When the Webpack development server is running, it detects when a new file is
+generated, automatically triggering a new build, which can now use the generated
+request methods or path helpers 😃
+
+### Take this idea 💡
+
+There are plenty of opportunities for automatic code generation, such as keeping
+enums in sync between Ruby and JS.
+
+Let me know if you come up with new or creative ways to use this technique 😃
+
 
