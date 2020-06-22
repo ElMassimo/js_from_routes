@@ -2,8 +2,14 @@ source 'https://rubygems.org'
 
 gemspec
 
+group :development do
+  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
+  gem 'web-console', '>= 3.3.0'
+  gem 'listen', '~> 3.2'
+end
+
 group :test do
-  gem 'simplecov'
+  gem 'simplecov', '< 0.18'
   gem 'pry-byebug'
   gem 'rspec-given'
 
@@ -18,8 +24,4 @@ group :test do
 
   # Reduces boot times through caching; required in config/boot.rb
   gem 'bootsnap', '>= 1.4.2', require: false
-
-  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
-  gem 'listen', '~> 3.2'
 end
