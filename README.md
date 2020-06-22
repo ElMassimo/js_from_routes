@@ -78,9 +78,12 @@ This can happen in many [different ways](https://github.com/ElMassimo/js_from_ro
 ```js
 import VideoClipsRequests from '@requests/VideoClipsRequests'
 
-VideoClipsRequests.get({ id: 'oHg5SJYRHA0' }).then(displayVideo)
+VideoClipsRequests.get({ id: 'oHg5SJYRHA0' }).then(data => { this.video = data })
 
-const path = VideoClipsRequests.downloadPath({ id })
+const newVideo = { ...video, format: '.mp4' }
+VideoClipsRequests.update(newVideo)
+
+const path = VideoClipsRequests.downloadPath(this.video)
 ```
 
 Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue), and how you can [configure](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/webpack/aliases.js#L11) Webpack to your convenience.
