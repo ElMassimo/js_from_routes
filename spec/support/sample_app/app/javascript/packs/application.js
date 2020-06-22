@@ -1,9 +1,9 @@
 import Vue from 'vue'
-import App from '../App'
+import Videos from '../Videos'
 
 document.addEventListener('DOMContentLoaded', () => {
   const app = new Vue({
-    render: h => h(App)
+    render: h => h(Videos)
   }).$mount()
   document.body.appendChild(app.$el)
 })

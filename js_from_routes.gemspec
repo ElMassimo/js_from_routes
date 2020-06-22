@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.authors = ['Máximo Mussini']
   s.email = ['maximomussini@gmail.com']
   s.summary = 'Generate JS automatically from Rails routes.'
-  s.description = 'js_from_routes allows to automatically generate path and API helpers from Rails route definitions, allowing you to save development effort and focus on the things that matter.'
+  s.description = 'js_from_routes helps you by automatically generating path and API helpers from Rails route definitions, allowing you to save development effort and focus on the things that matter.'
   s.homepage = 'https://github.com/ElMassimo/js_from_routes'
   s.license = 'MIT'
   s.extra_rdoc_files = ['README.md']
