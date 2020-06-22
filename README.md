@@ -165,11 +165,11 @@ request methods or path helpers 😃
 
 ### Take this idea 💡
 
-While the original use cases where to generate code that targes a custom `ApiService`, 
-it can be tweaked to [target jQuery](https://gist.github.com/ElMassimo/cab56e64e20ff797f3054b661a883646),
+While the original use cases intended to generate code that targes a custom `ApiService`, 
+it can be tweaked to generate TypeScript, [target jQuery](https://gist.github.com/ElMassimo/cab56e64e20ff797f3054b661a883646),
 or use it only to generate [path helpers](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/requests/UserPreferencesRequests.js#L11-L15).
 
-Also, there are plenty of opportunities for automatic code generation, such as keeping
+There are plenty of other opportunities for automatic code generation, such as keeping
 enums in sync between Ruby and JS.
 
 Let me know if you come up with new or creative ways to use this technique 😃
