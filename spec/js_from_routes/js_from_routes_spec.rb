@@ -7,7 +7,7 @@ describe JsFromRoutes do
 
   let(:output_dir) { Pathname.new File.expand_path('../support/generated', __dir__) }
   let(:sample_dir) { Rails.root.join('app', 'javascript', 'requests') }
-  let(:different_template_path) { File.expand_path('../support/different_template.js.erb', __dir__) }
+  let(:different_template_path) { File.expand_path('../support/jquery_template.js.erb', __dir__) }
   let(:controllers_with_exported_routes) { %w[Comments UserPreferences VideoClips] }
 
   def file_for(dir, name)
