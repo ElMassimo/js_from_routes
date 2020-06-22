@@ -102,7 +102,7 @@ if you prefer a different convention.
 ##### [`helper_mappings`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L80)
 
 By default it maps `index` to `list` and `show` to `get`, which helps to make
-the JS code read more natural.
+the JS code read more naturally.
 
 ##### [`output_folder`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L78), default: `app/javascript/requests`
 
