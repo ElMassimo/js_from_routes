@@ -71,6 +71,24 @@ you can use a rake task instead:
 bin/rake js_from_routes:generate
 ```
 
+which can generate code such as:
+
+```js
+import { formatUrl } from '@helpers/UrlHelper'
+import { request } from '@services/ApiService'
+
+export default {
+  downloadPath: options =>
+    formatUrl('/video_clips/:id/download', options),
+
+  get: options =>
+    request('get', '/video_clips/:id', options),
+    
+  update: options =>
+    request('patch', '/video_clips/:id', options),
+}
+```
+
 #### 3. Use the generated code in your JS application
 
 This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue#L10), but to illustrate using the example above, in combination with [`axios`](https://github.com/axios/axios) or `fetch`:
@@ -80,10 +98,10 @@ import VideoClipsRequests from '@requests/VideoClipsRequests'
 
 VideoClipsRequests.get({ id: 'oHg5SJYRHA0' }).then(data => { this.video = data })
 
-const newVideo = { ...video, format: '.mp4' }
+const newVideo = { ...this.video, format: '.mp4' }
 VideoClipsRequests.update(newVideo)
 
-const path = VideoClipsRequests.downloadPath(this.video)
+const path = VideoClipsRequests.downloadPath(newVideo)
 ```
 
 Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue), and how you can [configure](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/webpack/aliases.js#L11) Webpack to your convenience.
@@ -155,5 +173,3 @@ Also, there are plenty of opportunities for automatic code generation, such as k
 enums in sync between Ruby and JS.
 
 Let me know if you come up with new or creative ways to use this technique 😃
-
-
