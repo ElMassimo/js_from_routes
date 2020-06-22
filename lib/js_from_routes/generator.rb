@@ -39,7 +39,12 @@ module JsFromRoutes
 
     # Public: Whether it should export only the path.
     def path_only?
-      @route.defaults[:export] == :path_only
+      export_setting == :path_only
+    end
+
+    # Public: The `export` setting specified for the action.
+    def export_setting
+      @route.defaults[:export]
     end
 
     # Public: Whether it should export only the path.
