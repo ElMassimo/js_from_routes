@@ -118,7 +118,7 @@ The following [settings](https://github.com/ElMassimo/js_from_routes/blob/master
 ##### [`file_suffix`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L77), default: `Requests.js`
 
 This suffix is added by default to all generated files. You can modify it to
-if you prefer a different convention.
+if you prefer a different convention, or if you use it to generate TypeScript.
 
 ##### [`helper_mappings`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L80)
 
