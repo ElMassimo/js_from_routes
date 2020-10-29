@@ -26,6 +26,8 @@ With this library, it's possible the enjoy the same benefits in JS:
   an error that is easier to detect than a 404.
 - We can embed the the HTTP verb in the helper. Changing the verb in the route causes the JS
   code to be regenerated, no need to update the consumer!
+  
+Read more about it in the [blog announcement](https://maximomussini.com/posts/js-from-routes/).
 
 ### Installation 💿
 
