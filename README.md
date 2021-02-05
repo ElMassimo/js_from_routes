@@ -31,7 +31,7 @@ Read more about it in the [blog announcement](https://maximomussini.com/posts/js
 
 ### Installation 💿
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile in the `development` group:
 
 ```ruby
 gem 'js_from_routes'
@@ -141,8 +141,10 @@ You will probably want to use a custom template, such as:
 
 ```ruby
 # config/initializers/js_from_routes.rb
-JsFromRoutes.config do |config|
-  config.template = Rails.root.join('app', 'views', 'custom_js_from_routes.js.erb')
+if Rails.env.development?
+  JsFromRoutes.config do |config|
+    config.template_path = Rails.root.join('app', 'views', 'custom_js_from_routes.js.erb')
+  end
 end
 ```
 
