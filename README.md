@@ -14,6 +14,8 @@ _JS from Routes_ helps you by automatically generating path and API helpers from
 Rails route definitions, allowing you to save development effort and focus on
 the things that matter.
 
+Check out [this pull request](https://github.com/ElMassimo/pingcrm-vite/pull/2) to get a sense of how flexible it can be.
+
 ### Why? 🤔
 
 Path helpers in Rails are useful, and make it easier to build urls, avoiding
