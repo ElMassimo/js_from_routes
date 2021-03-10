@@ -71,7 +71,7 @@ jobs:
           ./cc-test-reporter before-build
 
       - name: Ruby specs
-        run: bundle exec rspec
+        run: bin/rspec
 
       - name: Upload code coverage to Code Climate
         run: |

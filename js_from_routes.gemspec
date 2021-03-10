@@ -15,7 +15,13 @@ Gem::Specification.new do |s|
   s.test_files   = Dir.glob('{spec}/**/*.rb')
   s.require_path = 'lib'
 
-  s.add_dependency 'railties'
-  s.add_development_dependency 'bundler'
-  s.add_development_dependency 'rake'
+  s.add_dependency 'railties', '>= 5.1', '< 8'
+
+  s.add_development_dependency 'bundler', '~> 2'
+  s.add_development_dependency 'listen', '~> 3.2'
+  s.add_development_dependency 'pry-byebug', '~> 3.9'
+  s.add_development_dependency 'rake', '~> 13'
+  s.add_development_dependency 'rspec-given', '~> 3.8'
+  s.add_development_dependency 'simplecov', '< 0.18'
+  s.add_development_dependency 'standard', '~> 1.0'
 end

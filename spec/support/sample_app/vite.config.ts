@@ -7,6 +7,12 @@ export default defineConfig({
   plugins: [
     VuePlugin(),
     RubyPlugin(),
-    WindiCSSPlugin(),
+    WindiCSSPlugin({
+      root: __dirname,
+      scan: {
+        fileExtensions: ['html', 'erb', 'vue', 'js', 'ts'],
+        dirs: ['app/javascript', 'app/views']
+      }
+    }),
   ],
 })
