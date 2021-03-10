@@ -1,30 +1,20 @@
-<script>
-import VideoClipsRequests from '@requests/VideoClipsRequests'
+<script setup lang="ts">
+import VideoClipsRequests from '~/requests/VideoClipsRequests'
+import { ref, onMounted } from 'vue'
 
-export default {
-  name: 'videos',
-  data: function () {
-    return {
-      title: 'Trending Videos',
-      videos: [],
-      request: VideoClipsRequests.trending().then(videos => { this.videos = videos }),
-    }
-  },
-}
+const title = 'Trending Videos'
+const videos = ref([])
+
+onMounted(() => {
+  VideoClipsRequests.trending().then(newVideos => { videos.value = newVideos })
+})
 </script>
 
 <template>
-  <div id="app">
-    <p>{{ title }}</p>
-    <ul>
-      <li v-for="video in videos">{{ video.title }}</li>
+  <div class="w-max mx-auto">
+    <h1 class="title text-3xl mt-8 mb-4 text-center">{{ title }}</h1>
+    <ul class="ml-6 text-lg list-decimal">
+      <li v-for="video in videos" class="my-1">{{ video.title }}</li>
     </ul>
   </div>
 </template>
-
-<style scoped>
-p {
-  font-size: 2em;
-  text-align: center;
-}
-</style>

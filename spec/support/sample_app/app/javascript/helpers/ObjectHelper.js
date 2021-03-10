@@ -20,7 +20,7 @@ function deepConvertKeys (object, keyConverter, decamelizer) {
 
 // Public: Converts all object keys to camelCase, preserving the values.
 export function camelizeKeys (object) {
-  return convertKeys(object, camelCaseIfNotObjectId)
+  return convertKeys(object, camelCase)
 }
 
 // Public: Converts all object keys to snake_case, preserving the values.

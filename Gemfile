@@ -19,9 +19,6 @@ group :test do
   # Use Puma as the app server
   gem 'puma', '~> 4.1'
 
-  # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-  gem 'webpacker', '~> 4.0'
-
   # Reduces boot times through caching; required in config/boot.rb
   gem 'bootsnap', '>= 1.4.2', require: false
 end
