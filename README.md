@@ -18,20 +18,17 @@ _JS from Routes_ helps you by automatically generating path and API helpers from
 Rails route definitions, allowing you to save development effort and focus on
 the things that matter.
 
-Check out [this pull request](https://github.com/ElMassimo/pingcrm-vite/pull/2) to get a sense of how flexible it can be.
+Since you are in full control of the code, it can be used in very diverse scenarios.
 
 ### Why? 🤔
 
-Path helpers in Rails are useful, and make it easier to build urls, avoiding
-typos and mistakes.
+Path helpers in Rails make it easy to build urls, while avoiding typos and mistakes.
 
 With this library, it's possible the enjoy the same benefits in JS:
 
 - No need to manually specify the URL, preventing mistakes and saving development time.
-- If an action is renamed or removed, the helper ceases to exist, which causes
-  an error that is easier to detect than a 404.
-- We can embed the the HTTP verb in the helper. Changing the verb in the route causes the JS
-  code to be regenerated, no need to update the consumer!
+- If an action is renamed or removed, the helper ceases to exist.
+- The HTTP verb becomes an implementation detail, changing it in the route just works.
   
 Read more about it in the [blog announcement](https://maximomussini.com/posts/js-from-routes/).
 
@@ -66,11 +63,28 @@ Rails.application.routes.draw do
 end
 ```
 
-#### 2. Generate JS code from your routes
+#### 2. Use the generated code in your JS application
 
-This is usually done automatically the next time you make a request to your
-Rails server (such as when you refresh the page), which causes Rails reloader to
-kick in, and the routes to be generated.
+This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue#L10), but to illustrate using the example above, in combination with [`axios`](https://github.com/axios/axios) or `fetch`:
+
+```js
+import VideoClipsRequests from '~/requests/VideoClipsRequests'
+
+VideoClipsRequests.get({ id: 'oHg5SJYRHA0' }).then(data => { this.video = data })
+
+const path = VideoClipsRequests.downloadPath(newVideo)
+```
+
+Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue), and how you can configure it to your convenience.
+
+Read on to find out how to customize the generated code to suit your needs.
+
+
+### Code Generation 🤖
+
+Adding an exported route will cause request files to be generated automatically
+when you make a request to your Rails server (such as when you refresh the page),
+which causes Rails reloader to kick in, and the routes to be generated.
 
 If you are not running a local development server, or prefer to do it manually,
 you can use a rake task instead:
@@ -79,7 +93,7 @@ you can use a rake task instead:
 bin/rake js_from_routes:generate
 ```
 
-which can generate code such as:
+which will generate code such as:
 
 ```js
 import { formatUrl } from '~/helpers/UrlHelper'
@@ -97,26 +111,7 @@ export default {
 }
 ```
 
-#### 3. Use the generated code in your JS application
-
-This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue#L10), but to illustrate using the example above, in combination with [`axios`](https://github.com/axios/axios) or `fetch`:
-
-```js
-import VideoClipsRequests from '~/requests/VideoClipsRequests'
-
-VideoClipsRequests.get({ id: 'oHg5SJYRHA0' }).then(data => { this.video = data })
-
-const newVideo = { ...this.video, format: '.mp4' }
-VideoClipsRequests.update(newVideo)
-
-const path = VideoClipsRequests.downloadPath(newVideo)
-```
-
-Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue), and how you can configure it to your convenience.
-
-Read on to find out how to customize the generated code to suit your needs.
-
-### Advanced Configuration 📖
+#### Advanced Configuration 📖
 
 Since all projects are different, it's very unlikely that the default settings
 fulfill all your requirements.
@@ -163,7 +158,7 @@ The following [settings][config options] are available:
   source code](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L34-L71) for details on the [API](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L34-L71).
 
   Check out [this pull request](https://github.com/ElMassimo/pingcrm-vite/pull/2) to get a sense of how flexible it can be.
-  
+
 ### How does it work? ⚙️
 
 By adding a hook to Rails' reload process in development, it's possible to
