@@ -1,3 +1,8 @@
+## JsFromRoutes 1.0.3 (2021-03-10) ##
+
+*   Use `~/` instead of `@/` in the default template imports.
+
+
 ## JsFromRoutes 1.0.2 (2021-03-10) ##
 
 *   Ensure a default `template.js.erb` ships with the gem.
