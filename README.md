@@ -12,6 +12,7 @@ JS From Rails Routes
 
 [Vite Rails]: https://vite-ruby.netlify.app/
 [aliases]: https://vite-ruby.netlify.app/guide/development.html#import-aliases-%F0%9F%91%89
+[config options]: https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L82-L85
 
 _JS from Routes_ helps you by automatically generating path and API helpers from
 Rails route definitions, allowing you to save development effort and focus on
@@ -120,47 +121,49 @@ Read on to find out how to customize the generated code to suit your needs.
 Since all projects are different, it's very unlikely that the default settings
 fulfill all your requirements.
 
-The following [settings](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L77-L80) are available:
+The following [settings][config options] are available:
 
-##### [`file_suffix`](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L77), default: `Requests.js`
+- <kbd>[file_suffix][config options]</kbd>, default: `Requests.js`
 
-This suffix is added by default to all generated files. You can modify it to
-if you prefer a different convention, or if you use it to generate TypeScript.
+  This suffix is added by default to all generated files. You can modify it to
+  if you prefer a different convention, or if you use it to generate TypeScript.
 
-##### [`helper_mappings`](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L80)
+- <kbd>[helper_mappings][config options]</kbd>
 
-By default it maps `index` to `list` and `show` to `get`, which helps to make
-the JS code read more naturally.
+  By default it maps `index` to `list` and `show` to `get`, which helps to make
+  the JS code read more naturally.
 
-##### [`output_folder`](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L78), default: `app/javascript/requests`
+- <kbd>[output_folder][config options]</kbd>, default: `app/javascript/requests`
 
-The directory where the generated files are created.
+  The directory where the generated files are created.
 
-Tip: It's highly recommended to [add a webpack alias](https://github.com/ElMassimo/js_from_routes/blob/webpack/spec/support/sample_app/config/webpack/aliases.js#L11), to simplify [imports](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue#2).
+  Tip: It's highly recommended to [add a webpack alias](https://github.com/ElMassimo/js_from_routes/blob/webpack/spec/support/sample_app/config/webpack/aliases.js#L11), to simplify [imports](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue#2).
 
-If you use [Vite Rails], the [aliases] are already configured for you.
+  If you use [Vite Rails], the [aliases] are already configured for you.
 
-##### [`template_path`](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L79)
+- <kbd>[template_path][config options]</kbd>
 
-A [default template](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/template.js.erb) is provided, but it makes assumptions about the [available](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/services/ApiService.js#L17) [code](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/helpers/UrlHelper.js#L28).
+  A [default template](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/template.js.erb) is provided, but it makes assumptions about the [available](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/services/ApiService.js#L17) [code](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/helpers/UrlHelper.js#L28).
 
-You will probably want to use a custom template, such as:
+  You will probably want to use a custom template, such as:
 
-```ruby
-# config/initializers/js_from_routes.rb
-if Rails.env.development?
-  JsFromRoutes.config do |config|
-    config.template_path = Rails.root.join('app', 'views', 'custom_js_from_routes.js.erb')
+  ```ruby
+  # config/initializers/js_from_routes.rb
+  if Rails.env.development?
+    JsFromRoutes.config do |config|
+      config.template_path = Rails.root.join('app', 'views', 'custom_js_from_routes.js.erb')
+    end
   end
-end
-```
+  ```
 
-A `routes` variable will be available in the template, which will contain the
-endpoints exported for a controller.
+  A `routes` variable will be available in the template, which will contain the
+  endpoints exported for a controller.
 
-Each `route` exposes properties such as `verb` and `path`, please [check the
-source code](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L34-L71) for details on the [API](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L34-L71).
+  Each `route` exposes properties such as `verb` and `path`, please [check the
+  source code](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L34-L71) for details on the [API](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L34-L71).
 
+  Check out [this pull request](https://github.com/ElMassimo/pingcrm-vite/pull/2) to get a sense of how flexible it can be.
+  
 ### How does it work? ⚙️
 
 By adding a hook to Rails' reload process in development, it's possible to
