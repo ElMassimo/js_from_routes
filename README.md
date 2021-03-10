@@ -6,7 +6,7 @@ JS From Rails Routes
 <a href="https://codeclimate.com/github/ElMassimo/js_from_routes"><img alt="Maintainability" src="https://codeclimate.com/github/ElMassimo/js_from_routes/badges/gpa.svg"/></a>
 <a href="https://codeclimate.com/github/ElMassimo/js_from_routes"><img alt="Test Coverage" src="https://codeclimate.com/github/ElMassimo/js_from_routes/badges/coverage.svg"/></a>
 <a href="https://rubygems.org/gems/js_from_routes"><img alt="Gem Version" src="https://img.shields.io/gem/v/js_from_routes.svg?colorB=e9573f"/></a>
-<a href="https://github.com/ElMassimo/js_from_routes/blob/master/LICENSE.txt"><img alt="License" src="https://img.shields.io/badge/license-MIT-428F7E.svg"/></a>
+<a href="https://github.com/ElMassimo/js_from_routes/blob/main/LICENSE.txt"><img alt="License" src="https://img.shields.io/badge/license-MIT-428F7E.svg"/></a>
 </p>
 </h1>
 
@@ -54,7 +54,7 @@ Or install it yourself as:
 
 #### 1. Specify the Rails routes you want to export
 
-Use the `export` attribute to determine which [routes](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/routes.rb#L6) should be taken into account when generating JS.
+Use the `export` attribute to determine which [routes](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/config/routes.rb#L6) should be taken into account when generating JS.
 
 ```ruby
 Rails.application.routes.draw do
@@ -98,7 +98,7 @@ export default {
 
 #### 3. Use the generated code in your JS application
 
-This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue#L10), but to illustrate using the example above, in combination with [`axios`](https://github.com/axios/axios) or `fetch`:
+This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue#L10), but to illustrate using the example above, in combination with [`axios`](https://github.com/axios/axios) or `fetch`:
 
 ```js
 import VideoClipsRequests from '@requests/VideoClipsRequests'
@@ -111,7 +111,7 @@ VideoClipsRequests.update(newVideo)
 const path = VideoClipsRequests.downloadPath(newVideo)
 ```
 
-Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue), and how you can configure it to your convenience.
+Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue), and how you can configure it to your convenience.
 
 Read on to find out how to customize the generated code to suit your needs.
 
@@ -120,29 +120,29 @@ Read on to find out how to customize the generated code to suit your needs.
 Since all projects are different, it's very unlikely that the default settings
 fulfill all your requirements.
 
-The following [settings](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L77-L80) are available:
+The following [settings](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L77-L80) are available:
 
-##### [`file_suffix`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L77), default: `Requests.js`
+##### [`file_suffix`](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L77), default: `Requests.js`
 
 This suffix is added by default to all generated files. You can modify it to
 if you prefer a different convention, or if you use it to generate TypeScript.
 
-##### [`helper_mappings`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L80)
+##### [`helper_mappings`](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L80)
 
 By default it maps `index` to `list` and `show` to `get`, which helps to make
 the JS code read more naturally.
 
-##### [`output_folder`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L78), default: `app/javascript/requests`
+##### [`output_folder`](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L78), default: `app/javascript/requests`
 
 The directory where the generated files are created.
 
-Tip: It's highly recommended to [add a webpack alias](https://github.com/ElMassimo/js_from_routes/blob/webpack/spec/support/sample_app/config/webpack/aliases.js#L11), to simplify [imports](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue#2).
+Tip: It's highly recommended to [add a webpack alias](https://github.com/ElMassimo/js_from_routes/blob/webpack/spec/support/sample_app/config/webpack/aliases.js#L11), to simplify [imports](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue#2).
 
 If you use [Vite Rails], the [aliases] are already configured for you.
 
-##### [`template_path`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L79)
+##### [`template_path`](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L79)
 
-A [default template](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/template.js.erb) is provided, but it makes assumptions about the [available](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/services/ApiService.js#L17) [code](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/helpers/UrlHelper.js#L28).
+A [default template](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/template.js.erb) is provided, but it makes assumptions about the [available](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/services/ApiService.js#L17) [code](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/helpers/UrlHelper.js#L28).
 
 You will probably want to use a custom template, such as:
 
@@ -159,7 +159,7 @@ A `routes` variable will be available in the template, which will contain the
 endpoints exported for a controller.
 
 Each `route` exposes properties such as `verb` and `path`, please [check the
-source code](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L34-L71) for details on the [API](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L34-L71).
+source code](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L34-L71) for details on the [API](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L34-L71).
 
 ### How does it work? ⚙️
 
@@ -178,7 +178,7 @@ generated request methods or path helpers 😃
 
 While the original use cases intended to generate code that targes a custom `ApiService`, 
 it can be tweaked to generate TypeScript, [target jQuery](https://gist.github.com/ElMassimo/cab56e64e20ff797f3054b661a883646),
-or use it only to generate [path helpers](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/requests/UserPreferencesRequests.js#L11-L15).
+or use it only to generate [path helpers](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/requests/UserPreferencesRequests.js#L11-L15).
 
 There are plenty of other opportunities for automatic code generation, such as keeping
 enums in sync between Ruby and JS.
