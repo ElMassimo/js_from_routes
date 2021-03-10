@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/ElMassimo/js_from_routes'
   s.license = 'MIT'
   s.extra_rdoc_files = ['README.md']
-  s.files = Dir.glob('{lib}/**/*.rb') + %w(README.md)
+  s.files = Dir.glob('{lib}/**/*.rb') + %w(README.md) + Dir.glob('{lib}/**/*.erb')
   s.test_files   = Dir.glob('{spec}/**/*.rb')
   s.require_path = 'lib'
 
