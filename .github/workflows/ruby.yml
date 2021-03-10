@@ -26,8 +26,6 @@ jobs:
         ]
         experimental: [false]
         exclude:
-          - ruby: "2.5"
-            gemfile: gemfiles/Gemfile-rails-edge
           - ruby: "3.0"
             gemfile: gemfiles/Gemfile-rails.5.2.x
         include:
@@ -71,7 +69,7 @@ jobs:
           ./cc-test-reporter before-build
 
       - name: Ruby specs
-        run: bin/rspec
+        run: bundle exec rspec
 
       - name: Upload code coverage to Code Climate
         run: |
