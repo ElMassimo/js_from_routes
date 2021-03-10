@@ -1,17 +1,16 @@
-require 'support/sample_app/config/application'
-require 'support/sample_app/config/routes'
-
+require "support/sample_app/config/application"
+require "support/sample_app/config/routes"
 
 describe JsFromRoutes do
-  ORIGINAL_TEMPLATE_PATH = JsFromRoutes.config.template_path
+  original_template_path = JsFromRoutes.config.template_path
 
-  let(:output_dir) { Pathname.new File.expand_path('../support/generated', __dir__) }
-  let(:sample_dir) { Rails.root.join('app', 'javascript', 'requests') }
-  let(:different_template_path) { File.expand_path('../support/jquery_template.js.erb', __dir__) }
+  let(:output_dir) { Pathname.new File.expand_path("../support/generated", __dir__) }
+  let(:sample_dir) { Rails.root.join("app", "javascript", "requests") }
+  let(:different_template_path) { File.expand_path("../support/jquery_template.js.erb", __dir__) }
   let(:controllers_with_exported_routes) { %w[Comments UserPreferences VideoClips] }
 
   def file_for(dir, name)
-    dir.join("#{ name }Requests.js")
+    dir.join("#{name}Requests.js")
   end
 
   def sample_file_for(name)
@@ -28,22 +27,26 @@ describe JsFromRoutes do
     expect(Rails.application.routes.routes).to be_present
 
     # Remove directory from a previous test run.
-    FileUtils.remove_dir(output_dir) rescue nil
+    begin
+      FileUtils.remove_dir(output_dir)
+    rescue
+      nil
+    end
 
     # Change the configuration to use a different directory.
     JsFromRoutes.config do |config|
       config.output_folder = output_dir
-      config.template_path = ORIGINAL_TEMPLATE_PATH
+      config.template_path = original_template_path
     end
   end
 
   # NOTE: We do a manual snapshot test for now, more tests coming in the future.
-  it 'should generate the files as expected' do
+  it "should generate the files as expected" do
     expect(JsFromRoutes).to receive(:render_template).exactly(3).times.and_call_original
     JsFromRoutes.generate!
 
     # It does not generate routes that don't have `export: true`.
-    expect(output_file_for('Welcome').exist?).to eq false
+    expect(output_file_for("Welcome").exist?).to eq false
 
     # It generates one file per controller with exported routes.
     controllers_with_exported_routes.each do |file_name|
@@ -67,9 +70,9 @@ describe JsFromRoutes do
     JsFromRoutes.generate!
   end
 
-  it 'should have a rake task available' do
+  it "should have a rake task available" do
     Rails.application.load_tasks
     expect(JsFromRoutes).to receive(:render_template).exactly(3).times
-    expect { Rake::Task['js_from_routes:generate'].invoke }.not_to raise_error
+    expect { Rake::Task["js_from_routes:generate"].invoke }.not_to raise_error
   end
 end
