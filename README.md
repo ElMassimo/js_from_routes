@@ -101,7 +101,7 @@ export default {
 This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue#L10), but to illustrate using the example above, in combination with [`axios`](https://github.com/axios/axios) or `fetch`:
 
 ```js
-import VideoClipsRequests from '@requests/VideoClipsRequests'
+import VideoClipsRequests from '~/requests/VideoClipsRequests'
 
 VideoClipsRequests.get({ id: 'oHg5SJYRHA0' }).then(data => { this.video = data })
 
