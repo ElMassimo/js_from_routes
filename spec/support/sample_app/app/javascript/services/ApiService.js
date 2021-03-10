@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { formatUrl } from '@helpers/UrlHelper'
+import { formatUrl } from '~/helpers/UrlHelper'
 import { snakeCase } from 'lodash'
-import { deepCamelizeKeys, deepDecamelizeKeys } from '@helpers/ObjectHelper'
+import { deepCamelizeKeys, deepDecamelizeKeys } from '~/helpers/ObjectHelper'
 
 // Public: Makes an AJAX request to the Rails server.
 //

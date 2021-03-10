@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'digest'
-require 'erubi'
-require 'fileutils'
+require "digest"
+require "erubi"
+require "fileutils"
 
 # Public: Automatically generates JS for Rails routes with { export: true }.
 # Generates one file per controller, and one function per route.
@@ -59,19 +59,19 @@ module JsFromRoutes
 
     # Public: The path for the action. Example: '/users/:id/edit'
     def path
-      @route.path.spec.to_s.chomp('(.:format)')
+      @route.path.spec.to_s.chomp("(.:format)")
     end
 
     # Public: The name of the JS helper for the action. Example: 'destroyAll'
     def helper
       action = @route.requirements.fetch(:action).camelize(:lower)
       name = @mappings.fetch(action, action)
-      path_only? ? "#{ name }Path" : name
+      path_only? ? "#{name}Path" : name
     end
 
     # Internal: Useful as a cache key for the route, and for debugging purposes.
     def inspect
-      "#{ verb } #{ helper } #{ path }"
+      "#{verb} #{helper} #{path}"
     end
   end
 
@@ -79,10 +79,10 @@ module JsFromRoutes
     # Public: Configuration of the code generator.
     def config
       @config ||= OpenStruct.new(
-        file_suffix: 'Requests.js',
-        output_folder: ::Rails.root&.join('app', 'javascript', 'requests'),
-        template_path: File.expand_path('template.js.erb', __dir__),
-        helper_mappings: { 'index' => 'list', 'show' => 'get' },
+        file_suffix: "Requests.js",
+        output_folder: ::Rails.root&.join("app", "javascript", "requests"),
+        template_path: File.expand_path("template.js.erb", __dir__),
+        helper_mappings: {"index" => "list", "show" => "get"}
       )
       yield(@config) if block_given?
       @config
@@ -90,7 +90,7 @@ module JsFromRoutes
 
     # Public: Generates code for the specified routes with { export: true }.
     def generate!(app_or_routes = Rails.application)
-      raise ArgumentError, 'A Rails app must be defined, or you must specify a custom `output_folder`' if config.output_folder.blank?
+      raise ArgumentError, "A Rails app must be defined, or you must specify a custom `output_folder`" if config.output_folder.blank?
       rails_routes = app_or_routes.is_a?(::Rails::Engine) ? app_or_routes.routes.routes : app_or_routes
       @compiled_template = nil # Clear on every code reload in case the template changed.
       exported_routes_by_controller(rails_routes).each do |controller, controller_routes|
@@ -99,7 +99,7 @@ module JsFromRoutes
       end
     end
 
-  private
+    private
 
     # Internal: Returns exported routes grouped by controller name.
     def exported_routes_by_controller(routes)
@@ -112,7 +112,7 @@ module JsFromRoutes
 
     # Internal: Name of the JS file with helpers for the the given controller.
     def filename_for(controller)
-      config.output_folder.join("#{ controller.camelize }#{ config.file_suffix }".tr_s(':', '/'))
+      config.output_folder.join("#{controller.camelize}#{config.file_suffix}".tr_s(":", "/"))
     end
 
     # Internal: Returns a String with the JS generated for a controller's routes.
@@ -134,8 +134,8 @@ module JsFromRoutes
     # Yields to receive the rendered file content when it needs to.
     def write_if_changed(name, cache_key)
       FileUtils.mkdir_p(name.dirname)
-      cache_key_comment = "// JsFromRoutes CacheKey #{ cache_key }\n"
-      File.open(name, 'a+') { |file|
+      cache_key_comment = "// JsFromRoutes CacheKey #{cache_key}\n"
+      File.open(name, "a+") { |file|
         if file.gets != cache_key_comment
           file.truncate(0)
           file.write(cache_key_comment)

@@ -10,6 +10,9 @@ JS From Rails Routes
 </p>
 </h1>
 
+[Vite Rails]: https://vite-ruby.netlify.app/
+[aliases]: https://vite-ruby.netlify.app/guide/development.html#import-aliases-%F0%9F%91%89
+
 _JS from Routes_ helps you by automatically generating path and API helpers from
 Rails route definitions, allowing you to save development effort and focus on
 the things that matter.
@@ -78,8 +81,8 @@ bin/rake js_from_routes:generate
 which can generate code such as:
 
 ```js
-import { formatUrl } from '@helpers/UrlHelper'
-import { request } from '@services/ApiService'
+import { formatUrl } from '~/helpers/UrlHelper'
+import { request } from '~/services/ApiService'
 
 export default {
   downloadPath: options =>
@@ -108,7 +111,7 @@ VideoClipsRequests.update(newVideo)
 const path = VideoClipsRequests.downloadPath(newVideo)
 ```
 
-Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue), and how you can [configure](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/webpack/aliases.js#L11) Webpack to your convenience.
+Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue), and how you can configure it to your convenience.
 
 Read on to find out how to customize the generated code to suit your needs.
 
@@ -133,7 +136,9 @@ the JS code read more naturally.
 
 The directory where the generated files are created.
 
-Tip: It's highly recommended to [add a webpack alias](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/config/webpack/aliases.js#L11), to simplify [imports](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue#2).
+Tip: It's highly recommended to [add a webpack alias](https://github.com/ElMassimo/js_from_routes/blob/webpack/spec/support/sample_app/config/webpack/aliases.js#L11), to simplify [imports](https://github.com/ElMassimo/js_from_routes/blob/master/spec/support/sample_app/app/javascript/Videos.vue#2).
+
+If you use [Vite Rails], the [aliases] are already configured for you.
 
 ##### [`template_path`](https://github.com/ElMassimo/js_from_routes/blob/master/lib/js_from_routes/generator.rb#L79)
 
@@ -165,9 +170,9 @@ In order to optimize file generation, the generated JS files are split by
 controller, and add a cache key based on the routes to avoid rewriting the file
 if the route definition hasn't changed.
 
-When the Webpack development server is running, it detects when a new file is
-generated, automatically triggering a new build, which can now use the generated
-request methods or path helpers 😃
+When the Vite.js or Webpack development server is running, it detects when a new
+file is generated, automatically triggering a new build, which can now use the
+generated request methods or path helpers 😃
 
 ### Take this idea 💡
 

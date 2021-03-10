@@ -1,5 +1,5 @@
 import buildURL from 'axios/lib/helpers/buildURL'
-import { deepDecamelizeKeys } from '@helpers/ObjectHelper'
+import { deepDecamelizeKeys } from '~/helpers/ObjectHelper'
 import { snakeCase } from 'lodash'
 
 const INTERPOLATION_PLACEHOLDER = /:[^\W\d]+/g
