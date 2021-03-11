@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+cd .. && pnpm release js_from_routes "$@"

@@ -1,5 +1,5 @@
-require "support/sample_app/config/application"
-require "support/sample_app/config/routes"
+require "vanilla/config/application"
+require "vanilla/config/routes"
 
 describe JsFromRoutes do
   original_template_path = JsFromRoutes.config.template_path

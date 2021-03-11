@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { formatUrl } from '~/helpers/UrlHelper'
 import { snakeCase } from 'lodash'
+import { formatUrl } from '~/helpers/UrlHelper'
 import { deepCamelizeKeys, deepDecamelizeKeys } from '~/helpers/ObjectHelper'
 
 // Public: Makes an AJAX request to the Rails server.
@@ -14,7 +14,7 @@ import { deepCamelizeKeys, deepDecamelizeKeys } from '~/helpers/ObjectHelper'
 //   decamelize: The function used to snakeCase the keys of the data sent to the server.
 //
 // Returns a Promise for the request.
-export function request (method, url, options = {}) {
+export async function request (method, url, options = {}) {
   const { params = (options.data || options), data = {}, camelize = true, decamelize = snakeCase } = options
 
   const decamelizedData = decamelize ? deepDecamelizeKeys(data, decamelize) : data
@@ -29,8 +29,8 @@ export function request (method, url, options = {}) {
     },
   }
 
-  return axios.request(requestOptions)
-    .then(response => {
+  return await axios.request(requestOptions)
+    .then((response) => {
       return camelize ? deepCamelizeKeys(response.data) : response.data
     })
 }

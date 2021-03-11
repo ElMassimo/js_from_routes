@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+pry -r './lib/js_from_routes.rb'

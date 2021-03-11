@@ -1,4 +1,4 @@
-Copyright (c) 2019 Máximo Mussini
+Copyright (c) 2021 Máximo Mussini
 
 MIT License
 

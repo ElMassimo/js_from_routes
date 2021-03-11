@@ -1,3 +1,3 @@
 source "https://rubygems.org"
 
-gemspec
+gemspec path: "./js_from_routes"
