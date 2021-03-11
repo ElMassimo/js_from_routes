@@ -1,4 +1,4 @@
-import { deepConvertKeys, forEach, isURLSearchParams, isDate, isObject, snakeCase } from './utils'
+import { deepConvertKeys, escapeRegExp, forEach, isURLSearchParams, isDate, isObject, snakeCase } from './utils'
 
 export type Query = Record<string, any>
 export type Params = Record<string, any>
@@ -82,11 +82,14 @@ function buildURL (url: string, params: Query | undefined): string {
  * @param  {Params} params   Parameters to inject in the placeholders
  * @return {string} The resulting URL with replaced placeholders
  */
-export function interpolate (template: string, params: Params): string {
+export function interpolateUrl (template: string, params: Params): string {
   let value = template.toString()
   Object.entries(params).forEach(([paramName, paramValue]) => {
-    value = value.replace(`((/?):${snakeCase(paramName)})`, `/$2${paramValue}`)
+    paramName = snakeCase(paramName)
+    value = value.replaceAll(`(/:${paramName})`, `/${paramValue}`)
+      .replaceAll(new RegExp(`:${escapeRegExp(paramName)}(\\/|\\.|$)`, 'g'), `${paramValue}$1`)
   })
+
   // Remove any optional path if the parameters were not provided.
   value = value.replace(OPTIONAL_PARAMETER, '')
 
@@ -94,17 +97,21 @@ export function interpolate (template: string, params: Params): string {
   if (missingParams) {
     const missing = missingParams.join(', ')
     const provided = params && Object.keys(params).join(', ')
-    throw new TypeError(`Missing ${missing} for ${template}. Params provided: ${provided}`)
+    throw new TypeError(`Missing URL Parameter ${missing} for ${template}. Params provided: ${provided}`)
   }
   return value
 }
 
-// Public: Formats a url, replacing segments like /:id/ with the parameter of
-// that name.
-//
-// Example:
-//   formatUrl('/users/:id', { id: '5' }) returns '/users/5'
-//   formatUrl('/users', { query: { id: '5' } }) returns '/users?id=5'
+/**
+ * Formats a url, replacing segments like /:id/ with the parameter of that name.
+ * @param {string} urlTemplate A template URL with placeholders for params
+ * @param {Query}  query       Query parameters to append to the URL
+ * @param {Params} params      Parameters to interpolateUrl in the URL placeholders
+ * @return {string} The interpolated URL with the provided query params (if any)
+ * @example
+ *   formatUrl('/users/:id', { id: '5' }) returns '/users/5'
+ *   formatUrl('/users', { query: { id: '5' } }) returns '/users?id=5'
+ */
 export function formatUrl (urlTemplate: string, { query, ...params }: UrlOptions = {}): string {
-  return buildURL(interpolate(urlTemplate, params), query)
+  return buildURL(interpolateUrl(urlTemplate, params), query)
 }

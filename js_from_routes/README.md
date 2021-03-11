@@ -58,7 +58,7 @@ Use the `export` attribute to determine which [routes](https://github.com/ElMass
 Rails.application.routes.draw do
   resources :video_clips, export: true do
     get :download, on: :member, export: :path_only
-    get :trending, on: :collection, export: false
+    get :latest, on: :collection, export: false
   end
 end
 ```

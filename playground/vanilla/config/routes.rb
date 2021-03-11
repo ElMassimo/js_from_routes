@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     get :download, on: :member, export: :path_only
     patch :add_to_playlist, on: :member
     patch :remove_from_playlist, on: :member
-    get :trending, on: :collection
+    get :latest, on: :collection
     get "/thumbnail/:thumbnail_id", as: :thumbnail, action: :thumbnail, on: :member
 
     resources :comments, only: [:show, :index], shallow: true, export: true
