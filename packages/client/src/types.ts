@@ -12,7 +12,7 @@ export type Method =
   | 'LINK'
   | 'UNLINK'
 
-export type ResponseAs = 'json' | 'text' | 'response'
+export type ResponseAs = 'response' | 'json' | 'text' | 'blob' | 'formData' | 'arrayBuffer'
 
 /**
  * Options for `fetch` that can be customized.

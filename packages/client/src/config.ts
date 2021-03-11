@@ -2,6 +2,11 @@ import { camelCase, snakeCase, deepConvertKeys } from '@js-from-routes/core'
 
 import type { FetchOptions, HeaderOptions, ResponseAs } from './types'
 
+export interface ResponseError extends Error {
+  body?: any
+  response?: Response
+}
+
 /**
  * You may customize these options to configure how requests are sent.
  */
@@ -48,8 +53,9 @@ export const Config = {
     return fetch(url, requestInit)
       .then(async (response) => {
         if (response.status >= 200 && response.status < 300) return response
-        return await Config.onError(response, args)
+        throw await Config.unwrapResponseError(response, responseAs)
       })
+      .catch(Config.onResponseError)
   },
 
   /**
@@ -73,14 +79,8 @@ export const Config = {
   /**
    * Allows to intercept errors globally.
    */
-  async onError (response: Response, { responseAs }: FetchOptions) {
-    let body
-    try {
-      body = await Config.unwrapResponse(response, responseAs)
-      if (body && responseAs === 'json') body = Config.deserializeData(body)
-    }
-    catch {}
-    throw Object.assign(new Error(response.statusText), { response, body })
+  async onResponseError (error: ResponseError) {
+    throw error
   },
 
   /**
@@ -97,6 +97,20 @@ export const Config = {
       return null
 
     return await response[responseAs]().catch(() => null)
+  },
+
+  /**
+   * Similar to unwrapResponse, but when a request fails.
+   */
+  async unwrapResponseError (response: Response, responseAs: ResponseAs) {
+    const error = new Error(response.statusText) as ResponseError
+    error.response = response
+    try {
+      const body = await Config.unwrapResponse(response, responseAs)
+      error.body = responseAs === 'json' ? Config.deserializeData(body) : body
+    }
+    catch {}
+    return error
   },
 
   /**
