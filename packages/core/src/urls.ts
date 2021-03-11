@@ -1,17 +1,87 @@
-import buildURL from 'axios/lib/helpers/buildURL'
-import { deepConvertKeys, snakeCase } from './utils'
-
-const REQUIRED_PARAMETER = /:[^\W\d]+/g
-const OPTIONAL_PARAMETER = /\(\/:[^\W\d]+\)/g
+import { deepConvertKeys, forEach, isURLSearchParams, isDate, isObject, snakeCase } from './utils'
 
 export type Query = Record<string, any>
 export type Params = Record<string, any>
+
 export type UrlOptions = {
   query?: Query
   [key: string]: any
 }
 
-// Public: Replaces any placeholder in the string with the provided parameters.
+const REQUIRED_PARAMETER = /:[^\W\d]+/g
+const OPTIONAL_PARAMETER = /\(\/:[^\W\d]+\)/g
+
+// Internal: Encodes a value to be used as an URL query parameter.
+function encode (val: any): string {
+  return encodeURIComponent(val)
+    .replace(/%3A/gi, ':')
+    .replace(/%24/g, '$')
+    .replace(/%2C/gi, ',')
+    .replace(/%20/g, '+')
+    .replace(/%5B/gi, '[')
+    .replace(/%5D/gi, ']')
+}
+
+/**
+ * Serializes the provided parameters as an URL query string.
+ */
+function serializeQuery (params: Query): string {
+  const parts: string[] = []
+
+  forEach(params, (val, key) => {
+    if (val === null || typeof val === 'undefined')
+      return
+
+    if (Array.isArray(val))
+      key = `${key}[]`
+    else
+      val = [val]
+
+    forEach(val, (v) => {
+      if (isDate(v))
+        v = v.toISOString()
+      else if (isObject(v))
+        v = JSON.stringify(v)
+
+      parts.push(`${encode(key)}=${encode(v)}`)
+    })
+  })
+
+  return parts.join('&')
+}
+
+/**
+ * Build a URL by appending params to the end
+ *
+ * @param {string} url The base of the url (e.g., http://www.google.com)
+ * @param {Params} params The params to be appended
+ * @returns {string} The formatted url
+ */
+function buildURL (url: string, params: Query | undefined): string {
+  if (!params) return url
+
+  const queryStr = isURLSearchParams(params)
+    ? params.toString()
+    : serializeQuery(deepConvertKeys(params, snakeCase))
+
+  if (queryStr) {
+    const hashmarkIndex = url.indexOf('#')
+    if (hashmarkIndex !== -1)
+      url = url.slice(0, hashmarkIndex)
+
+    url += `${url.includes('?') ? '&' : '?'}${queryStr}`
+  }
+
+  return url
+}
+
+/**
+ * Replaces any placeholder in the string with the provided parameters.
+ *
+ * @param  {string} template The URL template with `:placeholders`
+ * @param  {Params} params   Parameters to inject in the placeholders
+ * @return {string} The resulting URL with replaced placeholders
+ */
 export function interpolate (template: string, params: Params): string {
   let value = template.toString()
   Object.entries(params).forEach(([paramName, paramValue]) => {
@@ -36,6 +106,5 @@ export function interpolate (template: string, params: Params): string {
 //   formatUrl('/users/:id', { id: '5' }) returns '/users/5'
 //   formatUrl('/users', { query: { id: '5' } }) returns '/users?id=5'
 export function formatUrl (urlTemplate: string, { query, ...params }: UrlOptions = {}): string {
-  const url = interpolate(urlTemplate, params)
-  return query ? buildURL(url, deepConvertKeys(query, snakeCase)) : url
+  return buildURL(interpolate(urlTemplate, params), query)
 }

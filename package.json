@@ -1,11 +1,12 @@
 {
-  "name": "vite_ruby_monorepo",
+  "name": "js_from_routes_monorepo",
   "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
     "docs": "npm -C docs run dev",
     "docs:search": "npm -C docs run search",
+    "dev": "npm -C packages run dev",
     "release": "node scripts/release",
     "lint": "lint-staged",
     "postinstall": "husky install",
@@ -35,7 +36,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ElMassimo/vite_ruby"
+    "url": "https://github.com/ElMassimo/js_from_routes"
   },
-  "homepage": "https://github.com/ElMassimo/vite_ruby"
+  "homepage": "https://github.com/ElMassimo/js_from_routes"
 }
