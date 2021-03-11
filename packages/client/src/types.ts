@@ -1,0 +1,89 @@
+import type { UrlOptions } from '@js-from-routes/core'
+
+export type Method =
+  | 'GET'
+  | 'DELETE'
+  | 'HEAD'
+  | 'OPTIONS'
+  | 'POST'
+  | 'PUT'
+  | 'PATCH'
+  | 'PURGE'
+  | 'LINK'
+  | 'UNLINK'
+
+export type ResponseAs = 'json' | 'text' | 'response'
+
+/**
+ * Options for `fetch` that can be customized.
+ */
+export type BaseFetchOptions = Omit<RequestInit, 'method' | 'body'>
+
+/**
+ * Passed to the `fetch` function when performing a request.
+ */
+export interface FetchOptions extends BaseFetchOptions {
+  url: string
+  method: Method
+  data: any
+  responseAs: ResponseAs
+  headers: Record<string, string>
+}
+
+/**
+ *
+ */
+export interface RequestOptions {
+  /**
+   * The query string parameters to interpolate in the URL.
+   */
+  params?: UrlOptions
+
+  /**
+   * The body of the request, should be a plain Object.
+   */
+  data?: any
+
+  /**
+   * The function used to transform the data received from the server.
+   * @default camelizeKeys
+   */
+  deserializeData?: (data: any) => any
+
+  /**
+   * Use a different function to make the request.
+   * @default Config.fetch
+   */
+  fetch: (options: FetchOptions) => Promise<Response>
+
+  /**
+   * Additional options for the `fetch` function.
+   */
+  fetchOptions: BaseFetchOptions
+
+  /**
+   * The function used to convert the data before sending it to the server.
+   * @default snakeCaseKeys
+   */
+  serializeData?: (data: any) => any
+
+  /**
+   * What kind of response is expected. Defaults to `json`. `response` will
+   * return the raw response from `fetch`.
+   * @default 'json'
+   */
+  responseAs?: ResponseAs
+
+  /**
+   * Headers to send in the request.
+   */
+  headers?: Record<string, string>
+}
+
+export type Options = RequestOptions | UrlOptions
+
+export interface HeaderOptions {
+  method: Method
+  url: string
+  options: Options
+}

@@ -1,35 +1,9 @@
-importers:
-  .:
-    specifiers: {}
-  axios:
-    dependencies:
-      '@js-from-routes/core': 'link:../core'
-    devDependencies:
-      axios: 0.21.1
-      tsup: 3.12.1_typescript@4.2.3
-      typescript: 4.2.3
-    specifiers:
-      '@js-from-routes/core': 'workspace:*'
-      axios: ^0.21
-      tsup: ^3.11.0
-      typescript: ^4.2.2
-  client:
-    dependencies:
-      '@js-from-routes/core': 'link:../core'
-    devDependencies:
-      tsup: 3.12.1_typescript@4.2.3
-      typescript: 4.2.3
-    specifiers:
-      '@js-from-routes/core': 'workspace:*'
-      tsup: ^3.11.0
-      typescript: ^4.2.2
-  core:
-    devDependencies:
-      tsup: 3.12.1_typescript@4.2.3
-      typescript: 4.2.3
-    specifiers:
-      tsup: ^3.11.0
-      typescript: ^4.2.2
+devDependencies:
+  '@types/lodash-es': 4.17.4
+  axios: 0.21.1
+  lodash-es: 4.17.21
+  tsup: 3.12.1_typescript@4.2.3
+  typescript: 4.2.3
 lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.12.13:
@@ -107,6 +81,16 @@ packages:
     dev: true
     resolution:
       integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
+  /@types/lodash-es/4.17.4:
+    dependencies:
+      '@types/lodash': 4.14.168
+    dev: true
+    resolution:
+      integrity: sha512-BBz79DCJbD2CVYZH67MBeHZRX++HF+5p8Mo5MzjZi64Wac39S3diedJYHZtScbRVf4DjZyN6LzA0SB0zy+HSSQ==
+  /@types/lodash/4.14.168:
+    dev: true
+    resolution:
+      integrity: sha512-oVfRvqHV/V6D1yifJbVRU3TMp8OT6o6BG+U9MkwuJ3U8/CsDHvalRpsxBqivn71ztOFZBTfJMvETbqHiaNSj7Q==
   /@types/node/14.14.33:
     dev: true
     resolution:
@@ -529,6 +513,10 @@ packages:
     dev: true
     resolution:
       integrity: sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
+  /lodash-es/4.17.21:
+    dev: true
+    resolution:
+      integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
   /magic-string/0.25.7:
     dependencies:
       sourcemap-codec: 1.4.8
@@ -815,3 +803,9 @@ packages:
       node: '>= 6'
     resolution:
       integrity: sha512-yr2icI4glYaNG+KWONODapy2/jDdMSDnrONSjblABjD9B4Z5LgiircSt8m8sRZFNi08kG9Sm0uSHtEmP3zaEGg==
+specifiers:
+  '@types/lodash-es': ^4.17.4
+  axios: ^0.21
+  lodash-es: ^4.17
+  tsup: ^3.11.0
+  typescript: ^4.2.2

@@ -1,18 +1,12 @@
-import type { Method } from 'axios'
-import { camelCase, snakeCase, deepConvertKeys } from './utils'
+import { camelCase, snakeCase, deepConvertKeys } from '@js-from-routes/core'
 
-import type { Options, ResponseAs, FetchOptions } from './api'
-
-export interface HeaderOptions {
-  method: Method
-  url: string
-  options: Options
-}
+import type { FetchOptions, HeaderOptions, ResponseAs } from './types'
 
 /**
  * You may customize these options to configure how requests are sent.
  */
 export const Config = {
+
   /**
    * The function used to transform the data received from the server.
    * @default camelizeKeys
@@ -39,17 +33,6 @@ export const Config = {
   },
 
   /**
-   * Default headers to be sent in the request, JSON is used as the default MIME.
-   */
-  headers (_requestInfo: HeaderOptions) {
-    return {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': Config.getCSRFToken(),
-    }
-  },
-
-  /**
    * Allows to replace the default strategy to use Axios or other libraries.
    */
   async fetch (args: FetchOptions): Promise<Response> {
@@ -70,16 +53,14 @@ export const Config = {
   },
 
   /**
-   * Allows to intercept errors globally.
+   * Default headers to be sent in the request, JSON is used as the default MIME.
    */
-  async onError (response: Response, { responseAs }: FetchOptions) {
-    let body
-    try {
-      body = await Config.unwrapResponse(response, responseAs)
-      if (body && responseAs === 'json') body = Config.deserializeData(body)
+  headers (_requestInfo: HeaderOptions) {
+    return {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'X-CSRF-TOKEN': Config.getCSRFToken(),
     }
-    catch {}
-    throw Object.assign(new Error(response.statusText), { response, body })
   },
 
   /**
@@ -90,12 +71,16 @@ export const Config = {
   },
 
   /**
-   * Convenience hook to extract headers from the response.
+   * Allows to intercept errors globally.
    */
-  withResponse (response: Response) {
-    // Extract a CSRF token provided in the headers.
-    const headers: Record<string, any> = response.headers || {}
-    Config.csrfToken = headers['x-csrf-token'] || Config.csrfToken
+  async onError (response: Response, { responseAs }: FetchOptions) {
+    let body
+    try {
+      body = await Config.unwrapResponse(response, responseAs)
+      if (body && responseAs === 'json') body = Config.deserializeData(body)
+    }
+    catch {}
+    throw Object.assign(new Error(response.statusText), { response, body })
   },
 
   /**
@@ -112,5 +97,14 @@ export const Config = {
       return null
 
     return await response[responseAs]().catch(() => null)
+  },
+
+  /**
+   * Convenience hook to extract headers from the response.
+   */
+  withResponse (response: Response) {
+    // Extract a CSRF token provided in the headers.
+    const headers: Record<string, any> = response.headers || {}
+    Config.csrfToken = headers['x-csrf-token'] || Config.csrfToken
   },
 }
