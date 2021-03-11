@@ -12,7 +12,9 @@ if (!name) {
   process.exit(1)
 }
 
-const isRubyPackage = name !== 'vite-plugin-ruby'
+const isRubyPackage = name === 'js_from_routes'
+const packagePath = isRubyPackage ? name : `packages/${name}`
+const packageName = isRubyPackage ? name : `@js-from-routes/${name}`
 
 /**
  * @param {string} bin
@@ -25,7 +27,7 @@ const run = (bin, args, opts = {}) =>
 /**
  * @param {string} paths
  */
-const resolve = paths => path.resolve(__dirname, `../${name}/${paths}`)
+const resolve = paths => path.resolve(__dirname, `../${packagePath}/${paths}`)
 
 /**
  * @param {string} name
@@ -45,7 +47,7 @@ function writePackageJson (name) {
 async function main () {
   if (isRubyPackage) writePackageJson(name)
 
-  await run('npx', ['conventional-changelog', `-p angular -i ${name}/CHANGELOG.md -s -t ${name}@ --pkg ./${name}/package.json --commit-path ./${name}`])
+  await run('npx', ['conventional-changelog', `-p angular -i ${packagePath}/CHANGELOG.md -s -t ${packageName}@ --pkg ./${packagePath}/package.json --commit-path ./${packagePath}`])
 
   if (isRubyPackage) fs.rmSync(resolve('package.json'))
 }

@@ -18,7 +18,8 @@ if (!name) {
   process.exit(1)
 }
 
-const isRubyLibrary = name !== 'js_from_routes'
+const isRubyLibrary = name === 'js_from_routes'
+const packagePath = isRubyLibrary ? name : `packages/${name}`
 const pkg = isRubyLibrary ? rubyPackage() : jsPackage()
 
 /**
@@ -79,7 +80,7 @@ function step (msg) {
  * @param {string} paths
  */
 function resolve (paths) {
-  return path.resolve(__dirname, `../${name}/${paths}`)
+  return path.resolve(__dirname, `../${packagePath}/${paths}`)
 }
 
 function rubyPackage () {
@@ -237,7 +238,7 @@ async function publishGem (version) {
  */
 async function publishPackage (version, runIfNotDry) {
   try {
-    await runIfNotDry('pnpm', ['publish'], {
+    await runIfNotDry('npm', ['publish', '--access', 'public'], {
       stdio: 'inherit',
       cwd: resolve('.'),
     })
