@@ -20,4 +20,4 @@ Config.fetch = (...args) => {
 }
 
 // Example: Use on how to configure the fetch strategy.
-api.VideoClips.latest().then((videos) => { console.log({ videos }) })
+api.VideoClips.latest().then((videos: any) => { console.log({ videos }) })
