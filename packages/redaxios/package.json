@@ -1,5 +1,5 @@
 {
-  "name": "@js-from-routes/axios",
+  "name": "@js-from-routes/redaxios",
   "description": "Make API requests to a Rails apps with ease.",
   "version": "0.1.0",
   "main": "dist/index.cjs",
@@ -23,16 +23,13 @@
     "dev": "npm run build -- --watch",
     "build": "tsup src/index.ts --dts --format cjs,esm",
     "prerelease": "npm run build",
-    "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag axios@$PACKAGE_VERSION && git push --tags"
+    "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag redaxios@$PACKAGE_VERSION && git push --tags"
   },
   "dependencies": {
-    "@js-from-routes/core": "workspace:*"
-  },
-  "peerDependencies": {
-    "axios": "^0.21"
+    "@js-from-routes/client": "workspace:*",
+    "redaxios": "^0.4.1"
   },
   "devDependencies": {
-    "axios": "^0.21",
     "tsup": "^3.11.0",
     "typescript": "^4.2.2"
   }

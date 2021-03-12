@@ -26,13 +26,10 @@
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag axios@$PACKAGE_VERSION && git push --tags"
   },
   "dependencies": {
+    "axios": "^0.21",
     "@js-from-routes/client": "workspace:*"
   },
-  "peerDependencies": {
-    "axios": "^0.21"
-  },
   "devDependencies": {
-    "axios": "^0.21",
     "tsup": "^3.11.0",
     "typescript": "^4.2.2"
   }

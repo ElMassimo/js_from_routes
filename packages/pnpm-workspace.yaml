@@ -2,3 +2,4 @@ packages:
   - core/
   - client/
   - axios/
+  - redaxios/
