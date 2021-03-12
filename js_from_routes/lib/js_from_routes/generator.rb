@@ -24,6 +24,11 @@ module JsFromRoutes
       Digest::MD5.hexdigest(routes.map(&:inspect).join + [File.read(@config.template_path), @config.helper_mappings.inspect].join)
     end
 
+    # Public: Exposes the preferred import library to the generator.
+    def client_library
+      @config.client_library
+    end
+
     # Internal: By performing the evaluation here, we ensure only "routes" is
     # exposed to the ERB template as a local variable.
     def evaluate(compiled_template)
@@ -79,6 +84,7 @@ module JsFromRoutes
     # Public: Configuration of the code generator.
     def config
       @config ||= OpenStruct.new(
+        client_library: "@js-from-routes/client",
         file_suffix: "Requests.js",
         output_folder: ::Rails.root&.join("app", "javascript", "requests"),
         template_path: File.expand_path("template.js.erb", __dir__),

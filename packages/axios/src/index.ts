@@ -1,7 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from 'axios'
-
-import { request, Config } from '@js-from-routes/client'
-
+import { formatUrl, request, Config } from '@js-from-routes/client'
 import type { ResponseAs, FetchOptions, ResponseError } from '@js-from-routes/client'
 
 /**
@@ -37,5 +35,6 @@ Object.assign(Config, { fetch, unwrapResponse })
 export {
   AxiosConfig,
   Config,
+  formatUrl,
   request,
 }

@@ -37,16 +37,20 @@ Read more about it in the [blog announcement](https://maximomussini.com/posts/js
 Add this line to your application's Gemfile in the `development` group:
 
 ```ruby
-gem 'js_from_routes'
+group :development do
+  gem 'js_from_routes'
+end
 ```
 
-And then execute:
+And then execute `bundle`.
 
-    $ bundle
+#### JS 📦
 
-Or install it yourself as:
+If using one of the provided clients, add them to your `package.json`:
 
-    $ gem install js_from_routes
+    npm install @js-from-routes/client # or @js-from-routes/axios or @js-from-routes/redaxios or @js-from-routes/core
+
+Have in mind this is optional, and you can use your own code instead.
 
 ### Usage 🚀
 
@@ -96,8 +100,7 @@ bin/rake js_from_routes:generate
 which will generate code such as:
 
 ```js
-import { formatUrl } from '~/helpers/UrlHelper'
-import { request } from '~/services/ApiService'
+import { formatUrl, request } from '@js-from-routes/client'
 
 export default {
   downloadPath: options =>
@@ -117,6 +120,11 @@ Since all projects are different, it's very unlikely that the default settings
 fulfill all your requirements.
 
 The following [settings][config options] are available:
+
+- <kbd>[client_library][config options]</kbd>, default: `@js-from-routes/client`
+
+  The preferred library from which to import `request` and `pathFor` helpers.
+  You may still access this setting if you override the default template.
 
 - <kbd>[file_suffix][config options]</kbd>, default: `Requests.js`
 

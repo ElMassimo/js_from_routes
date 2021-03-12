@@ -1,16 +1,16 @@
 import type { UrlOptions } from '@js-from-routes/core'
 
 export type Method =
-  | 'GET'
-  | 'DELETE'
-  | 'HEAD'
-  | 'OPTIONS'
-  | 'POST'
-  | 'PUT'
-  | 'PATCH'
-  | 'PURGE'
-  | 'LINK'
-  | 'UNLINK'
+  | 'GET' | 'get'
+  | 'DELETE' | 'delete'
+  | 'HEAD' | 'head'
+  | 'OPTIONS' | 'options'
+  | 'POST' | 'post'
+  | 'PUT' | 'put'
+  | 'PATCH' | 'patch'
+  | 'PURGE' | 'purge'
+  | 'LINK' | 'link'
+  | 'UNLINK' | 'unlink'
 
 export type ResponseAs = 'response' | 'json' | 'text' | 'blob' | 'formData' | 'arrayBuffer'
 
