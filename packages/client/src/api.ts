@@ -1,19 +1,20 @@
 import type { UrlOptions } from '@js-from-routes/core'
 import { formatUrl } from '@js-from-routes/core'
-import type { Method, Options } from './types'
+import type { Method, Options, PathHelper } from './types'
 import { Config } from './config'
 
 /**
- * Uses the path from the specified named helper, interpolating parameters or
- * appending a query string, if provided.
- * @param {string}     name    The name of the endpoint
- * @param {UrlOptions} options Parameters to interpolate in the url, or query parameters
+ * Defines a path helper that can make a request or interpolate a URL path.
+ *
+ * @param {Method} method  An HTTP method
+ * @param {string} pathTemplate The path with params placeholders (if any).
  */
-export function pathFor (this: any, name: string, options: UrlOptions): string {
-  if (!this) throw new Error(`Called pathFor helper on a detached function. Make sure to use YourRequests.pathFor('${name}') instead.`)
-  const requestFn = this[name]
-  if (!requestFn) throw new Error(`Unknown path helper ${name} for ${JSON.stringify(this)}`)
-  return requestFn({ ...options, pathOnly: true })
+function definePathHelper (method: Method, pathTemplate: string): PathHelper {
+  const helper = (options?: Options) => request(method, pathTemplate, options)
+  helper.path = (options?: UrlOptions) => formatUrl(pathTemplate, options)
+  helper.pathTemplate = pathTemplate
+  helper.httpMethod = method
+  return helper
 }
 
 /**
@@ -23,7 +24,7 @@ export function pathFor (this: any, name: string, options: UrlOptions): string {
  * @param  {Options} options Can optionally pass params as a shorthand
  * @return {Promise} The result of the request
  */
-export async function request (method: Method, url: string, options: Options & { pathOnly?: boolean } = {}): Promise<any> {
+async function request (method: Method, url: string, options: Options = {}): Promise<any> {
   const {
     data,
     deserializeData = Config.deserializeData,
@@ -35,12 +36,11 @@ export async function request (method: Method, url: string, options: Options & {
     serializeData = Config.serializeData,
   } = options
 
-  url = formatUrl(url, params)
-  if (options.pathOnly) return url
-
   method = method.toUpperCase() as Method
   if (data && (method === 'HEAD' || method === 'GET'))
     throw Object.assign(new Error('Request with GET/HEAD method cannot have data.'), { data })
+
+  url = formatUrl(url, params)
 
   const requestOptions = {
     url,
@@ -54,4 +54,10 @@ export async function request (method: Method, url: string, options: Options & {
   return fetch(Config.modifyRequest(requestOptions) || requestOptions)
     .then(async (response: Response) => await Config.unwrapResponse(response, responseAs))
     .then((data: any) => responseAs === 'json' ? deserializeData(data) : data)
+}
+
+export {
+  definePathHelper,
+  formatUrl,
+  request,
 }

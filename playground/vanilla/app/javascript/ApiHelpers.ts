@@ -9,6 +9,9 @@ export default Object.entries(import.meta.globEager('./requests/**/*.{js,ts}'))
 
 /**
  * Removes the leading directory and the Requests suffix, for easier access.
+ *
+ * NOTE: This is just an example, you could use any conventions, such as
+ * lowercase, or combine namespaces into separate objects.
  */
 function controllerName (fileName: string) {
   return fileName

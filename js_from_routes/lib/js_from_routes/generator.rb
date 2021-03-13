@@ -42,19 +42,9 @@ module JsFromRoutes
       @route, @mappings = route, mappings
     end
 
-    # Public: Whether it should export only the path.
-    def path_only?
-      export_setting == :path_only
-    end
-
     # Public: The `export` setting specified for the action.
     def export_setting
       @route.defaults[:export]
-    end
-
-    # Public: Whether it should export only the path.
-    def request_method?
-      !path_only?
     end
 
     # Public: The HTTP verb for the action. Example: 'patch'
@@ -70,8 +60,7 @@ module JsFromRoutes
     # Public: The name of the JS helper for the action. Example: 'destroyAll'
     def helper
       action = @route.requirements.fetch(:action).camelize(:lower)
-      name = @mappings.fetch(action, action)
-      path_only? ? "#{name}Path" : name
+      @mappings.fetch(action, action)
     end
 
     # Internal: Useful as a cache key for the route, and for debugging purposes.

@@ -87,3 +87,10 @@ export interface HeaderOptions {
   url: string
   options: Options
 }
+
+export interface PathHelper {
+  (options?: Options): Promise<any>
+  path: (params?: UrlOptions) => string
+  pathTemplate: string
+  httpMethod: Method
+}
