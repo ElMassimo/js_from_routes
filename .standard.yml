@@ -1,0 +1,6 @@
+fix: true
+ignore:
+  - '**/*':
+    - Style/TrailingCommaInArrayLiteral
+    - Style/TrailingCommaInHashLiteral
+    - Style/TrailingCommaInArguments

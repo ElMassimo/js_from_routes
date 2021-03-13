@@ -12,7 +12,7 @@ JS From Rails Routes
 
 [Vite Rails]: https://vite-ruby.netlify.app/
 [aliases]: https://vite-ruby.netlify.app/guide/development.html#import-aliases-%F0%9F%91%89
-[config options]: https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L76-L80
+[config options]: https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L97-L101
 [generate TypeScript]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/initializers/js_from_routes.rb
 [usage]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript/Videos.vue#L9
 [routes]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L6
@@ -36,7 +36,9 @@ Since code generation is fully customizable it can be used in very diverse scena
 
 Path helpers in Rails make it easy to build urls, while avoiding typos and mistakes.
 
-With this library, it's possible the enjoy the same benefits in JS.
+With this library, it's possible the enjoy the same benefits in JS, and even more if using TypeScript.
+
+Read more about it in the [blog announcement](https://maximomussini.com/posts/js-from-routes/).
 
 ### Features ⚡️
 
@@ -69,8 +71,6 @@ With this library, it's possible the enjoy the same benefits in JS.
   Select between different network libraries such as native `fetch`, [axios] or [redaxios], or use your own code instead.
 
   Choose different conventions by [customizing][advanced configuration] how code is generated.
-  
-Read more about it in the [blog announcement](https://maximomussini.com/posts/js-from-routes/).
 
 ### Installation 💿
 
@@ -92,35 +92,43 @@ Have in mind this is [optional][client libraries].
 
 ### Usage 🚀
 
-#### 1. Specify the Rails routes you want to export
+#### Specify the Rails routes you want to export
 
 Use the `export` attribute to determine which [routes] should be taken into account when generating JS.
 
 ```ruby
 Rails.application.routes.draw do
   resources :video_clips, export: true do
-    get :download, on: :member, export: :path_only
-    get :latest, on: :collection, export: false
+    get :download, on: :member
   end
 end
 ```
 
-#### 2. Use the generated code in your JS application
+Path helpers will be automatically generated when refreshing the page.
 
-This can happen in many [different ways][usage], but to illustrate using the example above, in combination with [`axios`](https://github.com/axios/axios) or `fetch`:
+#### Use the path helpers in your JS application
+
+Path helpers are located in a file with the controller name, and export [one method per action][advanced configuration].
 
 ```js
 import VideoClipsApi from '~/api/VideoClipsApi'
+```
 
-VideoClipsApi.get({ id: 'oHg5SJYRHA0' }).then(data => { this.video = data })
+Calling the methods which will return a promise with the unwrapped JSON result.
 
-const downloadPath = VideoClipsApi.download.path(newVideo)
+```js
+const video = await VideoClipsApi.get({ id: 'oHg5SJYRHA0' })
+```
+
+You may use the `path` method from one of the actions to obtain the URL with interpolated parameters.
+
+```js
+const downloadPath = VideoClipsApi.download.path(video)
 ```
 
 Check the [examples][usage] for ideas on how to [use it][usage], and how you can configure it to your convenience.
 
-Read on to find out how to customize the generated code to suit your needs.
-
+A documentation website is coming soon! 📖 :shipit:
 
 ### Code Generation 🤖
 
@@ -137,6 +145,7 @@ bin/rake js_from_routes:generate
 which will generate code such as:
 
 ```js
+// app/javascript/api/VideoClipsApi.ts
 import { definePathHelper } from '@js-from-routes/client'
 
 export default {
@@ -148,10 +157,28 @@ export default {
 }
 ```
 
-#### Advanced Configuration 📖
+### Client Libraries 📦
 
-Since all projects are different, it's very unlikely that the default settings
-fulfill all your requirements.
+Three different API clients are provided. When in doubt, choose the first one:
+
+- <kbd>@js-from-routes/client</kbd>
+
+  The default client. Uses `fetch`, so it has no additional dependencies.
+
+- <kbd>@js-from-routes/axios</kbd>
+
+  Choose it if already using [axios], or have a complex use case that requires [interceptors](https://github.com/axios/axios#interceptors) or [different instances](https://github.com/axios/axios#creating-an-instance).
+
+- <kbd>@js-from-routes/redaxios</kbd>
+
+  Choose it if already using [redaxios], for consistency within your codebase.
+
+You may also use [your own client code instead][advanced configuration], or even [jQuery].
+
+### Advanced Configuration 🛠
+
+You can fully customize how code is generated, which [client libraries] to use,
+or whether to not use one at all.
 
 The following [settings][config options] are available:
 
@@ -201,23 +228,6 @@ The following [settings][config options] are available:
 
   Check out [this pull request][ping] to get a sense of how flexible it can be.
 
-### Client Libraries 📦
-
-Three different API clients are provided. When in doubt, choose the first one:
-
-- <kbd>@js-from-routes/client</kbd>
-
-  The default client. Uses `fetch`, so it has no additional dependencies.
-
-- <kbd>@js-from-routes/axios</kbd>
-
-  Choose it if already using [axios], or have a complex use case that requires [interceptors](https://github.com/axios/axios#interceptors) or [different instances](https://github.com/axios/axios#creating-an-instance).
-
-- <kbd>@js-from-routes/redaxios</kbd>
-
-  Choose it if already using [redaxios], for consistency within your codebase.
-
-You may also use [your own client code instead][advanced configuration], or even [jQuery].
 
 ### How does it work? ⚙️
 
@@ -234,11 +244,8 @@ generated request methods or path helpers 😃
 
 ### Take this idea 💡
 
-While the original use cases intended to generate code that targes a custom `ApiService`, 
-it can be tweaked to [generate TypeScript], target [jQuery],
-or [adapt to your framework of choice][ping].
+The generator can be tweaked to [generate TypeScript], target [jQuery], or [adapt to your framework of choice][ping].
 
-There are plenty of other opportunities for automatic code generation, such as keeping
-enums in sync between Ruby and JS.
+However, this is just one possible application. There are plenty of other opportunities for code generation, such as keeping enums in sync between Ruby and JS, and other shared data structures.
 
 Let me know if you come up with new or creative ways to use this technique 😃

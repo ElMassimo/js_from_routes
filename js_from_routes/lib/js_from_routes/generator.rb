@@ -3,6 +3,7 @@
 require "digest"
 require "erubi"
 require "fileutils"
+require "pathname"
 
 # Public: Automatically generates JS for Rails routes with { export: true }.
 # Generates one file per controller, and one function per route.
@@ -72,13 +73,7 @@ module JsFromRoutes
   class << self
     # Public: Configuration of the code generator.
     def config
-      @config ||= OpenStruct.new(
-        client_library: "@js-from-routes/client",
-        file_suffix: "Api.js",
-        output_folder: ::Rails.root&.join("app", "javascript", "api"),
-        template_path: File.expand_path("template.js.erb", __dir__),
-        helper_mappings: {"index" => "list", "show" => "get"}
-      )
+      @config ||= OpenStruct.new(default_config(::Rails.root || Pathname.new(Dir.pwd)))
       yield(@config) if block_given?
       @config
     end
@@ -95,6 +90,17 @@ module JsFromRoutes
     end
 
     private
+
+    def default_config(root)
+      dir = %w[frontend packs javascript assets].find { |dir| root.join("app", dir).exist? }
+      {
+        client_library: "@js-from-routes/client",
+        file_suffix: "Api.js",
+        helper_mappings: {"index" => "list", "show" => "get"},
+        output_folder: root.join("app", dir, "api"),
+        template_path: File.expand_path("template.js.erb", __dir__),
+      }
+    end
 
     # Internal: Returns exported routes grouped by controller name.
     def exported_routes_by_controller(routes)
