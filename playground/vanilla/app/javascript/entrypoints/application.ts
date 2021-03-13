@@ -1,14 +1,14 @@
 import 'windi.css'
 
 import { createApp } from 'vue'
-import { Config } from '@js-from-routes/client'
+import { Config, request } from '@js-from-routes/redaxios'
 import Videos from '~/Videos.vue'
 
 // Example: Combine all exported routes in a single object.
 import api from '~/ApiHelpers'
 
 // Example: Expose it globally to the entire app (not recommended, prefer injection).
-Object.assign(window, { api })
+Object.assign(window, { api, request })
 
 const app = createApp(Videos)
 app.mount('#app')

@@ -21,17 +21,25 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@js-from-routes/client@link:../../packages/client":
-  version "0.0.0"
-  uid ""
+"@js-from-routes/client@^1.0.0":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@js-from-routes/client/-/client-1.0.1.tgz#faee295dba1dde437dbbee68cad6b2468280650e"
+  integrity sha512-v+cfrmnm12Sxi1xfE0oN7oTJMAKhmhYpwpQla1JJTZZ+oEFKjbGLMzLUNnuRGHtrqR9K1IWfugRQziF5KXPVwQ==
+  dependencies:
+    "@js-from-routes/core" "^1.0.0"
 
-"@js-from-routes/core@link:../../packages/core":
-  version "0.0.0"
-  uid ""
+"@js-from-routes/core@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@js-from-routes/core/-/core-1.0.0.tgz#3f4bd3dd699c6fd4ad287103e04b89fe3d00915c"
+  integrity sha512-SVeiPNr5bcAqdHZqa9xzdv7amuXULBL5lIY+S/nYuW7/iup+/n00Jvtt85m47FYL8qbcMYL+/x5QdHiWvvBjQQ==
 
-"@js-from-routes/core@workspace:*":
-  version "0.0.0"
-  uid ""
+"@js-from-routes/redaxios@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@js-from-routes/redaxios/-/redaxios-1.0.2.tgz#ce82bb831f69ef7fa934463ae75b3153074212c0"
+  integrity sha512-Vk6008JWUDtJOLZFsqE6xDE/3IgQSq/h/4o3B0dpPIdiWvN+tF0bSmIFnAbpJGy/89VwbDPOmcIdJloUhuKdog==
+  dependencies:
+    "@js-from-routes/client" "^1.0.0"
+    redaxios "^0.4.1"
 
 "@nodelib/fs.scandir@2.1.4":
   version "2.1.4"
@@ -482,6 +490,11 @@ queue-microtask@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.2.tgz#abf64491e6ecf0f38a6502403d4cda04f372dfd3"
   integrity sha512-dB15eXv3p2jDlbOiNLyMabYg1/sXvppd8DP2J3EOCQ0AkuSXCW2tP7mnVouVLJKgUMY6yP0kcQDVpLCN13h4Xg==
+
+redaxios@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/redaxios/-/redaxios-0.4.1.tgz#a46fd53b533ed76d8619d9e6d595b95543855195"
+  integrity sha512-+Jhh1j8/H0KBro+Hih/MrDEJ1PICaU10JA6iu5b3+uvgRI+5n2M7qpMNXq7eC/0fspP0tTq49ONXlGWFdRoNLg==
 
 resolve@^1.19.0:
   version "1.20.0"

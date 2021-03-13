@@ -16,9 +16,10 @@ async function unwrapResponse (response: RedaxiosResponse<any>, responseAs: Resp
  */
 async function fetch (args: FetchOptions) {
   const { url, method, responseAs, ...options } = args
+  const responseType = responseAs === 'response' ? undefined : responseAs.toLowerCase() as Options['responseType']
   const config: Options = {
     method: method as Options['method'],
-    responseType: responseAs.toLowerCase() as Options['responseType'],
+    responseType,
     ...options,
   }
   return redaxios.request(url, config)

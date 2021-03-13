@@ -23,7 +23,8 @@ async function unwrapResponse (response: AxiosResponse, responseAs: ResponseAs) 
  */
 async function fetch (args: FetchOptions) {
   const { responseAs, ...options } = args
-  const config: AxiosRequestConfig = { responseType: responseAs.toLowerCase() as ResponseType, ...options }
+  const responseType = responseAs === 'response' ? undefined : responseAs.toLowerCase() as ResponseType
+  const config: AxiosRequestConfig = { responseType, ...options }
 
   return AxiosConfig.instance.request(config)
     .catch(error => Config.onResponseError(error as ResponseError))
