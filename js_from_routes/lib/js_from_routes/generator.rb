@@ -43,7 +43,7 @@ module JsFromRoutes
     end
 
     # Public: The `export` setting specified for the action.
-    def export_setting
+    def export
       @route.defaults[:export]
     end
 

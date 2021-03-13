@@ -10,7 +10,7 @@ describe JsFromRoutes do
   let(:controllers_with_exported_routes) { %w[Comments UserPreferences VideoClips] }
 
   def file_for(dir, name)
-    dir.join("#{name}Requests.js")
+    dir.join("#{name}Requests.ts")
   end
 
   def sample_file_for(name)
@@ -35,6 +35,7 @@ describe JsFromRoutes do
 
     # Change the configuration to use a different directory.
     JsFromRoutes.config do |config|
+      config.file_suffix = "Requests.ts"
       config.output_folder = output_dir
       config.template_path = original_template_path
     end
