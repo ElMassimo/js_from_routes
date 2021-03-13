@@ -1,5 +1,8 @@
 require "simplecov"
-SimpleCov.start { add_filter "/spec/" }
+SimpleCov.start {
+  add_filter "/spec/"
+  add_filter "/playground/"
+}
 
 require "rails"
 require "js_from_routes"

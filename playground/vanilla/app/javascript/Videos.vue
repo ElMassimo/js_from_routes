@@ -5,9 +5,8 @@ import { useApi } from '~/composables/api'
 
 const videos = ref([])
 
-onMounted(() => {
-  VideoClipsApi.latest()
-    .then((newVideos) => { videos.value = newVideos })
+onMounted(async () => {
+  videos.value = await VideoClipsApi.latest()
 })
 
 // NOTE: This is a contrived example, no need to use this if importing directly.
