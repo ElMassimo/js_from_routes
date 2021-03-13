@@ -62,6 +62,11 @@ export interface RequestOptions {
   fetchOptions: BaseFetchOptions
 
   /**
+   * Override the default method for the path helper.
+   */
+  method: Method
+
+  /**
    * The function used to convert the data before sending it to the server.
    * @default snakeCaseKeys
    */

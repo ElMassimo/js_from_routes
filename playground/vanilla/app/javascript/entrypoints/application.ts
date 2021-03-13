@@ -1,7 +1,7 @@
 import 'windi.css'
 
 import { createApp } from 'vue'
-import { Config } from '@js-from-routes/axios'
+import { Config } from '@js-from-routes/client'
 import Videos from '~/Videos.vue'
 
 // Example: Combine all exported routes in a single object.

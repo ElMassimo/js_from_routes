@@ -24,7 +24,7 @@ function definePathHelper (method: Method, pathTemplate: string): PathHelper {
  * @param  {Options} options Can optionally pass params as a shorthand
  * @return {Promise} The result of the request
  */
-async function request (method: Method, url: string, options: Options = {}): Promise<any> {
+async function request (_method: Method, url: string, options: Options = {}): Promise<any> {
   const {
     data,
     deserializeData = Config.deserializeData,
@@ -36,15 +36,15 @@ async function request (method: Method, url: string, options: Options = {}): Pro
     serializeData = Config.serializeData,
   } = options
 
-  method = method.toUpperCase() as Method
+  const method = (options.method || _method).toUpperCase() as Method
   if (data && (method === 'HEAD' || method === 'GET'))
     throw Object.assign(new Error('Request with GET/HEAD method cannot have data.'), { data })
 
   url = formatUrl(url, params)
 
   const requestOptions = {
-    url,
     method,
+    url,
     data: serializeData(data),
     responseAs,
     headers: { ...Config.headers({ method, url, options }), ...headers },
