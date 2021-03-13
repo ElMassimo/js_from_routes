@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@js-from-routes/redaxios": "^1.0.2",
+    "@js-from-routes/client": "^1.0.1",
     "@rails/ujs": "^6.0.0",
     "vue": "^3.0.7"
   },
