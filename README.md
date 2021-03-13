@@ -81,7 +81,7 @@ end
 Add the [client library][client libraries] to your `package.json`:
 
 ```bash
-npm install @js-from-routes/client # or yarn install
+npm install @js-from-routes/client # yarn add @js-from-routes/client
 ```
 
 Have in mind this is [optional][client libraries].
