@@ -65,7 +65,7 @@ export const Config = {
     return {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': Config.getCSRFToken(),
+      'X-CSRF-Token': Config.getCSRFToken(),
     }
   },
 
