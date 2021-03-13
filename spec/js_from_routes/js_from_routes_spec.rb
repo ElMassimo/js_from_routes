@@ -5,12 +5,12 @@ describe JsFromRoutes do
   original_template_path = JsFromRoutes.config.template_path
 
   let(:output_dir) { Pathname.new File.expand_path("../support/generated", __dir__) }
-  let(:sample_dir) { Rails.root.join("app", "javascript", "requests") }
+  let(:sample_dir) { Rails.root.join("app", "javascript", "api") }
   let(:different_template_path) { File.expand_path("../support/jquery_template.js.erb", __dir__) }
   let(:controllers_with_exported_routes) { %w[Comments UserPreferences VideoClips] }
 
   def file_for(dir, name)
-    dir.join("#{name}Requests.ts")
+    dir.join("#{name}Api.ts")
   end
 
   def sample_file_for(name)
@@ -35,7 +35,7 @@ describe JsFromRoutes do
 
     # Change the configuration to use a different directory.
     JsFromRoutes.config do |config|
-      config.file_suffix = "Requests.ts"
+      config.file_suffix = "Api.ts"
       config.output_folder = output_dir
       config.template_path = original_template_path
     end

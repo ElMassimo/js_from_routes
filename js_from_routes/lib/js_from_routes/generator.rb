@@ -74,8 +74,8 @@ module JsFromRoutes
     def config
       @config ||= OpenStruct.new(
         client_library: "@js-from-routes/client",
-        file_suffix: "Requests.js",
-        output_folder: ::Rails.root&.join("app", "javascript", "requests"),
+        file_suffix: "Api.js",
+        output_folder: ::Rails.root&.join("app", "javascript", "api"),
         template_path: File.expand_path("template.js.erb", __dir__),
         helper_mappings: {"index" => "list", "show" => "get"}
       )

@@ -89,7 +89,7 @@ export interface HeaderOptions {
 }
 
 export interface PathHelper {
-  (options?: Options): Promise<any>
+  <T = any>(options?: Options): Promise<T>
   path: (params?: UrlOptions) => string
   pathTemplate: string
   httpMethod: Method

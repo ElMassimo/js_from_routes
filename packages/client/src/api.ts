@@ -10,7 +10,7 @@ import { Config } from './config'
  * @param {string} pathTemplate The path with params placeholders (if any).
  */
 function definePathHelper (method: Method, pathTemplate: string): PathHelper {
-  const helper = (options?: Options) => request(method, pathTemplate, options)
+  const helper = <T = any>(options?: Options) => request(method, pathTemplate, options) as Promise<T>
   helper.path = (options?: UrlOptions) => formatUrl(pathTemplate, options)
   helper.pathTemplate = pathTemplate
   helper.httpMethod = method
