@@ -16,4 +16,5 @@ gem "vite_rails"
 
 group :development do
   gem "listen", "~> 3.2"
+  gem "pry-byebug"
 end

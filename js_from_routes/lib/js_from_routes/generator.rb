@@ -24,6 +24,11 @@ module JsFromRoutes
       Digest::MD5.hexdigest(routes.map(&:inspect).join + [File.read(@config.template_path), @config.helper_mappings.inspect].join)
     end
 
+    # Public: Exposes the preferred import library to the generator.
+    def client_library
+      @config.client_library
+    end
+
     # Internal: By performing the evaluation here, we ensure only "routes" is
     # exposed to the ERB template as a local variable.
     def evaluate(compiled_template)
@@ -37,19 +42,9 @@ module JsFromRoutes
       @route, @mappings = route, mappings
     end
 
-    # Public: Whether it should export only the path.
-    def path_only?
-      export_setting == :path_only
-    end
-
     # Public: The `export` setting specified for the action.
-    def export_setting
+    def export
       @route.defaults[:export]
-    end
-
-    # Public: Whether it should export only the path.
-    def request_method?
-      !path_only?
     end
 
     # Public: The HTTP verb for the action. Example: 'patch'
@@ -65,8 +60,7 @@ module JsFromRoutes
     # Public: The name of the JS helper for the action. Example: 'destroyAll'
     def helper
       action = @route.requirements.fetch(:action).camelize(:lower)
-      name = @mappings.fetch(action, action)
-      path_only? ? "#{name}Path" : name
+      @mappings.fetch(action, action)
     end
 
     # Internal: Useful as a cache key for the route, and for debugging purposes.
@@ -79,8 +73,9 @@ module JsFromRoutes
     # Public: Configuration of the code generator.
     def config
       @config ||= OpenStruct.new(
-        file_suffix: "Requests.js",
-        output_folder: ::Rails.root&.join("app", "javascript", "requests"),
+        client_library: "@js-from-routes/client",
+        file_suffix: "Api.js",
+        output_folder: ::Rails.root&.join("app", "javascript", "api"),
         template_path: File.expand_path("template.js.erb", __dir__),
         helper_mappings: {"index" => "list", "show" => "get"}
       )

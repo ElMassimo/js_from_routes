@@ -1,0 +1,35 @@
+{
+  "name": "@js-from-routes/client",
+  "description": "Make API requests to a Rails apps with ease.",
+  "version": "0.1.0",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "license": "MIT",
+  "author": "Máximo Mussini <maximomussini@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ElMassimo/js_from_routes"
+  },
+  "homepage": "https://github.com/ElMassimo/js_from_routes",
+  "bugs": "https://github.com/ElMassimo/js_from_routes/issues",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "jest",
+    "clean": "rm -rf ./dist",
+    "dev": "npm run build -- --watch",
+    "build": "tsup src/index.ts --dts --format cjs,esm",
+    "prerelease": "npm run build",
+    "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag client@$PACKAGE_VERSION && git push --tags"
+  },
+  "dependencies": {
+    "@js-from-routes/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^3.11.0",
+    "typescript": "^4.2.2"
+  }
+}

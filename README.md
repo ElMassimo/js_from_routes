@@ -12,79 +12,120 @@ JS From Rails Routes
 
 [Vite Rails]: https://vite-ruby.netlify.app/
 [aliases]: https://vite-ruby.netlify.app/guide/development.html#import-aliases-%F0%9F%91%89
-[config options]: https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L82-L85
+[config options]: https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L76-L80
+[generate TypeScript]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/initializers/js_from_routes.rb
+[usage]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript/Videos.vue#L9
+[routes]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L6
+[route dsl]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L40-L70
+[imports]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript/Videos.vue#L3
+[default template]: https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/template.js.erb
+[ping]: https://github.com/ElMassimo/pingcrm-vite/pull/2
+[axios]: https://github.com/axios/axios
+[redaxios]: https://github.com/developit/redaxios
+[advanced configuration]: https://github.com/ElMassimo/js_from_routes#advanced-configuration-
+[jQuery]: https://gist.github.com/ElMassimo/cab56e64e20ff797f3054b661a883646
+[client libraries]: #client-libraries-
 
 _JS from Routes_ helps you by automatically generating path and API helpers from
 Rails route definitions, allowing you to save development effort and focus on
 the things that matter.
 
-Since you are in full control of the code, it can be used in very diverse scenarios.
+Since code generation is fully customizable it can be used in very diverse scenarios.
 
 ### Why? 🤔
 
 Path helpers in Rails make it easy to build urls, while avoiding typos and mistakes.
 
-With this library, it's possible the enjoy the same benefits in JS:
+With this library, it's possible the enjoy the same benefits in JS.
 
-- No need to manually specify the URL, preventing mistakes and saving development time.
-- If an action is renamed or removed, the helper ceases to exist.
-- The HTTP verb becomes an implementation detail, changing it in the route just works.
+### Features ⚡️
+
+- 🚀 __Productive__ 
+
+  No need to manually specify the URL, just use the controller and action name, preventing mistakes and saving development time.
+
+  The HTTP verb becomes an implementation detail, changing it in the Rails route definition just works.
+
+  Path helpers can be generated automatically whenever Rails reload is triggered.
+
+- 🎩 __Elegant__ 
+
+  Make network requests with simple function calls, which return promises.
+
+  JSON serialization/deserialization for you by default, but you can easily opt-out by choosing a different response type.
+
+  Pass parameters as plain objects, and they will be interpolated in the URL as needed.
+
+- ✅ __Safe__
+
+  If an action is renamed or removed, it can be detected by static analysis or the TypeScript compiler.
+
+  You can find problems in development, instead of getting 404s in testing or production.
+
+  Path helpers are fully typed, and client libraries are entirely written in TypeScript.
+
+- 🛠 __Customizable__ 
+
+  Select between different network libraries such as native `fetch`, [axios] or [redaxios], or use your own code instead.
+
+  Choose different conventions by [customizing][advanced configuration] how code is generated.
   
 Read more about it in the [blog announcement](https://maximomussini.com/posts/js-from-routes/).
 
 ### Installation 💿
 
-Add this line to your application's Gemfile in the `development` group:
+Add this line to your application's Gemfile in the `development` group and execute `bundle`:
 
 ```ruby
-gem 'js_from_routes'
+group :development do
+  gem 'js_from_routes'
+end
 ```
 
-And then execute:
+Add the client library to your `package.json`:
 
-    $ bundle
+```bash
+npm install @js-from-routes/client # or yarn install
+```
 
-Or install it yourself as:
-
-    $ gem install js_from_routes
+Have in mind this is [optional][client libraries].
 
 ### Usage 🚀
 
 #### 1. Specify the Rails routes you want to export
 
-Use the `export` attribute to determine which [routes](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/config/routes.rb#L6) should be taken into account when generating JS.
+Use the `export` attribute to determine which [routes] should be taken into account when generating JS.
 
 ```ruby
 Rails.application.routes.draw do
   resources :video_clips, export: true do
     get :download, on: :member, export: :path_only
-    get :trending, on: :collection, export: false
+    get :latest, on: :collection, export: false
   end
 end
 ```
 
 #### 2. Use the generated code in your JS application
 
-This can happen in many [different ways](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue#L10), but to illustrate using the example above, in combination with [`axios`](https://github.com/axios/axios) or `fetch`:
+This can happen in many [different ways][usage], but to illustrate using the example above, in combination with [`axios`](https://github.com/axios/axios) or `fetch`:
 
 ```js
-import VideoClipsRequests from '~/requests/VideoClipsRequests'
+import VideoClipsApi from '~/api/VideoClipsApi'
 
-VideoClipsRequests.get({ id: 'oHg5SJYRHA0' }).then(data => { this.video = data })
+VideoClipsApi.get({ id: 'oHg5SJYRHA0' }).then(data => { this.video = data })
 
-const path = VideoClipsRequests.downloadPath(newVideo)
+const downloadPath = VideoClipsApi.download.path(newVideo)
 ```
 
-Check the [examples](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue) for ideas on how to [use it](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue), and how you can configure it to your convenience.
+Check the [examples][usage] for ideas on how to [use it][usage], and how you can configure it to your convenience.
 
 Read on to find out how to customize the generated code to suit your needs.
 
 
 ### Code Generation 🤖
 
-Adding an exported route will cause request files to be generated automatically
-when you make a request to your Rails server (such as when you refresh the page),
-which causes Rails reloader to kick in, and the routes to be generated.
+Adding an exported route will cause path helpers to be generated automatically
+next time Rails reloader kicks in (such as when you refresh the page after adding a route).
 
 If you are not running a local development server, or prefer to do it manually,
 you can use a rake task instead:
@@ -96,18 +137,14 @@ bin/rake js_from_routes:generate
 which will generate code such as:
 
 ```js
-import { formatUrl } from '~/helpers/UrlHelper'
-import { request } from '~/services/ApiService'
+import { definePathHelper } from '@js-from-routes/client'
 
 export default {
-  downloadPath: options =>
-    formatUrl('/video_clips/:id/download', options),
+  download: definePathHelper('/video_clips/:id/download'),
 
-  get: options =>
-    request('get', '/video_clips/:id', options),
+  get: definePathHelper('get', '/video_clips/:id'),
     
-  update: options =>
-    request('patch', '/video_clips/:id', options),
+  update: definePathHelper('patch', '/video_clips/:id'),
 }
 ```
 
@@ -118,29 +155,34 @@ fulfill all your requirements.
 
 The following [settings][config options] are available:
 
-- <kbd>[file_suffix][config options]</kbd>, default: `Requests.js`
+- <kbd>[client_library][config options]</kbd>, default: `@js-from-routes/client`
+
+  The [preferred library][client libraries] from which to import `definePathHelper`.
+  You could change it to target your own code instead, such as `~/MyCustomPathHelpers`.
+
+- <kbd>[file_suffix][config options]</kbd>, default: `Api.js`
 
   This suffix is added by default to all generated files. You can modify it to
-  if you prefer a different convention, or if you use it to generate TypeScript.
+  if you prefer a different convention, or if you use it to [generate TypeScript].
 
 - <kbd>[helper_mappings][config options]</kbd>
 
   By default it maps `index` to `list` and `show` to `get`, which helps to make
   the JS code read more naturally.
 
-- <kbd>[output_folder][config options]</kbd>, default: `app/javascript/requests`
+- <kbd>[output_folder][config options]</kbd>, default: `app/javascript/api`
 
   The directory where the generated files are created.
 
-  Tip: It's highly recommended to [add a webpack alias](https://github.com/ElMassimo/js_from_routes/blob/webpack/spec/support/sample_app/config/webpack/aliases.js#L11), to simplify [imports](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/Videos.vue#2).
+  Tip: It's highly recommended to [add a webpack alias](https://github.com/ElMassimo/js_from_routes/blob/webpack/spec/support/sample_app/config/webpack/aliases.js#L11), to simplify [imports].
 
   If you use [Vite Rails], the [aliases] are already configured for you.
 
 - <kbd>[template_path][config options]</kbd>
 
-  A [default template](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/template.js.erb) is provided, but it makes assumptions about the [available](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/services/ApiService.js#L17) [code](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/helpers/UrlHelper.js#L28).
+  A [default template] is provided, which you can customize by using <kbd>[client library][config options]</kbd> to use a different library, or roll your own.
 
-  You will probably want to use a custom template, such as:
+  If you still want to use a custom template to generate helpers in a different way, you can provide one:
 
   ```ruby
   # config/initializers/js_from_routes.rb
@@ -155,9 +197,27 @@ The following [settings][config options] are available:
   endpoints exported for a controller.
 
   Each `route` exposes properties such as `verb` and `path`, please [check the
-  source code](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L34-L71) for details on the [API](https://github.com/ElMassimo/js_from_routes/blob/main/lib/js_from_routes/generator.rb#L34-L71).
+  source code][route dsl] for details on the [API][route dsl].
 
-  Check out [this pull request](https://github.com/ElMassimo/pingcrm-vite/pull/2) to get a sense of how flexible it can be.
+  Check out [this pull request][ping] to get a sense of how flexible it can be.
+
+### Client Libraries 📦
+
+Three different API clients are provided. When in doubt, choose the first one:
+
+- <kbd>@js-from-routes/client</kbd>
+
+  The default client. Uses `fetch`, so it has no additional dependencies.
+
+- <kbd>@js-from-routes/axios</kbd>
+
+  Choose it if already using [axios], or have a complex use case that requires [interceptors](https://github.com/axios/axios#interceptors) or [different instances](https://github.com/axios/axios#creating-an-instance).
+
+- <kbd>@js-from-routes/redaxios</kbd>
+
+  Choose it if already using [redaxios], for consistency within your codebase.
+
+You may also use [your own client code instead][advanced configuration], or even [jQuery].
 
 ### How does it work? ⚙️
 
@@ -175,8 +235,8 @@ generated request methods or path helpers 😃
 ### Take this idea 💡
 
 While the original use cases intended to generate code that targes a custom `ApiService`, 
-it can be tweaked to generate TypeScript, [target jQuery](https://gist.github.com/ElMassimo/cab56e64e20ff797f3054b661a883646),
-or use it only to generate [path helpers](https://github.com/ElMassimo/js_from_routes/blob/main/spec/support/sample_app/app/javascript/requests/UserPreferencesRequests.js#L11-L15).
+it can be tweaked to [generate TypeScript], target [jQuery],
+or [adapt to your framework of choice][ping].
 
 There are plenty of other opportunities for automatic code generation, such as keeping
 enums in sync between Ruby and JS.
