@@ -1,0 +1,5 @@
+packages:
+  - packages/core/
+  - packages/client/
+  - packages/axios/
+  - packages/redaxios/

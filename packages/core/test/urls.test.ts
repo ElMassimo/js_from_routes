@@ -6,6 +6,11 @@ describe('interpolateUrl', () => {
       .toEqual('/video_clips/5/comments/3')
   })
 
+  it('replaces duplicate parameters', () => {
+    expect(interpolateUrl('/video_clips/:id/comments/:id', { video: '5', videoClipId: '5', id: '3' }))
+      .toEqual('/video_clips/3/comments/3')
+  })
+
   it('fails when there are missing parameters', () => {
     expect(() => interpolateUrl('/video_clips/:video_clip_id/comments/:id', { video: '5', videoClipId: '5' }))
       .toThrow(/Missing URL Parameter :id/)

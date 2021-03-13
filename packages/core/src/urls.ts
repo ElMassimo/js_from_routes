@@ -86,8 +86,9 @@ export function interpolateUrl (template: string, params: Params): string {
   let value = template.toString()
   Object.entries(params).forEach(([paramName, paramValue]) => {
     paramName = snakeCase(paramName)
-    value = value.replaceAll(`(/:${paramName})`, `/${paramValue}`)
-      .replaceAll(new RegExp(`:${escapeRegExp(paramName)}(\\/|\\.|$)`, 'g'), `${paramValue}$1`)
+    value = value
+      .replace(new RegExp(escapeRegExp(`(/:${paramName})`), 'g'), `/${paramValue}`)
+      .replace(new RegExp(`:${escapeRegExp(paramName)}(\\/|\\.|$)`, 'g'), `${paramValue}$1`)
   })
 
   // Remove any optional path if the parameters were not provided.

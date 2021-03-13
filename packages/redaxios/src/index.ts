@@ -1,5 +1,5 @@
 import redaxios, { Options, Response as RedaxiosResponse } from 'redaxios'
-import { formatUrl, request, Config } from '@js-from-routes/client'
+import { definePathHelper, formatUrl, request, Config } from '@js-from-routes/client'
 import type { ResponseAs, FetchOptions, ResponseError } from '@js-from-routes/client'
 
 /**
@@ -30,6 +30,7 @@ Object.assign(Config, { fetch, unwrapResponse })
 
 export {
   Config,
+  definePathHelper,
   formatUrl,
   request,
 }

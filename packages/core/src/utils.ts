@@ -153,7 +153,7 @@ export function deepConvertKeys<T> (object: T, keyConverter: KeyConverter): T | 
  * @param {Object|Array} obj The object to iterate
  * @param {Function} fn The callback to invoke for each item
  */
-export function forEach (obj: any, fn: (value: any, keyOrIndex: number | string, obj: Dictionary | any[]) => void) {
+export function forEach (obj: any, fn: (value: any, keyOrIndex: any, obj: Dictionary | any[]) => void) {
   if (obj === null || typeof obj === 'undefined')
     return
 
