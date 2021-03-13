@@ -26,7 +26,7 @@
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag redaxios@$PACKAGE_VERSION && git push --tags"
   },
   "dependencies": {
-    "@js-from-routes/client": "workspace:*",
+    "@js-from-routes/client": "^1.0.0",
     "redaxios": "^0.4.1"
   },
   "devDependencies": {

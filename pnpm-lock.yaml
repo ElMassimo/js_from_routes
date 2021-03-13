@@ -44,7 +44,7 @@ importers:
       tsup: 3.12.1_typescript@4.2.2
       typescript: 4.2.2
     specifiers:
-      '@js-from-routes/client': 'workspace:*'
+      '@js-from-routes/client': ^1.0.0
       axios: ^0.21
       tsup: ^3.11.0
       typescript: ^4.2.2
@@ -55,7 +55,7 @@ importers:
       tsup: 3.12.1_typescript@4.2.2
       typescript: 4.2.2
     specifiers:
-      '@js-from-routes/core': 'workspace:*'
+      '@js-from-routes/core': ^1.0.0
       tsup: ^3.11.0
       typescript: ^4.2.2
   packages/core:
@@ -73,7 +73,7 @@ importers:
       tsup: 3.12.1_typescript@4.2.2
       typescript: 4.2.2
     specifiers:
-      '@js-from-routes/client': 'workspace:*'
+      '@js-from-routes/client': ^1.0.0
       redaxios: ^0.4.1
       tsup: ^3.11.0
       typescript: ^4.2.2

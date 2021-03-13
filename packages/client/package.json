@@ -26,7 +26,7 @@
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag client@$PACKAGE_VERSION && git push --tags"
   },
   "dependencies": {
-    "@js-from-routes/core": "workspace:*"
+    "@js-from-routes/core": "^1.0.0"
   },
   "devDependencies": {
     "tsup": "^3.11.0",
