@@ -1,3 +1,12 @@
+## 1.0.3 (2021-03-13)
+
+
+### Bug Fixes
+
+* Allow using responseAs: 'response' with Axios and Redaxios ([cdaf9cd](https://github.com/ElMassimo/js_from_routes/commit/cdaf9cd895407773851df4983108dcef1b0f6182))
+
+
+
 ## 1.0.2 (2021-03-13)
 
 - Specify bounded requirements for `@js-from-routes/client`.
