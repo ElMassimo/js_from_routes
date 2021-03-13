@@ -4,5 +4,5 @@
 # Generates one file per controller, and one function per route.
 module JsFromRoutes
   # Public: This library adheres to semantic versioning.
-  VERSION = "1.0.3"
+  VERSION = "2.0.0"
 end
