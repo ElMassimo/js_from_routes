@@ -8,12 +8,34 @@ require "pathname"
 # Public: Automatically generates JS for Rails routes with { export: true }.
 # Generates one file per controller, and one function per route.
 module JsFromRoutes
+  # Internal: Helper class used as a presenter for the all helpers template.
+  class AllRoutes
+    attr_reader :helpers
+
+    def initialize(helpers, config)
+      @helpers, @config = helpers, config
+    end
+
+    # Public: Used to check whether the file should be generated again, changes
+    # based on the configuration, and route definition.
+    def cache_key
+      helpers.map(&:import_filename).join + File.read(@config.template_all_path)
+    end
+
+    # Internal: Name of the JS file where all helpers will be exported.
+    def filename
+      path = @config.all_helpers_file
+      path = "index#{File.extname(@config.file_suffix)}" if path == true
+      @config.output_folder.join(path)
+    end
+  end
+
   # Internal: Helper class used as a presenter for the routes template.
-  class Routes
+  class ControllerRoutes
     attr_reader :routes
 
-    def initialize(routes, config)
-      @config = config
+    def initialize(controller, routes, config)
+      @controller, @config = controller, config
       @routes = routes
         .uniq { |route| route.requirements.fetch(:action) }
         .map { |route| Route.new(route, config.helper_mappings) }
@@ -22,7 +44,7 @@ module JsFromRoutes
     # Public: Used to check whether the file should be generated again, changes
     # based on the configuration, and route definition.
     def cache_key
-      Digest::MD5.hexdigest(routes.map(&:inspect).join + [File.read(@config.template_path), @config.helper_mappings.inspect].join)
+      routes.map(&:inspect).join + [File.read(@config.template_path), @config.helper_mappings.inspect].join
     end
 
     # Public: Exposes the preferred import library to the generator.
@@ -30,10 +52,24 @@ module JsFromRoutes
       @config.client_library
     end
 
-    # Internal: By performing the evaluation here, we ensure only "routes" is
-    # exposed to the ERB template as a local variable.
-    def evaluate(compiled_template)
-      instance_eval(compiled_template)
+    # Internal: Name of the JS file with helpers for the the given controller.
+    def filename
+      @config.output_folder.join(basename)
+    end
+
+    # Public: Name of the JS file with helpers for the the given controller.
+    def import_filename
+      @config.output_folder.basename.join((basename.split(".")[0]).to_s)
+    end
+
+    # Public: Name of the file as a valid JS variable.
+    def js_name
+      @controller.camelize(:lower).tr(":", "_")
+    end
+
+    # Internal: The base name of the JS file to be written.
+    def basename
+      "#{@controller.camelize}#{@config.file_suffix}".tr_s(":", "/")
     end
   end
 
@@ -70,6 +106,43 @@ module JsFromRoutes
     end
   end
 
+  # Internal: Represents a compiled template that can write itself to a file.
+  class Template
+    def initialize(template_path)
+      # NOTE: The compiled ERB template, used to generate JS code.
+      @compiled_template = Erubi::Engine.new(File.read(template_path), filename: template_path).src
+    end
+
+    # Public: Checks if the cache is fresh, or renders the template with the
+    # specified variables, and writes the updated result to a file.
+    def write_if_changed(object)
+      write_file_if_changed(object.filename, object.cache_key) { render_template(object) }
+    end
+
+    private
+
+    # Internal: Returns a String with the generated JS code.
+    def render_template(object)
+      object.instance_eval(@compiled_template)
+    end
+
+    # Internal: Writes if the file does not exist or the cache key has changed.
+    # The cache strategy consists of a comment on the first line of the file.
+    #
+    # Yields to receive the rendered file content when it needs to.
+    def write_file_if_changed(name, cache_key)
+      FileUtils.mkdir_p(name.dirname)
+      cache_key_comment = "// JsFromRoutes CacheKey #{Digest::MD5.hexdigest(cache_key)}\n"
+      File.open(name, "a+") { |file|
+        if file.gets != cache_key_comment
+          file.truncate(0)
+          file.write(cache_key_comment)
+          file.write(yield)
+        end
+      }
+    end
+  end
+
   class << self
     # Public: Configuration of the code generator.
     def config
@@ -82,23 +155,36 @@ module JsFromRoutes
     def generate!(app_or_routes = Rails.application)
       raise ArgumentError, "A Rails app must be defined, or you must specify a custom `output_folder`" if config.output_folder.blank?
       rails_routes = app_or_routes.is_a?(::Rails::Engine) ? app_or_routes.routes.routes : app_or_routes
-      @compiled_template = nil # Clear on every code reload in case the template changed.
-      exported_routes_by_controller(rails_routes).each do |controller, controller_routes|
-        routes = Routes.new(controller_routes, config)
-        write_if_changed(filename_for(controller), routes.cache_key) { render_template(routes) }
-      end
+      generate_files exported_routes_by_controller(rails_routes)
     end
 
     private
 
+    def generate_files(exported_routes)
+      template = Template.new(config.template_path)
+      generate_file_for_all exported_routes.map { |controller, routes|
+        ControllerRoutes.new(controller, routes, config).tap do |routes|
+          template.write_if_changed routes
+        end
+      }
+    end
+
+    def generate_file_for_all(routes)
+      return unless config.all_helpers_file && !routes.empty?
+
+      Template.new(config.template_all_path).write_if_changed AllRoutes.new(routes, config)
+    end
+
     def default_config(root)
       dir = %w[frontend packs javascript assets].find { |dir| root.join("app", dir).exist? }
       {
+        all_helpers_file: true,
         client_library: "@js-from-routes/client",
         file_suffix: "Api.js",
         helper_mappings: {"index" => "list", "show" => "get"},
         output_folder: root.join("app", dir, "api"),
         template_path: File.expand_path("template.js.erb", __dir__),
+        template_all_path: File.expand_path("template_all.js.erb", __dir__),
       }
     end
 
@@ -108,40 +194,6 @@ module JsFromRoutes
         route.defaults.fetch(:export, false)
       }.group_by { |route|
         route.requirements.fetch(:controller)
-      }
-    end
-
-    # Internal: Name of the JS file with helpers for the the given controller.
-    def filename_for(controller)
-      config.output_folder.join("#{controller.camelize}#{config.file_suffix}".tr_s(":", "/"))
-    end
-
-    # Internal: Returns a String with the JS generated for a controller's routes.
-    def render_template(routes)
-      routes.evaluate(compiled_template)
-    end
-
-    # Internal: Returns the compiled ERB to generate JS from a set of routes.
-    def compiled_template
-      @compiled_template ||= begin
-        template = File.read(config.template_path)
-        Erubi::Engine.new(template, filename: config.template_path).src
-      end
-    end
-
-    # Internal: Writes if the file does not exist or the cache key has changed.
-    # The cache strategy consists of a comment on the first line of the file.
-    #
-    # Yields to receive the rendered file content when it needs to.
-    def write_if_changed(name, cache_key)
-      FileUtils.mkdir_p(name.dirname)
-      cache_key_comment = "// JsFromRoutes CacheKey #{cache_key}\n"
-      File.open(name, "a+") { |file|
-        if file.gets != cache_key_comment
-          file.truncate(0)
-          file.write(cache_key_comment)
-          file.write(yield)
-        end
       }
     end
   end
