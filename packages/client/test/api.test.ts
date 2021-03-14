@@ -1,14 +1,28 @@
 import 'isomorphic-fetch'
-import { definePathHelper, request, formatUrl } from '../src'
+import { definePathHelper, request, formatUrl, Config } from '../src'
 
 describe('formatUrl', () => {
+  afterEach(() => {
+    Config.baseUrl = ''
+  })
+
   it('is exported correctly', () => {
     expect(formatUrl('/users/:id', { id: '5' })).toEqual('/users/5')
+  })
+
+  it('uses baseUrl correctly', () => {
+    Config.baseUrl = 'https://pokeapi.co/api/v2'
+    expect(formatUrl('/pokemon/:pokemon', { pokemon: 'pikachu' })).toEqual('https://pokeapi.co/api/v2/pokemon/pikachu')
+
+    Config.baseUrl = 'https://pokeapi.co/api/v2/'
+    expect(formatUrl('/pokemon/:pokemon', { pokemon: 'pikachu' })).toEqual('https://pokeapi.co/api/v2/pokemon/pikachu')
+
+    expect(formatUrl('https://pokeapi.co/api/v3/pokemon/:pokemon', { pokemon: 'pikachu' })).toEqual('https://pokeapi.co/api/v3/pokemon/pikachu')
   })
 })
 
 describe('request', () => {
-  it.only('can unwrap a JSON response', async () => {
+  it('can unwrap a JSON response', async () => {
     expect(await request('get', 'https://pokeapi.co/api/v2/pokemon/:pokemon', { pokemon: 'pikachu' })).toMatchObject({
       name: 'pikachu',
     })

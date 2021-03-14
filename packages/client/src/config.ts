@@ -11,6 +11,10 @@ export interface ResponseError extends Error {
  * You may customize these options to configure how requests are sent.
  */
 export const Config = {
+  /**
+   * An optional base URL when the API is hosted on a different domain.
+   */
+  baseUrl: '',
 
   /**
    * The function used to transform the data received from the server.
