@@ -84,7 +84,7 @@ function resolve (paths) {
 }
 
 function rubyPackage () {
-  const versionRegex = /VERSION = '([\d.]+)'/
+  const versionRegex = /VERSION = "([\d.]+)"/
   const path = resolve(`lib/${name}/version.rb`)
   const content = fs.readFileSync(path, 'utf-8')
   const versionCaptures = content.match(versionRegex)
@@ -99,7 +99,7 @@ function rubyPackage () {
     content,
     version,
     updateVersion (version) {
-      const newContent = content.replace(versionRegex, `VERSION = '${version}'`)
+      const newContent = content.replace(versionRegex, `VERSION = "${version}"`)
       fs.writeFileSync(path, `${newContent}`)
     },
   }

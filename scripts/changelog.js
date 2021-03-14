@@ -33,7 +33,7 @@ const resolve = paths => path.resolve(__dirname, `../${packagePath}/${paths}`)
  * @param {string} name
  */
 function writePackageJson (name) {
-  const versionRegex = /VERSION = '([\d.]+)'/
+  const versionRegex = /VERSION = "([\d.]+)"/
   const versionFile = fs.readFileSync(resolve(`lib/${name}/version.rb`), 'utf-8')
   const versionCaptures = versionFile.match(versionRegex)
   const version = versionCaptures && versionCaptures[1]
