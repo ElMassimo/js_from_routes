@@ -64,7 +64,7 @@ module JsFromRoutes
 
     # Public: Name of the file as a valid JS variable.
     def js_name
-      @controller.camelize(:lower).tr(":", "_")
+      @controller.camelize(:lower).tr(":", "")
     end
 
     # Internal: The base name of the JS file to be written.
