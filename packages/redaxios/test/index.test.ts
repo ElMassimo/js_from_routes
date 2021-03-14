@@ -40,18 +40,5 @@ describe('definePathHelper', () => {
     expect(helper.httpMethod).toEqual('get')
     expect(helper.pathTemplate).toEqual('/videos/:id/download')
     expect(helper.path({ i: 2, id: 5 })).toEqual('/videos/5/download')
-
-    const fakeFetch = async (...args: any[]) => ({ status: 200, json: () => Promise.all(args) })
-    expect(await helper({ id: 2, fetch: fakeFetch })).toEqual([{
-      data: undefined,
-      headers: {
-        Accept: 'application/json',
-        ContentType: 'application/json',
-        XCSRFToken: undefined,
-      },
-      method: 'GET',
-      responseAs: 'json',
-      url: '/videos/2/download',
-    }])
   })
 })
