@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "rails/railtie"
+
 # NOTE: Not strictly required, but it helps to simplify the setup.
 class JsFromRoutes::Railtie < Rails::Railtie
   railtie_name :js_from_routes

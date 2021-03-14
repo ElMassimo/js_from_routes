@@ -3,7 +3,7 @@
 import { definePathHelper } from '<%= client_library %>'
 
 export default {
-<% routes.each_with_index do |route, index| %>
+<% routes.each do |route| %>
   <%= route.helper %>: definePathHelper('<%= route.verb %>', '<%= route.path %>'),
 <% end %>
 }

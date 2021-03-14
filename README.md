@@ -2,7 +2,6 @@
 JS From Rails Routes
 <p align="center">
 <a href="https://travis-ci.org/ElMassimo/js_from_routes"><img alt="Build Status" src="https://travis-ci.org/ElMassimo/js_from_routes.svg"/></a>
-<a href="http://inch-ci.org/github/ElMassimo/js_from_routes"><img alt="Inline docs" src="http://inch-ci.org/github/ElMassimo/js_from_routes.svg"/></a>
 <a href="https://codeclimate.com/github/ElMassimo/js_from_routes"><img alt="Maintainability" src="https://codeclimate.com/github/ElMassimo/js_from_routes/badges/gpa.svg"/></a>
 <a href="https://codeclimate.com/github/ElMassimo/js_from_routes"><img alt="Test Coverage" src="https://codeclimate.com/github/ElMassimo/js_from_routes/badges/coverage.svg"/></a>
 <a href="https://rubygems.org/gems/js_from_routes"><img alt="Gem Version" src="https://img.shields.io/gem/v/js_from_routes.svg?colorB=e9573f"/></a>
@@ -20,6 +19,7 @@ JS From Rails Routes
 [route dsl]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L40-L70
 [imports]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript/Videos.vue#L3
 [default template]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template.js.erb
+[template all] is provided, but you can customize it in case you want to use different conventions instead of `camelize(:lower)` for the controller names.: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template_all.js.erb
 [ping]: https://github.com/ElMassimo/pingcrm-vite/pull/2
 [axios]: https://github.com/axios/axios
 [redaxios]: https://github.com/developit/redaxios
@@ -125,6 +125,16 @@ You may use the `path` method from one of the actions to obtain the URL with int
 
 ```js
 const downloadPath = VideoClipsApi.download.path(video)
+```
+
+A file that exports all helpers as properties is also generated.
+
+```js
+import api from '~/api'
+
+const video = await api.videoClips.get(video)
+
+const comments = await api.comments.list()
 ```
 
 Check the [examples][example 2] for ideas on how to [use it][example], and how you can [configure it to your convenience][advanced configuration].
@@ -242,6 +252,18 @@ end
 
 The following [config options] are available:
 
+- <kbd>[all_helpers_file][config options]</kbd>, default: `true`
+
+  Whether to generate a file that exports all available helpers.
+
+  By default it's exported to `index.js` in the <kbd>[output_folder][config options]</kbd>, but you can specify a different name if needed.
+
+  If you are importing helpers separately (which provides better code-splitting), you can disable generation.
+  
+  ```ruby
+  config.all_helpers_file = false # Don't generate the file
+  ```
+
 - <kbd>[client_library][config options]</kbd>, default: `@js-from-routes/client`
 
   The [preferred library][client libraries] from which to import `definePathHelper`.
@@ -295,3 +317,7 @@ The following [config options] are available:
   source code][route dsl] for details.
 
   Check out [this pull request][ping] to get a sense of how flexible it can be.
+
+- <kbd>[template_all_path][config options]</kbd>
+
+  A [default template][template all] is provided, but you can customize it in case you want to use different conventions instead of `camelize(:lower)` for the controller names.

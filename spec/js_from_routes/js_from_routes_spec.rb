@@ -21,6 +21,14 @@ describe JsFromRoutes do
     file_for(output_dir, name)
   end
 
+  def expect_templates
+    expect_any_instance_of(JsFromRoutes::Template)
+  end
+
+  def be_rendered
+    receive(:render_template)
+  end
+
   before do
     # Sanity checks
     expect(sample_dir.exist?).to eq true
@@ -36,6 +44,7 @@ describe JsFromRoutes do
     # Change the configuration to use a different directory.
     JsFromRoutes.config do |config|
       config.file_suffix = "Api.ts"
+      config.all_helpers_file = false
       config.output_folder = output_dir
       config.template_path = original_template_path
     end
@@ -43,7 +52,7 @@ describe JsFromRoutes do
 
   # NOTE: We do a manual snapshot test for now, more tests coming in the future.
   it "should generate the files as expected" do
-    expect(JsFromRoutes).to receive(:render_template).exactly(3).times.and_call_original
+    expect_templates.to be_rendered.exactly(3).times.and_call_original
     JsFromRoutes.generate!
 
     # It does not generate routes that don't have `export: true`.
@@ -54,26 +63,56 @@ describe JsFromRoutes do
       expect(output_file_for(file_name).read).to eq sample_file_for(file_name).read
     end
 
-    # It detects changes to the template, and regenerates the files.
-    JsFromRoutes.config do |config|
-      config.template_path = different_template_path
-    end
-    expect(JsFromRoutes).to receive(:render_template).exactly(3).times.and_call_original
+    # It does not render if generating again.
     JsFromRoutes.generate!
+  end
 
-    # These files should no longer match the sample ones.
-    controllers_with_exported_routes.each do |file_name|
-      expect(output_file_for(file_name).read).not_to eq sample_file_for(file_name).read
+  context "changing the template" do
+    before do
+      JsFromRoutes.generate!
+
+      JsFromRoutes.config do |config|
+        config.template_path = different_template_path
+      end
     end
 
-    # It should not rewrite the files if the cache key has not changed.
-    expect(JsFromRoutes).not_to receive(:render_template)
-    JsFromRoutes.generate!
+    it "detects changes and re-renders" do
+      expect_templates.to be_rendered.exactly(3).times.and_call_original
+      JsFromRoutes.generate!
+
+      # These files should no longer match the sample ones.
+      controllers_with_exported_routes.each do |file_name|
+        expect(output_file_for(file_name).read).not_to eq sample_file_for(file_name).read
+      end
+
+      # It should not rewrite the files if the cache key has not changed.
+      JsFromRoutes.generate!
+    end
+  end
+
+  context "when generating all_helpers_file" do
+    before do
+      JsFromRoutes.generate!
+
+      JsFromRoutes.config do |config|
+        config.all_helpers_file = true
+      end
+    end
+
+    it "generates a file with all helpers" do
+      expect_templates.to be_rendered.exactly(1).time.and_call_original
+      JsFromRoutes.generate!
+
+      expect(output_dir.join("index.ts").exist?).to eq true
+
+      # Should not trigger another render.
+      JsFromRoutes.generate!
+    end
   end
 
   it "should have a rake task available" do
     Rails.application.load_tasks
-    expect(JsFromRoutes).to receive(:render_template).exactly(3).times
+    expect_templates.to be_rendered.exactly(3).times
     expect { Rake::Task["js_from_routes:generate"].invoke }.not_to raise_error
   end
 end

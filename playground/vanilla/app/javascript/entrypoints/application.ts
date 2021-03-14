@@ -5,7 +5,7 @@ import { Config, request, formatUrl } from '@js-from-routes/client'
 import Videos from '~/Videos.vue'
 
 // Example: Combine all exported routes in a single object.
-import api from '~/ApiHelpers'
+import api from '~/api'
 
 // Example: Expose it globally to the entire app (not recommended, prefer injection).
 Object.assign(window, { api, request, formatUrl, Config })
