@@ -19,7 +19,7 @@ JS From Rails Routes
 [route dsl]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L40-L70
 [imports]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript/Videos.vue#L3
 [default template]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template.js.erb
-[template all] is provided, but you can customize it in case you want to use different conventions instead of `camelize(:lower)` for the controller names.: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template_all.js.erb
+[template all]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template_all.js.erb
 [ping]: https://github.com/ElMassimo/pingcrm-vite/pull/2
 [axios]: https://github.com/axios/axios
 [redaxios]: https://github.com/developit/redaxios
