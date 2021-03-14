@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "npm -C core run 'build' && npm -C client run 'build' && npm -C axios run 'build' && npm -C redaxios run 'build'",
+    "build": "npm -C core run 'build' && npm -C client run 'build' && npm -C axios run 'build' && npm -C redaxios run 'build' && npm -C inertia run 'build'",
     "dev": "pnpm -r --parallel --filter . run dev"
   }
 }

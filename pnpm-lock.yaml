@@ -65,6 +65,20 @@ importers:
     specifiers:
       tsup: ^3.11.0
       typescript: ^4.2.2
+  packages/inertia:
+    dependencies:
+      '@inertiajs/inertia': 0.8.5
+      '@js-from-routes/core': 'link:../core'
+    devDependencies:
+      '@inertiajs/inertia-vue3': 0.3.5_@inertiajs+inertia@0.8.5
+      tsup: 3.12.1_typescript@4.2.2
+      typescript: 4.2.2
+    specifiers:
+      '@inertiajs/inertia': ^0.8
+      '@inertiajs/inertia-vue3': ^0.3.5
+      '@js-from-routes/core': ^1.0.0
+      tsup: ^3.11.0
+      typescript: ^4.2.2
   packages/redaxios:
     dependencies:
       '@js-from-routes/client': 'link:../client'
@@ -424,6 +438,23 @@ packages:
       node: ^10.12.0 || >=12.0.0
     resolution:
       integrity: sha512-1JTKgrOKAHVivSvOYw+sJOunkBjUOvjqWk1DPja7ZFhIS2mX/4EgTT8M7eTK9jrKhL/FvXXEbQwIs3pg1xp3dg==
+  /@inertiajs/inertia-vue3/0.3.5_@inertiajs+inertia@0.8.5:
+    dependencies:
+      '@inertiajs/inertia': 0.8.5
+    dev: true
+    peerDependencies:
+      '@inertiajs/inertia': ^0.8.2
+      vue: ^3.0.0
+    resolution:
+      integrity: sha512-DiFPVrt8ljwQGdjZM6J+PdodPblOdi9sh0+UBCBqhVNWCSKbE+y1NZDwKh669qmI6ICXBq3nc26k4JJfS7I7rQ==
+  /@inertiajs/inertia/0.8.5:
+    dependencies:
+      axios: 0.21.1
+      deepmerge: 4.2.2
+      qs: 6.9.6
+    dev: false
+    resolution:
+      integrity: sha512-PeYDy/GbZHTZM3XtghNGLXyBubNgc3qjzF43q0nkbyaPN6X6Rai6fojDJyJ1vINJjcNUQ3su0Nn3BsqZlqjJ1g==
   /@istanbuljs/load-nyc-config/1.1.0:
     dependencies:
       camelcase: 5.3.1
@@ -2019,7 +2050,6 @@ packages:
     resolution:
       integrity: sha1-s2nW+128E+7PUk+RsHD+7cNXzzQ=
   /deepmerge/4.2.2:
-    dev: true
     engines:
       node: '>=0.10.0'
     resolution:
@@ -5293,6 +5323,12 @@ packages:
       node: '>=0.6'
     resolution:
       integrity: sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
+  /qs/6.9.6:
+    dev: false
+    engines:
+      node: '>=0.6'
+    resolution:
+      integrity: sha512-TIRk4aqYLNoJUbd+g2lEdz5kLWIuTMRagAXxl78Q0RiVjAOugHmeKNGdd3cwo/ktpf9aL9epCfFqWDEKysUlLQ==
   /queue-microtask/1.2.2:
     dev: true
     resolution:

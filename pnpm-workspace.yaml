@@ -3,3 +3,4 @@ packages:
   - packages/client/
   - packages/axios/
   - packages/redaxios/
+  - packages/inertia/

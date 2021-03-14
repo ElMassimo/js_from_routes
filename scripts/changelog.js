@@ -47,7 +47,7 @@ function writePackageJson (name) {
 async function main () {
   if (isRubyPackage) writePackageJson(name)
 
-  await run('npx', ['conventional-changelog', `-p angular -i ${packagePath}/CHANGELOG.md -s -t ${packageName}@ --pkg ./${packagePath}/package.json --commit-path ./${packagePath}`])
+  await run('npx', ['conventional-changelog', `-p angular -i ${packagePath}/CHANGELOG.md -s -t ${name}@ --pkg ./${packagePath}/package.json --commit-path ./${packagePath}`])
 
   if (isRubyPackage) fs.rmSync(resolve('package.json'))
 }
