@@ -97,7 +97,7 @@ export function interpolateUrl (template: string, params: Params): string {
   const missingParams = value.match(REQUIRED_PARAMETER)
   if (missingParams) {
     const missing = missingParams.join(', ')
-    const provided = params && Object.keys(params).join(', ')
+    const provided = (params && Object.keys(params).join(', ')) || 'none.'
     throw new TypeError(`Missing URL Parameter ${missing} for ${template}. Params provided: ${provided}`)
   }
   return value
