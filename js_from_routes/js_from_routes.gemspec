@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/ElMassimo/js_from_routes"
   s.license = "MIT"
   s.extra_rdoc_files = ["README.md"]
-  s.files = Dir.glob('{lib,exe,templates}/**/*') + %w[README.md CHANGELOG.md LICENSE.txt]
+  s.files = Dir.glob("{lib,exe,templates}/**/*") + %w[README.md CHANGELOG.md LICENSE.txt]
   s.require_path = "lib"
 
   s.add_dependency "railties", ">= 5.1", "< 8"

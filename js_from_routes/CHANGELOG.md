@@ -1,3 +1,7 @@
+## [2.0.1](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.0...js_from_routes@2.0.1) (2021-03-14)
+
+
+
 # [2.0.0](https://github.com/ElMassimo/js_from_routes/compare/v1.0.3...js_from_routes@2.0.0) (2021-03-13)
 
 ### Features ⚡️

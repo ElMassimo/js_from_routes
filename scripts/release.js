@@ -181,7 +181,7 @@ async function main () {
     console.log('(skipped)')
 
   if (isRubyLibrary)
-    await run('bundle install && bin/standardrb --fix', { shell: true })
+    await run('bundle install && bin/standardrb', { shell: true })
 
   step('\nGenerating changelog...')
   await run('pnpm', ['changelog', name])
