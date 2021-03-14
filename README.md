@@ -23,6 +23,7 @@ JS From Rails Routes
 [ping]: https://github.com/ElMassimo/pingcrm-vite/pull/2
 [axios]: https://github.com/axios/axios
 [redaxios]: https://github.com/developit/redaxios
+[Inertia.js]: https://github.com/inertiajs/inertia
 [advanced configuration]: https://github.com/ElMassimo/js_from_routes#advanced-configuration-
 [jQuery]: https://gist.github.com/ElMassimo/cab56e64e20ff797f3054b661a883646
 [client libraries]: #client-libraries-
@@ -64,7 +65,7 @@ Read more about it in the [blog announcement](https://maximomussini.com/posts/js
 
 - 🛠 __Customizable__ 
 
-  Select a [network library][client libraries] such as native `fetch`, [axios] or [redaxios], or use your own code.
+  Select a [network library][client libraries] such as native `fetch`, [axios], or use your own code.
 
   Choose different conventions by [customizing][advanced configuration] how code is generated.
 
@@ -168,6 +169,10 @@ Three different API clients are provided. When in doubt, choose the first one:
 - <kbd>@js-from-routes/axios</kbd>
 
   Choose it if already using [axios], or have a complex use case that requires [interceptors](https://github.com/axios/axios#interceptors) or [different instances](https://github.com/axios/axios#creating-an-instance).
+
+- <kbd>@js-from-routes/inertia</kbd>
+
+  When using [Inertia.js], this package will allow you to easily submit forms and make requests using your existing configuration.
 
 - <kbd>@js-from-routes/redaxios</kbd>
 
