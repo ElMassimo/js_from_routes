@@ -11,12 +11,12 @@ JS From Rails Routes
 
 [Vite Rails]: https://vite-ruby.netlify.app/
 [aliases]: https://vite-ruby.netlify.app/guide/development.html#import-aliases-%F0%9F%91%89
-[config options]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L97-L101
+[config options]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L178-L189
 [generate TypeScript]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/initializers/js_from_routes.rb
 [example]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript/Videos.vue#L9
 [example 2]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript
 [routes]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L6
-[route dsl]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L40-L70
+[route dsl]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L77-L107
 [imports]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript/Videos.vue#L3
 [default template]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template.js.erb
 [template all]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template_all.js.erb
@@ -30,6 +30,7 @@ JS From Rails Routes
 [codegen]: #code-generation-
 [usage]: #use-the-path-helpers-in-your-js-application
 [export false]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L18
+[rails bytes]: https://railsbytes.com/templates/X6ksgn
 
 _JS from Routes_ generates path helpers and API methods from your Rails routes, allowing you to be more productive and prevent routing-related errors.
 
@@ -71,7 +72,13 @@ Read more about it in the [blog announcement](https://maximomussini.com/posts/js
 
 ## Installation 💿
 
-Add this line to your application's Gemfile in the `development` group and execute `bundle`:
+For a one liner, you can use [this template][rails bytes]:
+
+```
+rails app:template LOCATION='https://railsbytes.com/script/X6ksgn'
+```
+
+Else, add this line to your application's Gemfile in the `development` group and execute `bundle`:
 
 ```ruby
 group :development do
@@ -79,7 +86,7 @@ group :development do
 end
 ```
 
-Add the [client library][client libraries] to your `package.json`:
+Then, add the [client library][client libraries] to your `package.json`:
 
 ```bash
 npm install @js-from-routes/client # yarn add @js-from-routes/client

@@ -21,10 +21,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@js-from-routes/client@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@js-from-routes/client/-/client-1.0.1.tgz#faee295dba1dde437dbbee68cad6b2468280650e"
-  integrity sha512-v+cfrmnm12Sxi1xfE0oN7oTJMAKhmhYpwpQla1JJTZZ+oEFKjbGLMzLUNnuRGHtrqR9K1IWfugRQziF5KXPVwQ==
+"@js-from-routes/client@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@js-from-routes/client/-/client-1.0.2.tgz#c2d53da658a76a3e87257804f4657e8c1fb90f66"
+  integrity sha512-mAry7dQb2IAYMvwMMf391/JPuajWqBx/pDajgetiNraSwzLSXc7WCBPgmmBbdbeyKI9vZBKjG/LOq1UDQGjkeg==
   dependencies:
     "@js-from-routes/core" "^1.0.0"
 
