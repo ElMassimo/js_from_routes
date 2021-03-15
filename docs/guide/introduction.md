@@ -48,6 +48,8 @@ Interested in hearing more? Read the original [blog post].
 
   Path helpers are [generated automatically][codegen] whenever Rails reload is triggered.
 
+  Add a route, refresh the page, and start using the path helper!
+
 #### 🛠 Customizable Generation
 
   Select a [client library][client] that uses `fetch` or `axios`, or use your [own code][client].
