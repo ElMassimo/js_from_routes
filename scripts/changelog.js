@@ -14,7 +14,6 @@ if (!name) {
 
 const isRubyPackage = name === 'js_from_routes'
 const packagePath = isRubyPackage ? name : `packages/${name}`
-const packageName = isRubyPackage ? name : `@js-from-routes/${name}`
 
 /**
  * @param {string} bin
