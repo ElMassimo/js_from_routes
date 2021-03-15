@@ -44,7 +44,7 @@ module JsFromRoutes
     # Public: Used to check whether the file should be generated again, changes
     # based on the configuration, and route definition.
     def cache_key
-      routes.map(&:inspect).join + [File.read(@config.template_path), @config.helper_mappings.inspect].join
+      routes.map(&:inspect).join + [File.read(@config.template_path), @config.helper_mappings.inspect, @config.client_library].join
     end
 
     # Public: Exposes the preferred import library to the generator.
