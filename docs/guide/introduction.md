@@ -4,11 +4,11 @@
 [blog post]: https://maximomussini.com/posts/js-from-routes/
 [path helpers]: https://guides.rubyonrails.org/routing.html#path-and-url-helpers
 
-[codegen]: /guide/generation
+[codegen]: /guide/codegen
 [client]: /client/
 [config]: /config/
-[paths]: /guide/development
-[requests]: /guide/development
+[paths]: /client#path
+[requests]: /client#request
 [case conversion]: /config/
 [responseAs]: /config/#responseAs
 

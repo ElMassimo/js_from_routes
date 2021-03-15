@@ -4,11 +4,11 @@
 [client]: /client/
 [config]: /config/
 [rails bytes]: https://railsbytes.com/templates/X6ksgn
-[codegen]: /guide/generation
-[path]: /guide/development
-[request]: /guide/development
+[codegen]: /guide/codegen
+[path]: /client/#path
+[request]: /client/#request
 
-[development]: /guide/development
+[development]: /client/
 [routes]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L6
 [export false]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L18
 
@@ -73,7 +73,7 @@ export default {
 }
 ```
 
-A file will be generated per controller with one path helper per exported action, although this is [fully customizable][config].
+A file will be generated per controller with one path helper per exported action, although this is [fully customizable][codegen].
 
 You can run <kbd>bin/rake js_from_routes:generate</kbd> to trigger generation manually.
 
@@ -109,9 +109,9 @@ Depending on your use case, you may prefer to use this object instead of explici
 
 You should now be able to get started with [JS From Routes][library].
 
-Have in mind that code generation is [fully customizable][config]; this is just the default way to use it.
+Have in mind that code generation is [fully customizable][codegen]; this is just the default way to use it.
 
-For more information about usage, continue to the [next section][development].
+For more information about usage, check out [this section][development].
 
 ### Contact ✉️
 
