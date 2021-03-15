@@ -126,6 +126,11 @@ module JsFromRoutes
       object.instance_eval(@compiled_template)
     end
 
+    # Internal: Returns true if the cache key has changed since the last codegen.
+    def stale?(file, cache_key_comment)
+      ENV["JS_FROM_ROUTES_FORCE"] || file.gets != cache_key_comment
+    end
+
     # Internal: Writes if the file does not exist or the cache key has changed.
     # The cache strategy consists of a comment on the first line of the file.
     #
@@ -134,7 +139,7 @@ module JsFromRoutes
       FileUtils.mkdir_p(name.dirname)
       cache_key_comment = "// JsFromRoutes CacheKey #{Digest::MD5.hexdigest(cache_key)}\n"
       File.open(name, "a+") { |file|
-        if file.gets != cache_key_comment
+        if stale?(file, cache_key_comment)
           file.truncate(0)
           file.write(cache_key_comment)
           file.write(yield)
