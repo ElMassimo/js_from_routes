@@ -7,6 +7,7 @@
 [codegen]: /guide/codegen
 [path]: /client/#path
 [request]: /client/#request
+[all helpers]: /config/#all-helpers-file
 
 [development]: /client/
 [routes]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L6
@@ -20,7 +21,7 @@ If you are interested to learn more about JS From Routes before trying it, check
 
 For a one-line installation, you can [run this][rails bytes]:
 
-```
+```bash
 rails app:template LOCATION='https://railsbytes.com/script/X6ksgn'
 ```
 
@@ -42,23 +43,23 @@ npm install @js-from-routes/client # yarn add @js-from-routes/client
 
 Once the library is installed, all you need to do is:
 
-### Specify the routes you want to export
+### Export the routes
 
 Use `export: true` to specify which [routes] should be taken into account when generating JS.
 
 ```ruby{2}
 Rails.application.routes.draw do
-  resources :video_clips, only: [:show, :update], export: true do
+  resources :video_clips, only: [:show], export: true do
     get :download, on: :member
   end
 end
 ```
 
-The option will cascade to any nested action or resource, but you can [opt out][export false].
+It will cascade to any nested action or resource, but you can [opt out][export false] with `export: false`.
 
 ### Refresh the page
 
-Rails reloader will detect the changes, and path helpers will be [generated][codegen] for the exported actions.
+Rails' reloader will detect the changes, and path helpers will be [generated][codegen] for the exported actions.
 
 ```js
 // app/frontend/api/VideoClipsApi.ts
@@ -68,16 +69,14 @@ export default {
   download: definePathHelper('get', '/video_clips/:id/download'),
 
   get: definePathHelper('get', '/video_clips/:id'),
-    
-  update: definePathHelper('patch', '/video_clips/:id'),
 }
 ```
 
-A file will be generated per controller with one path helper per exported action, although this is [fully customizable][codegen].
+A file will be generated per controller, with a path helper per exported action, although this is [fully customizable][codegen].
 
 You can run <kbd>bin/rake js_from_routes:generate</kbd> to trigger generation manually.
 
-### Use the generated helpers in your JS application
+### Use the generated helpers
 
 Calling a helper will [make a request][request] and return a promise with the unwrapped JSON result.
 
@@ -87,13 +86,13 @@ import VideoClipsApi from '~/api/VideoClipsApi'
 const video = await VideoClipsApi.get({ id: 'oHg5SJYRHA0' })
 ```
 
-Use the [`path`][path] method when you only need the URL (it will interpolate parameters, such as `:id`).
+Use [`path`][path] when you only need the URL. It will interpolate parameters, such as `:id`.
 
 ```js
 const downloadPath = VideoClipsApi.download.path(video)
 ```
 
-A file that combines all helpers is also generated.
+A file that combines [all helpers] is also generated.
 
 ```js
 import api from '~/api'
@@ -111,7 +110,7 @@ You should now be able to get started with [JS From Routes][library].
 
 Have in mind that code generation is [fully customizable][codegen]; this is just the default way to use it.
 
-For more information about usage, check out [this section][development].
+For more information about using the helpers, check out [this section][development].
 
 ### Contact ✉️
 

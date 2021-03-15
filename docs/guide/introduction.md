@@ -28,29 +28,29 @@ Interested in hearing more? Read the original [blog post].
 
 ## Features ⚡️
 
-#### 🚀 Path and Request Helpers
+### 🚀 Path and Request Helpers
 
   Use the controller and action name to [obtain paths][paths] or [make requests][requests]. No need to use URLs or manually interpolate parameters, preventing mistakes and saving development time.
 
-#### 🔁 Serialization / Deserialization
+### 🔁 Serialization / Deserialization
 
   Consuming JSON APIs works out of the box, but you can easily consume [other types of media][responseAs].
 
   [Case conversion] between Ruby and JS is handled for you, but you can also [opt-out][case conversion].
 
-#### ✅ Type Safety
+### ✅ Type Safety
 
   If an action is renamed or removed, it can be detected by ESLint or the TypeScript compiler.
 
   Path helpers are fully typed, and client libraries are entirely written in TypeScript.
 
-#### 🤖 Automatic Generation
+### 🤖 Automatic Generation
 
   Path helpers are [generated automatically][codegen] whenever Rails reload is triggered.
 
   Add a route, refresh the page, and start using the path helper!
 
-#### 🛠 Customizable Generation
+### 🛠 Customizable Generation
 
   Select a [client library][client] that uses `fetch` or `axios`, or use your [own code][client].
 

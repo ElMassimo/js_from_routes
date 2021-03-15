@@ -1,21 +1,24 @@
-[default template library]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template.js.erb#L3
-[default template]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template.js.erb
-[template all]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template_all.js.erb
 [route dsl]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L77-L107
 [this pull request]: https://github.com/ElMassimo/pingcrm-vite/pull/2 
 
-[exported routes]: /guide/#specify-the-routes-you-want-to-export
+[exported routes]: /guide/#export-the-routes
 [client]: /client/
-[config]: /config/
+[config]: /config/#code-generation
+[default template]: /config/#template-path
+[template_path]: /config/#template-path
+[template all]: /config/#template-all-path
 
-[client_library]: /config/#client_library
+[client_library]: /config/#client-library
 
 # Code Generation 🤖
 
 Whenever you add a new route and _refresh the page_, the Rails reloader will kick in and generate path helpers for any of the [exported routes].
 
 If you are not running the development server, you can run a rake task to generate path helpers:
-<kbd>bin/rake js_from_routes:generate</kbd>
+
+```bash
+bin/rake js_from_routes:generate
+```
 
 By default, it will generate one file per controller, with one helper per exported action:
 
@@ -36,20 +39,9 @@ Changing the verb in `routes.rb` does not require updating your client code!
 
 ## Customizing the Generated Code 🛠
 
-The sample code above was produced by the [default template].
+You can customize the code produced by the [default template], or use your own template.
 
-In order to customize generation, you can add an initializer to your Rails app:
-
-```ruby
-# config/initializers/js_from_routes.rb
-if Rails.env.development?
-  JsFromRoutes.config do |config|
-    ...
-  end
-end
-```
-
-The next code samples assume that you are adding code to this initializer.
+The following code examples assume that you are configuring _JS From Routes_ in an [initializer][config].
 
 ### Using a different client
 
@@ -61,11 +53,14 @@ config.client_library = '@js-from-routes/axios'
 
 ### Using your own code
 
-The [same setting][default template library] allows you to use your own code to generate the path helpers:
+You can also use <kbd>[client_library]</kbd> to target your own code when generating path helpers:
 
 ```ruby
 config.client_library = '~/MyPathHelpers'
 ```
+
+As a result, the [default template] will generate:
+
 ```js
 // app/javascript/api/VideoClipsApi.ts
 import { definePathHelper } from '~/MyPathHelpers'
@@ -75,21 +70,19 @@ export default {
 }
 ```
 
-Make sure to provide an exported `definePathHelper` method in your file, and you are all set.
-
 ### Using a different template
 
-If you need to generate helpers in a different way, or want do something entirely different with exported routes, you can provide a path to your own template:
+If you need to generate helpers in a different way, or want do something entirely different with exported routes, you can configure <kbd>[template_path]</kbd> to use your own template:
 
 ```ruby
 config.template_path = Rails.root.join('custom_js_from_routes.js.erb')
 ```
 
-A `routes` variable will be available in the [template][default template], with the exported routes for a controller.
+A `routes` variable will be available in the template, with the exported routes for a controller.
 
 Each `route` exposes properties such as `verb` and `path`, [check the source code][route dsl] for details.
 
-Check out [this pull request] to get a sense of how flexible it can be.
+See [this pull request] to get a sense of how flexible it can be.
 
 ## Caching 📦
 

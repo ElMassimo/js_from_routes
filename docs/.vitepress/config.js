@@ -90,9 +90,7 @@ module.exports = {
         {
           text: 'FAQs',
           children: [
-            { text: 'Configuration', link: '/faqs/' },
-            { text: 'Troubleshooting', link: '/faqs/troubleshooting' },
-            { text: 'Motivation', link: '/faqs/motivation' },
+            { text: 'Troubleshooting', link: '/faqs/' },
           ],
         },
         {

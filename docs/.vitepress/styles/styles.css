@@ -23,7 +23,6 @@
 }
 
 .home-hero .image.image {
-  height: 240px;
   margin-bottom: 24px;
 }
 
@@ -44,6 +43,10 @@ h2 .logo {
 }
 
 @media (min-width: 720px) {
+  .home-hero .image.image {
+    height: 240px;
+  }
+
   .feature {
     width: calc(100% / 4) !important;
   }
