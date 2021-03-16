@@ -78,13 +78,9 @@ module.exports = {
           ],
         },
         {
-          text: 'Client Libraries',
+          text: 'Client',
           children: [
-            { text: 'Introduction', link: '/client/' },
-            { text: 'Fetch', link: '/client/fetch' },
-            { text: 'Axios', link: '/client/axios' },
-            { text: 'Redaxios', link: '/client/redaxios' },
-            { text: 'Inertia.js', link: '/client/inertia' },
+            { text: 'Integrations', link: '/client/' },
           ],
         },
         {

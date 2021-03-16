@@ -5,8 +5,8 @@
 [config]: /config/
 [rails bytes]: https://railsbytes.com/templates/X6ksgn
 [codegen]: /guide/codegen
-[path]: /client/#path
-[request]: /client/#request
+[path]: /client/#passing-parameters
+[request]: /client/#submitting-data
 [all helpers]: /config/#all-helpers-file
 
 [development]: /client/

@@ -7,9 +7,9 @@
 [codegen]: /guide/codegen
 [client]: /client/
 [config]: /config/
-[paths]: /client#path
-[requests]: /client#request
-[case conversion]: /config/
+[paths]: /client/#passing-parameters
+[requests]: /client/#submitting-data
+[case conversion]: /client/#disabling-case-conversion
 [responseAs]: /config/#responseAs
 
 # Introduction
