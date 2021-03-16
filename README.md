@@ -1,5 +1,7 @@
 <h1 align="center">
-  <img src="https://raw.githubusercontent.com/ElMassimo/js_from_routes/main/docs/public/logo-with-text.svg" width="240px"/>
+  <a href="https://js-from-routes.netlify.app/">
+    <img src="https://raw.githubusercontent.com/ElMassimo/js_from_routes/main/docs/public/logo-with-text.svg" width="240px"/>
+  </a>
 
   <br>
 
@@ -39,17 +41,17 @@
 [Inertia.js]: https://github.com/inertiajs/inertia
 [advanced configuration]: https://github.com/ElMassimo/js_from_routes#advanced-configuration-
 [jQuery]: https://gist.github.com/ElMassimo/cab56e64e20ff797f3054b661a883646
-[client libraries]: #client-libraries-
-[codegen]: #code-generation-
-[usage]: #use-the-path-helpers-in-your-js-application
+[client libraries]: https://js-from-routes.netlify.app/client/
+[codegen]: https://js-from-routes.netlify.app/guide/codegen
 [export false]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L18
 [rails bytes]: https://railsbytes.com/templates/X6ksgn
 [website]: https://js-from-routes.netlify.app
 [guides]: https://js-from-routes.netlify.app/guide/
+[guide]: https://js-from-routes.netlify.app/guide/#usage-🚀
 [configuration reference]: https://js-from-routes.netlify.app/config/
 [introduction]: https://js-from-routes.netlify.app/guide/introduction
 
-_JS from Routes_ generates path helpers and API methods from your Rails routes, allowing you to be more productive and prevent routing-related errors.
+_[JS From Routes][website]_ generates path helpers and API methods from your Rails routes, allowing you to be more productive and prevent routing-related errors.
 
 Since code generation is fully customizable it can be used in very diverse scenarios.
 
@@ -57,7 +59,7 @@ Since code generation is fully customizable it can be used in very diverse scena
 
 Path helpers in Rails make it easy to build URLs, while avoiding typos and mistakes.
 
-With this library, it's possible the enjoy the same benefits in JS, and even more if using TypeScript.
+With _[JS From Routes][website]_, it's possible the enjoy the same benefits in JS, and even more if using TypeScript.
 
 Read more about it in the [blog announcement](https://maximomussini.com/posts/js-from-routes/).
 
@@ -65,7 +67,7 @@ Read more about it in the [blog announcement](https://maximomussini.com/posts/js
 
 - 🚀 Path and Request Helpers
 - 🔁 Serialization / Deserialization
-- ✅ Type Safety
+- ✅ Prevent Routing Errors
 - 🤖 Automatic Generation
 - 🛠 Customizable Generation
 - And [more][introduction]!
@@ -96,13 +98,13 @@ Then, add the [client library][client libraries] to your `package.json`:
 npm install @js-from-routes/client # yarn add @js-from-routes/client
 ```
 
-Have in mind this is [optional][client libraries].
+There are more [client libraries] available.
 
 ## Getting Started 🚀
 
-A [documentation website][website] is available [here][website].
+The following is a short excerpt from the [guide].
 
-### Specify the Rails routes you want to export
+### Specify the routes you want
 
 Use the `export` attribute to determine which [routes] should be taken into account when generating JS.
 
@@ -114,30 +116,16 @@ Rails.application.routes.draw do
 end
 ```
 
-Path helpers will be [automatically generated][codegen] when refreshing the page.
-
 ### Use the path helpers in your JS application
 
-Calling the methods which will return a promise with the unwrapped JSON result.
-
-```js
-const video = await VideoClipsApi.get({ id: 'oHg5SJYRHA0' })
-```
-
-You may use the `path` method from one of the actions to obtain the URL with interpolated parameters.
-
-```js
-const downloadPath = VideoClipsApi.download.path(video)
-```
-
-A file that exports all helpers as properties is also generated.
+Path helpers will be [automatically generated][codegen] when refreshing the page.
 
 ```js
 import api from '~/api'
 
-const video = await api.videoClips.get(video)
+const video = await api.videoClips.get({ id: 'oHg5SJYRHA0' })
 
-const comments = await api.comments.list()
+const downloadPath = api.videoClips.download.path(video)
 ```
 
-Check the [documentation website][website] for more information.
+Check the [documentation website][guide] for more information.

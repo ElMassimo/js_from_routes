@@ -97,7 +97,7 @@ A file that combines [all helpers] is also generated.
 ```js
 import api from '~/api'
 
-const video = await api.videoClips.get(video)
+const video = await api.videoClips.get({ id: 'oHg5SJYRHA0' })
 
 const comments = await api.comments.list()
 ```

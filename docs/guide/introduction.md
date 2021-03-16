@@ -38,9 +38,9 @@ Interested in hearing more? Read the original [blog post].
 
   [Case conversion] between Ruby and JS is handled for you, but you can also [opt-out][case conversion].
 
-### ✅ Type Safety
+### ✅ Safety
 
-  If an action is renamed or removed, it can be detected by ESLint or the TypeScript compiler.
+  Prevents routing mistakes when renaming or removing an action.
 
   Path helpers are fully typed, and client libraries are entirely written in TypeScript.
 

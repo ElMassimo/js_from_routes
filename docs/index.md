@@ -19,8 +19,8 @@ features:
     details: No need to specify the URL, use the controller and action name
   - title: 🎩 Elegant 
     details: Make requests with function calls that return promises
-  - title: ✅ Type-Safe
-    details: Path helpers are fully typed and typos can be prevented
+  - title: ✅ Safety
+    details: Path helpers are fully typed and typos are no longer possible
   - title: 🛠 Customizable
     details: Client libraries for fetch, axios, and more. Or use your own code
 footer: MIT Licensed | Copyright © 2021 Máximo Mussini
