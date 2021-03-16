@@ -1,3 +1,17 @@
+## [2.0.3](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.2...js_from_routes@2.0.3) (2021-03-16)
+
+
+### Bug Fixes
+
+* Ensure changing the client library triggers code generation ([6cf2bdf](https://github.com/ElMassimo/js_from_routes/commit/6cf2bdf4896dafe0d1e80668551665c46bfcadc6))
+
+
+### Features
+
+* Allow passing JS_FROM_ROUTES_FORCE=true to ignore cache keys ([8a6d2a8](https://github.com/ElMassimo/js_from_routes/commit/8a6d2a807e0a9926c6b24e1fc9127f917ec0ed5d))
+
+
+
 ## [2.0.2](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.1...js_from_routes@2.0.2) (2021-03-14)
 
 ### Improvements
