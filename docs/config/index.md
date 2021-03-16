@@ -11,7 +11,9 @@
 [client_library]: /config/#client-library
 [different template]: /guide/codegen.html#using-a-different-template
 
-# Configuration
+# Configuration Reference
+
+The following section contains references to all configuration options in the provided libraries.
 
 ## Code Generation
 
@@ -111,6 +113,12 @@ The following [config options] are available:
   ```ruby
   config.template_all_path = Rails.root.join('custom_all_helpers.js.erb')
   ```
+
+## Client Configuration
+
+Coming soon...
+
+For now, check the [_Client Libraries_](/client/#configuring-requests-⚙%EF%B8%8F) section.
 
 <br>
 <br>
