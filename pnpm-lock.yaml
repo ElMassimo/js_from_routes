@@ -37,10 +37,9 @@ importers:
       ts-jest: ^26.5.2
       typescript: ^4.0.5
   packages/axios:
-    dependencies:
+    devDependencies:
       '@js-from-routes/client': 'link:../client'
       axios: 0.21.1
-    devDependencies:
       tsup: 3.12.1_typescript@4.2.2
       typescript: 4.2.2
     specifiers:
@@ -66,26 +65,20 @@ importers:
       tsup: ^3.11.0
       typescript: ^4.2.2
   packages/inertia:
-    dependencies:
+    devDependencies:
       '@inertiajs/inertia': 0.8.5
       '@js-from-routes/core': 'link:../core'
-    devDependencies:
-      deepmerge: 4.2.2
-      qs: 6.9.6
       tsup: 3.12.1_typescript@4.2.2
       typescript: 4.2.2
     specifiers:
       '@inertiajs/inertia': ^0.8
       '@js-from-routes/core': ^1.0.0
-      deepmerge: ^4.2.2
-      qs: ^6.9.6
       tsup: ^3.11.0
       typescript: ^4.2.2
   packages/redaxios:
-    dependencies:
+    devDependencies:
       '@js-from-routes/client': 'link:../client'
       redaxios: 0.4.1
-    devDependencies:
       tsup: 3.12.1_typescript@4.2.2
       typescript: 4.2.2
     specifiers:
@@ -445,7 +438,7 @@ packages:
       axios: 0.21.1
       deepmerge: 4.2.2
       qs: 6.9.6
-    dev: false
+    dev: true
     resolution:
       integrity: sha512-PeYDy/GbZHTZM3XtghNGLXyBubNgc3qjzF43q0nkbyaPN6X6Rai6fojDJyJ1vINJjcNUQ3su0Nn3BsqZlqjJ1g==
   /@istanbuljs/load-nyc-config/1.1.0:
@@ -1258,7 +1251,7 @@ packages:
   /axios/0.21.1:
     dependencies:
       follow-redirects: 1.13.3
-    dev: false
+    dev: true
     resolution:
       integrity: sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
   /babel-jest/26.6.3_@babel+core@7.13.1:
@@ -2043,6 +2036,7 @@ packages:
     resolution:
       integrity: sha1-s2nW+128E+7PUk+RsHD+7cNXzzQ=
   /deepmerge/4.2.2:
+    dev: true
     engines:
       node: '>=0.10.0'
     resolution:
@@ -2877,7 +2871,7 @@ packages:
     resolution:
       integrity: sha512-zAoAQiudy+r5SvnSw3KJy5os/oRJYHzrzja/tBDqrZtNhUw8bt6y8OBzMWcjWr+8liV8Eb6yOhw8WZ7VFZ5ZzA==
   /follow-redirects/1.13.3:
-    dev: false
+    dev: true
     engines:
       node: '>=4.0'
     peerDependencies:
@@ -5317,6 +5311,7 @@ packages:
     resolution:
       integrity: sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
   /qs/6.9.6:
+    dev: true
     engines:
       node: '>=0.6'
     resolution:
@@ -5456,7 +5451,7 @@ packages:
     resolution:
       integrity: sha1-hSBLVNuoLVdC4oyWdW70OvUOM4Q=
   /redaxios/0.4.1:
-    dev: false
+    dev: true
     resolution:
       integrity: sha512-+Jhh1j8/H0KBro+Hih/MrDEJ1PICaU10JA6iu5b3+uvgRI+5n2M7qpMNXq7eC/0fspP0tTq49ONXlGWFdRoNLg==
   /redent/1.0.0:

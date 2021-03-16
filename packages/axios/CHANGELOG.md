@@ -1,3 +1,13 @@
+## [1.0.4](https://github.com/ElMassimo/js_from_routes/compare/axios@1.0.3...axios@1.0.4) (2021-03-16)
+
+
+### Bug Fixes
+
+* Ensure callbacks are passed to Inertia.js ([c456b36](https://github.com/ElMassimo/js_from_routes/commit/c456b36e6f80927fa3f10999d46f3c91c34a408a))
+* Ensure packages are specified by using peerDependencies ([24b4918](https://github.com/ElMassimo/js_from_routes/commit/24b49183e3b6c7169b85eb0c0b06272b16455920))
+
+
+
 ## 1.0.3 (2021-03-13)
 
 
