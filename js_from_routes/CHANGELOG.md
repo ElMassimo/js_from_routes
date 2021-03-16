@@ -1,5 +1,8 @@
 ## [2.0.4](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.3...js_from_routes@2.0.4) (2021-03-16)
 
+### Features
+
+* Allow importing individual helpers from "~/api" by adding exports ([2dfb8a2](https://github.com/ElMassimo/js_from_routes/commit/2dfb8a27d182376d75f0b037258bc772553e43f3)). Thanks @matias-capeletto!
 
 
 ## [2.0.3](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.2...js_from_routes@2.0.3) (2021-03-16)
