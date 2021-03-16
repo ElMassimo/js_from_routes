@@ -19,7 +19,7 @@ features:
     details: No need to specify the URL, use the controller and action name
   - title: 🎩 Elegant 
     details: Make requests with function calls that return promises
-  - title: ✅ Safety
+  - title: ✅ Safer
     details: Path helpers are fully typed and typos are no longer possible
   - title: 🛠 Customizable
     details: Client libraries for fetch, axios, and more. Or use your own code
