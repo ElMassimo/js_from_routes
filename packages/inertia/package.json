@@ -25,13 +25,13 @@
     "prerelease": "npm run build",
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag inertia@$PACKAGE_VERSION && git push --tags"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@inertiajs/inertia": "^0.8",
     "@js-from-routes/core": "^1.0.0"
   },
   "devDependencies": {
-    "deepmerge": "^4.2.2",
-    "qs": "^6.9.6",
+    "@inertiajs/inertia": "^0.8",
+    "@js-from-routes/core": "^1.0.0",
     "tsup": "^3.11.0",
     "typescript": "^4.2.2"
   }

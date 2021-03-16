@@ -25,11 +25,13 @@
     "prerelease": "npm run build",
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag redaxios@$PACKAGE_VERSION && git push --tags"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@js-from-routes/client": "^1.0.0",
     "redaxios": "^0.4.1"
   },
   "devDependencies": {
+    "@js-from-routes/client": "^1.0.0",
+    "redaxios": "^0.4.1",
     "tsup": "^3.11.0",
     "typescript": "^4.2.2"
   }

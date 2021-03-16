@@ -25,10 +25,11 @@
     "prerelease": "npm run build",
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag client@$PACKAGE_VERSION && git push --tags"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@js-from-routes/core": "^1.0.0"
   },
   "devDependencies": {
+    "@js-from-routes/core": "^1.0.0",
     "tsup": "^3.11.0",
     "typescript": "^4.2.2"
   }
