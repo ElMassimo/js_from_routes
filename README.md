@@ -121,11 +121,11 @@ end
 Path helpers will be [automatically generated][codegen] when refreshing the page.
 
 ```js
-import api from '~/api'
+import { videoClips } from '~/api'
 
-const video = await api.videoClips.get({ id: 'oHg5SJYRHA0' })
+const video = await videoClips.get({ id: 'oHg5SJYRHA0' })
 
-const downloadPath = api.videoClips.download.path(video)
+const downloadPath = videoClips.download.path(video)
 ```
 
 Check the [documentation website][guide] for more information.

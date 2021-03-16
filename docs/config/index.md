@@ -1,5 +1,6 @@
 [default template library]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template.js.erb#L3
 [template all]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template_all.js.erb
+[template index]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template_index.js.erb
 [default template]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template.js.erb
 [config options]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L178-L189
 [generate TypeScript]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/initializers/js_from_routes.rb
@@ -104,7 +105,7 @@ The following [config options] are available:
 
 ### `template_all_path`
 
-  The path of an ERB template that will be used to generate a file that aggregates all helpers.
+  The path of an ERB template that will be used to export all helper files.
 
   You can provide a path to a custom template if the default conventions don't suit your needs.
 
@@ -112,6 +113,18 @@ The following [config options] are available:
 
   ```ruby
   config.template_all_path = Rails.root.join('custom_all_helpers.js.erb')
+  ```
+
+### `template_index_path`
+
+  Similar to the above, it re-exports all helpers, but also combines them in a default export allowing you to use a single object to access all the helpers.
+
+  You can provide a path to a custom template if the default conventions don't suit your needs.
+
+  [__Default__][template index]
+
+  ```ruby
+  config.template_index_path = Rails.root.join('custom_index_helpers.js.erb')
   ```
 
 ## Client Configuration

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import VideoClipsApi from '~/api/VideoClipsApi'
+import { videoClips } from '~/api'
 import { useApi } from '~/composables/api'
 
 const videos = ref([])
 
 onMounted(async () => {
-  videos.value = await VideoClipsApi.latest()
+  videos.value = await videoClips.latest()
 })
 
 // NOTE: This is a contrived example, no need to use this if importing directly.

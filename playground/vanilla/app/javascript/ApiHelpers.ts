@@ -3,14 +3,8 @@
 /**
  *  NOT RECOMMENDED
  *
- *  I've added this example because some people prefer to use a single object.
- *
- *  That said, you lose the benefit of type-safety that is provided by static
- *  analysis tools (or a compiler like tsc), which you get for free when
- *  importing helpers directly (which is also better for code-splitting).
- *
- *  Keeping this example around, but now you can generate a `all_helpers` file,
- *  which has the benefit of providing autocompletion.
+ *  Starting in 2.0 a `all_helpers` file is generated which also provides the
+ *  benefit of autocompletion and type-safety.
  */
 
 // Example: Combine all generated path helpers into a single object.

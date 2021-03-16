@@ -100,12 +100,12 @@ describe JsFromRoutes do
     end
 
     it "generates a file with all helpers" do
-      expect_templates.to be_rendered.exactly(1).time.and_call_original
       JsFromRoutes.generate!
-
+      expect(output_dir.join("all.ts").exist?).to eq true
       expect(output_dir.join("index.ts").exist?).to eq true
 
       # Should not trigger another render.
+      expect_templates.not_to be_rendered
       JsFromRoutes.generate!
     end
   end

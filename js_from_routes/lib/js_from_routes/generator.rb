@@ -8,28 +8,6 @@ require "pathname"
 # Public: Automatically generates JS for Rails routes with { export: true }.
 # Generates one file per controller, and one function per route.
 module JsFromRoutes
-  # Internal: Helper class used as a presenter for the all helpers template.
-  class AllRoutes
-    attr_reader :helpers
-
-    def initialize(helpers, config)
-      @helpers, @config = helpers, config
-    end
-
-    # Public: Used to check whether the file should be generated again, changes
-    # based on the configuration, and route definition.
-    def cache_key
-      helpers.map(&:import_filename).join + File.read(@config.template_all_path)
-    end
-
-    # Internal: Name of the JS file where all helpers will be exported.
-    def filename
-      path = @config.all_helpers_file
-      path = "index#{File.extname(@config.file_suffix)}" if path == true
-      @config.output_folder.join(path)
-    end
-  end
-
   # Internal: Helper class used as a presenter for the routes template.
   class ControllerRoutes
     attr_reader :routes
@@ -177,7 +155,18 @@ module JsFromRoutes
     def generate_file_for_all(routes)
       return unless config.all_helpers_file && !routes.empty?
 
-      Template.new(config.template_all_path).write_if_changed AllRoutes.new(routes, config)
+      preferred_extension = File.extname(config.file_suffix)
+      index_file = config.all_helpers_file == true ? "index#{preferred_extension}" : config.all_helpers_file
+
+      Template.new(config.template_all_path).write_if_changed OpenStruct.new(
+        cache_key: routes.map(&:import_filename).join + File.read(config.template_all_path),
+        filename: config.output_folder.join("all#{preferred_extension}"),
+        helpers: routes,
+      )
+      Template.new(config.template_index_path).write_if_changed OpenStruct.new(
+        cache_key: File.read(config.template_index_path),
+        filename: config.output_folder.join(index_file),
+      )
     end
 
     def default_config(root)
@@ -190,6 +179,7 @@ module JsFromRoutes
         output_folder: root.join("app", dir, "api"),
         template_path: File.expand_path("template.js.erb", __dir__),
         template_all_path: File.expand_path("template_all.js.erb", __dir__),
+        template_index_path: File.expand_path("template_index.js.erb", __dir__),
       }
     end
 
