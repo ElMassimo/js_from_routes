@@ -47,6 +47,8 @@ Here a few examples when using <kbd>[@js-from-routes/client]</kbd>, more example
 If you use [Vite Rails], [aliases] will allow you to import these files as:
 
 ```js
+import { videoClips } from '~/api'
+// or
 import VideoClipsApi from '~/api/VideoClipsApi'
 ```
 
@@ -58,7 +60,7 @@ You can pass a plain object as parameters; properties will be interpolated on an
 
 ```js
 const video = { id: 5, title: 'New Wave' }
-VideoClipsApi.download.path(video) == "/video_clips/5/download"
+videoClips.download.path(video) == "/video_clips/5/download"
 ```
 
 Missing parameters will throw an error providing the full context.
@@ -68,7 +70,7 @@ Missing parameters will throw an error providing the full context.
 You can pass `data` to specify the request body, just like in [axios].
 
 ```js
-VideoClipsApi.update({ params: video, data: { title: 'New Waves' } })
+videoClips.update({ params: video, data: { title: 'New Waves' } })
 ```
 
 By default, the CSRF token will be [extracted] using the same conventions in <kbd>[@rails/ujs]</kbd>.
@@ -80,7 +82,7 @@ By default, JSON responses are automatically unwrapped.
 If you need access to the response, or are using MIME types, pass `responseAs`:
 
 ```js
-const response = await VideoClipsApi.download({ params: video, responseAs: 'response' })
+const response = await videoClips.download({ params: video, responseAs: 'response' })
 ```
 
 The type of the response object depends on which library you are using.

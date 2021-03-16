@@ -81,18 +81,18 @@ You can run <kbd>bin/rake js_from_routes:generate</kbd> to trigger generation ma
 Calling a helper will [make a request][request] and return a promise with the unwrapped JSON result.
 
 ```js
-import VideoClipsApi from '~/api/VideoClipsApi'
+import { videoClips } from '~/api'
 
-const video = await VideoClipsApi.get({ id: 'oHg5SJYRHA0' })
+const video = await videoClips.get({ id: 'oHg5SJYRHA0' })
 ```
 
 Use [`path`][path] when you only need the URL. It will interpolate parameters, such as `:id`.
 
 ```js
-const downloadPath = VideoClipsApi.download.path(video)
+const downloadPath = videoClips.download.path(video)
 ```
 
-A file that combines [all helpers] is also generated.
+You can also use an object that combines [all helpers].
 
 ```js
 import api from '~/api'
