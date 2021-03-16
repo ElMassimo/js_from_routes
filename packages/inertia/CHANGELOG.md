@@ -1,3 +1,12 @@
+## [1.0.3](https://github.com/ElMassimo/js_from_routes/compare/inertia@1.0.2...inertia@1.0.3) (2021-03-16)
+
+
+### Bug Fixes
+
+* Ensure packages are specified by using peerDependencies ([24b4918](https://github.com/ElMassimo/js_from_routes/commit/24b49183e3b6c7169b85eb0c0b06272b16455920))
+
+
+
 ## [1.0.2](https://github.com/ElMassimo/js_from_routes/compare/inertia@1.0.1...inertia@1.0.2) (2021-03-16)
 
 
