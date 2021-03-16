@@ -1,3 +1,12 @@
+## [1.0.2](https://github.com/ElMassimo/js_from_routes/compare/inertia@1.0.1...inertia@1.0.2) (2021-03-16)
+
+
+### Bug Fixes
+
+* Avoid using `visit` directly to avoid missing this when doing `setPage` ([d8068ea](https://github.com/ElMassimo/js_from_routes/commit/d8068ea90a82ac8a05901c3ae81ad99df0848429))
+
+
+
 ## [1.0.1](https://github.com/ElMassimo/js_from_routes/compare/inertia@1.0.0...inertia@1.0.1) (2021-03-16)
 
 
