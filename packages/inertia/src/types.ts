@@ -1,5 +1,5 @@
 import type { UrlOptions } from '@js-from-routes/core'
-import type { Inertia, VisitOptions } from '@inertiajs/inertia'
+import type { VisitOptions } from '@inertiajs/inertia'
 
 export { UrlOptions, VisitOptions }
 

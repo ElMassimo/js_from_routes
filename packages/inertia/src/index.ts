@@ -41,8 +41,8 @@ async function request (_method: Method, url: string, options: Options = {}): Pr
 
   if (isFormHelper(form, method)) return form[method](url, config)
 
-  const safeData = method === 'delete' ? undefined : data || {}
-  return Inertia.visit(url, { preserveState: true, data: safeData, ...config })
+  const args = method === 'delete' ? [{ ...options, data }] : [data, options]
+  return Inertia[method](url, ...args)
 }
 
 export {
