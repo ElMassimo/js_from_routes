@@ -8,7 +8,7 @@ describe('formatUrl', () => {
 })
 
 describe('request', () => {
-  it.only('can unwrap a JSON response', async () => {
+  it('can unwrap a JSON response', async () => {
     expect(await request('get', 'https://pokeapi.co/api/v2/pokemon/:pokemon', { pokemon: 'pikachu' })).toMatchObject({
       name: 'pikachu',
     })

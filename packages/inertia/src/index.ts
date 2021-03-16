@@ -35,8 +35,7 @@ function isFormHelper (val: any, method: Method): val is FormHelper {
 async function request (_method: Method, url: string, options: Options = {}): Promise<any> {
   const { params = (options.data || options), data, form = data, ...otherOptions } = options
 
-  const config = params === options ? {} : otherOptions as VisitOptions
-
+  const config = otherOptions as VisitOptions
   const method = (options.method || _method).toLowerCase() as Method
   url = formatUrl(url, params)
 
