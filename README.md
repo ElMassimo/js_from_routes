@@ -24,32 +24,16 @@
   </p>
 </h1>
 
-[Vite Rails]: https://vite-ruby.netlify.app/
-[aliases]: https://vite-ruby.netlify.app/guide/development.html#import-aliases-%F0%9F%91%89
-[config options]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L178-L189
-[generate TypeScript]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/initializers/js_from_routes.rb
-[example]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript/Videos.vue#L9
-[example 2]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript
 [routes]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L6
-[route dsl]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L77-L107
-[imports]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/app/javascript/Videos.vue#L3
-[default template]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template.js.erb
-[template all]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template_all.js.erb
-[ping]: https://github.com/ElMassimo/pingcrm-vite/pull/2
-[axios]: https://github.com/axios/axios
-[redaxios]: https://github.com/developit/redaxios
-[Inertia.js]: https://github.com/inertiajs/inertia
-[advanced configuration]: https://github.com/ElMassimo/js_from_routes#advanced-configuration-
-[jQuery]: https://gist.github.com/ElMassimo/cab56e64e20ff797f3054b661a883646
 [client libraries]: https://js-from-routes.netlify.app/client/
 [codegen]: https://js-from-routes.netlify.app/guide/codegen
-[export false]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L18
 [rails bytes]: https://railsbytes.com/templates/X6ksgn
 [website]: https://js-from-routes.netlify.app
 [guides]: https://js-from-routes.netlify.app/guide/
 [guide]: https://js-from-routes.netlify.app/guide/#usage-🚀
 [configuration reference]: https://js-from-routes.netlify.app/config/
 [introduction]: https://js-from-routes.netlify.app/guide/introduction
+[ping]: https://github.com/ElMassimo/pingcrm-vite
 
 _[JS From Routes][website]_ generates path helpers and API methods from your Rails routes, allowing you to be more productive and prevent routing-related errors.
 
@@ -129,3 +113,5 @@ const downloadPath = videoClips.download.path(video)
 ```
 
 Check the [documentation website][guide] for more information.
+
+For a working example, check [this repo][ping].

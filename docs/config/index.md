@@ -5,7 +5,7 @@
 [config options]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/generator.rb#L178-L189
 [generate TypeScript]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/initializers/js_from_routes.rb
 [jQuery]: https://gist.github.com/ElMassimo/cab56e64e20ff797f3054b661a883646
-[ping]: https://github.com/ElMassimo/pingcrm-vite/pull/2
+[ping]: https://github.com/ElMassimo/pingcrm-vite
 
 [client]: /client/
 [codegen]: /guide/codegen

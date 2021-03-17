@@ -33,4 +33,4 @@ const video = await request('get', '/video_clips/:id', { id: 5 })
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+This library is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

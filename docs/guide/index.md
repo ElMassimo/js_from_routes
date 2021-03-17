@@ -8,6 +8,7 @@
 [path]: /client/#passing-parameters
 [request]: /client/#submitting-data
 [all helpers]: /config/#all-helpers-file
+[ping]: https://github.com/ElMassimo/pingcrm-vite
 
 [development]: /client/
 [routes]: https://github.com/ElMassimo/js_from_routes/blob/main/playground/vanilla/config/routes.rb#L6
@@ -111,6 +112,8 @@ You should now be able to get started with [JS From Routes][library].
 Have in mind that code generation is [fully customizable][codegen]; this is just the default way to use it.
 
 For more information about using the helpers, check out [this section][development].
+
+If you would like to see a working example, check [this repo][ping].
 
 ### Contact ✉️
 
