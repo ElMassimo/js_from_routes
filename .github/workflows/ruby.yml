@@ -43,9 +43,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: /home/runner/bundle
-          key: bundle-use-ruby-${{ matrix.ruby }}-${{ matrix.gemfile }}-gems-${{ hashFiles(matrix.gemfile) }}-${{ hashFiles('**/*.gemspec') }}
+          key: bundle-ruby-${{ matrix.ruby }}-${{ matrix.gemfile }}-gems-${{ hashFiles(matrix.gemfile) }}-${{ hashFiles('**/*.gemspec') }}
           restore-keys: |
-            bundle-use-ruby-${{ matrix.ruby }}-${{ matrix.gemfile }}-gems-
+            bundle-ruby-${{ matrix.ruby }}-${{ matrix.gemfile }}-gems-
 
       - uses: actions/setup-node@v2
         with:
