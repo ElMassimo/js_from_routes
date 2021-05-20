@@ -86,7 +86,9 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (1.0.0)
-    mimemagic (0.3.5)
+    mimemagic (0.3.10)
+      nokogiri (~> 1)
+      rake
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
     minitest (5.14.4)
@@ -100,7 +102,7 @@ GEM
     pry-byebug (3.9.0)
       byebug (~> 11.0)
       pry (~> 0.13.0)
-    puma (4.3.7)
+    puma (5.3.1)
       nio4r (~> 2.0)
     racc (1.5.2)
     rack (2.2.3)
@@ -168,7 +170,7 @@ DEPENDENCIES
   js_from_routes!
   listen (~> 3.2)
   pry-byebug
-  puma (~> 4.1)
+  puma (~> 5.3)
   rails (~> 6.0.3, >= 6.0.3.2)
   vite_rails
 

@@ -9,7 +9,7 @@ gem "js_from_routes", path: "../../js_from_routes"
 gem "rails", "~> 6.0.3", ">= 6.0.3.2"
 
 # Use Puma as the app server
-gem "puma", "~> 4.1"
+gem "puma", "~> 5.3"
 
 # Use Vite.js as the frontend tool. Read more: https://github.com/ElMassimo/vite_ruby
 gem "vite_rails"
