@@ -1,7 +1,7 @@
 {
   "name": "@js-from-routes/inertia",
   "description": "Make API requests to a Rails apps with ease.",
-  "version": "1.0.3",
+  "version": "1.10.0",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -26,11 +26,11 @@
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag inertia@$PACKAGE_VERSION && git push --tags"
   },
   "peerDependencies": {
-    "@inertiajs/inertia": "^0.8",
+    "@inertiajs/inertia": "^0.10",
     "@js-from-routes/core": "^1.0.0"
   },
   "devDependencies": {
-    "@inertiajs/inertia": "^0.8",
+    "@inertiajs/inertia": "^0.10",
     "@js-from-routes/core": "^1.0.0",
     "tsup": "^3.11.0",
     "typescript": "^4.2.2"
