@@ -1,3 +1,12 @@
+## [2.0.5](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.4...js_from_routes@2.0.5) (2021-09-02)
+
+
+### Bug Fixes
+
+* ensure :export is not added as a required default in routes ([40126ac](https://github.com/ElMassimo/js_from_routes/commit/40126ac27caeee33abef1c7067ba1db88ea03660))
+
+
+
 ## [2.0.4](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.3...js_from_routes@2.0.4) (2021-03-16)
 
 ### Features
