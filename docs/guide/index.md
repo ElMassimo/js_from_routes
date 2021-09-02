@@ -29,7 +29,7 @@ rails app:template LOCATION='https://railsbytes.com/script/X6ksgn'
 Or, add this line to your application's Gemfile in the `development` group and execute `bundle`:
 
 ```ruby
-group :development do
+group :development, :test do
   gem 'js_from_routes'
 end
 ```
