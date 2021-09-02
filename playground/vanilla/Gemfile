@@ -14,7 +14,9 @@ gem "puma", "~> 4.1"
 # Use Vite.js as the frontend tool. Read more: https://github.com/ElMassimo/vite_ruby
 gem "vite_rails"
 
-group :development do
-  gem "listen", "~> 3.2"
+group :development, :test do
+  gem "listen", "~> 3.7"
   gem "pry-byebug"
+  gem "rspec-rails"
+  gem "rails-controller-testing"
 end
