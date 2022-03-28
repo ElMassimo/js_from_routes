@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "module": "ESNext",
     "target": "es2017",
     "lib": ["ESNext", "DOM"],
@@ -10,8 +11,8 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "paths": {
-      "@/*": ["app/javascript/*"],
-      "~/*": ["app/javascript/*"]
+      "@/*": ["./app/javascript/*"],
+      "~/*": ["./app/javascript/*"]
     }
   },
   "exclude": [

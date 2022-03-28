@@ -1,4 +1,5 @@
 spec/support/generated
+spec/support/sample_app/bin
 
 /.bundle
 pkg
