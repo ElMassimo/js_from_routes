@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { definePathHelper, request, formatUrl } from '../src'
+import { definePathHelper, formatUrl } from '../src'
 
 describe('formatUrl', () => {
   it('is exported correctly', () => {
