@@ -66,10 +66,11 @@ export const Config = {
    * Default headers to be sent in the request, JSON is used as the default MIME.
    */
   headers (_requestInfo: HeaderOptions) {
+    const csrfToken = Config.getCSRFToken()
     return {
       Accept: 'application/json',
       'Content-Type': 'application/json',
-      'X-CSRF-Token': Config.getCSRFToken(),
+      ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
     }
   },
 
