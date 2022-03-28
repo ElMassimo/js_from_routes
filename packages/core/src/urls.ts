@@ -88,7 +88,7 @@ export function interpolateUrl (template: string, params: Params): string {
     paramName = snakeCase(paramName)
     value = value
       .replace(new RegExp(escapeRegExp(`(/:${paramName})`), 'g'), `/${paramValue}`)
-      .replace(new RegExp(`:${escapeRegExp(paramName)}(\\/|\\.|$)`, 'g'), `${paramValue}$1`)
+      .replace(new RegExp(`:${escapeRegExp(paramName)}(\\/|\\.|\\(|$)`, 'g'), `${paramValue}$1`)
   })
 
   // Remove any optional path if the parameters were not provided.

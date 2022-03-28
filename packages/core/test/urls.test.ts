@@ -25,6 +25,9 @@ describe('interpolateUrl', () => {
 
     expect(interpolateUrl('(/:locale)/users/:id', { id: '5', loc: '9000' }))
       .toEqual('/users/5')
+
+    expect(interpolateUrl('/users/:id(/:page)', { id: '5' }))
+      .toEqual('/users/5')
   })
 })
 
