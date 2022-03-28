@@ -1,4 +1,4 @@
-import 'isomorphic-fetch'
+import { describe, afterEach, it, expect } from 'vitest'
 import { definePathHelper, request, formatUrl, Config } from '../src'
 
 describe('formatUrl', () => {

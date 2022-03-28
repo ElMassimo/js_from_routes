@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import { interpolateUrl, formatUrl } from '../src'
 
 describe('interpolateUrl', () => {

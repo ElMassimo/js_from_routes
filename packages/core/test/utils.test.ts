@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest'
 import { deepConvertKeys, snakeCase, camelCase } from '../src'
 
 function numberCase (val: string) {

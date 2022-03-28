@@ -29,7 +29,7 @@
     "@js-from-routes/core": "^1.0.0"
   },
   "devDependencies": {
-    "tsup": "^3.11.0",
+    "tsup": "^5.12.1",
     "typescript": "^4.2.2"
   }
 }

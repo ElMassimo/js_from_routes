@@ -26,7 +26,7 @@
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag core@$PACKAGE_VERSION && git push --tags"
   },
   "devDependencies": {
-    "tsup": "^3.11.0",
+    "tsup": "^5.12.1",
     "typescript": "^4.2.2"
   }
 }
