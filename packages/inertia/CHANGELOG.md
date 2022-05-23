@@ -1,3 +1,12 @@
+## [1.10.1](https://github.com/ElMassimo/js_from_routes/compare/inertia@1.10.0...inertia@1.10.1) (2022-05-23)
+
+
+### Bug Fixes
+
+* export types for inertia path helpers ([ee3e53f](https://github.com/ElMassimo/js_from_routes/commit/ee3e53f6f9040e5e62d5211869fb1c9f7cc252f6))
+
+
+
 ## [1.0.3](https://github.com/ElMassimo/js_from_routes/compare/inertia@1.0.2...inertia@1.0.3) (2021-03-16)
 
 
