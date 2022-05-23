@@ -26,11 +26,11 @@
     "postpublish": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag inertia@$PACKAGE_VERSION && git push --tags"
   },
   "peerDependencies": {
-    "@inertiajs/inertia": "^0.10",
+    "@inertiajs/inertia": "^0.11",
     "@js-from-routes/core": "^1.0.0"
   },
   "devDependencies": {
-    "@inertiajs/inertia": "^0.10",
+    "@inertiajs/inertia": "^0.11",
     "@js-from-routes/core": "^1.0.0",
     "tsup": "^5.12.1",
     "typescript": "^4.2.2"
