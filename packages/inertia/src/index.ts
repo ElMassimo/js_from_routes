@@ -3,6 +3,8 @@ import { Inertia } from '@inertiajs/inertia'
 import { formatUrl } from '@js-from-routes/core'
 import { FormHelper, Method, Options, PathHelper, VisitOptions, UrlOptions } from './types'
 
+export * from './types'
+
 /**
  * Defines a path helper that can make a request or interpolate a URL path.
  *
