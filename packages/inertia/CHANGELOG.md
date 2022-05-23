@@ -1,3 +1,12 @@
+## [1.10.2](https://github.com/ElMassimo/js_from_routes/compare/inertia@1.10.1...inertia@1.10.2) (2022-05-23)
+
+
+### Bug Fixes
+
+* update peer deps to inertia@0.11 ([1c22dad](https://github.com/ElMassimo/js_from_routes/commit/1c22dade7b5a747bc2946f6db2aedb47cd783b6a))
+
+
+
 ## [1.10.1](https://github.com/ElMassimo/js_from_routes/compare/inertia@1.10.0...inertia@1.10.1) (2022-05-23)
 
 
