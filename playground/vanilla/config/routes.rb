@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   root to: "welcome#home"
 
+  defaults export: true do
+    get "/hi" => redirect("/welcome")
+  end
+
   resources :welcome
 
   resources :video_clips, only: [:new, :edit, :create, :update, :destroy], export: true do

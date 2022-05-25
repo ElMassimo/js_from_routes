@@ -186,7 +186,7 @@ module JsFromRoutes
     # Internal: Returns exported routes grouped by controller name.
     def exported_routes_by_controller(routes)
       routes.select { |route|
-        route.defaults.fetch(:export, false)
+        route.defaults.fetch(:export, false) && route.requirements[:controller]
       }.group_by { |route|
         route.requirements.fetch(:controller)
       }
