@@ -1,3 +1,12 @@
+## [2.0.6](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.5...js_from_routes@2.0.6) (2022-05-25)
+
+
+### Bug Fixes
+
+* should not attempt to export routes without controllers ([47f8f70](https://github.com/ElMassimo/js_from_routes/commit/47f8f70b0db98baa240470f8b2b891a730499518))
+
+
+
 ## [2.0.5](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.4...js_from_routes@2.0.5) (2021-09-02)
 
 
