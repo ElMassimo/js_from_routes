@@ -4,16 +4,16 @@ sidebar: false
 features:
   - title: 🚀 Productive 
     details: No need to specify the URL, use the controller and action name
-    link: /motivation.html#webpack—increasing-load-times
+    link: /guide/#use-the-generated-helpers
   - title: 🎩 Elegant 
     details: Make requests with function calls that return promises
-    link: /guide/introduction.html#why-vite-🤔
+    link: /client/#submitting-data
   - title: ✅ Safer
     details: Path helpers are fully typed and typos are no longer possible
-    link: /guide/deployment.html
+    link: /guide/introduction.html#✅-safety
   - title: 🛠 Customizable
     details: Client libraries for fetch, axios, and more. Or use your own code
-    link: /guide/deployment.html
+    link: /client/
 ---
 
 <script setup>
