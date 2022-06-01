@@ -48,7 +48,7 @@ Once the library is installed, all you need to do is:
 
 Use `export: true` to specify which [routes] should be taken into account when generating JS.
 
-```ruby{2}
+```ruby {2}
 Rails.application.routes.draw do
   resources :video_clips, only: [:show], export: true do
     get :download, on: :member

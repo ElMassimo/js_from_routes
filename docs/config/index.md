@@ -1,3 +1,7 @@
+---
+outline: deep
+---
+
 [default template library]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template.js.erb#L3
 [template all]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template_all.js.erb
 [template index]: https://github.com/ElMassimo/js_from_routes/blob/main/js_from_routes/lib/js_from_routes/template_index.js.erb

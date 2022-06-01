@@ -1,4 +1,7 @@
-// @ts-check
+import baseConfig from '@mussi/vitepress-theme/config'
+
+import { defineConfigWithTheme, HeadConfig, UserConfig } from 'vitepress'
+import type { Config } from '@mussi/vitepress-theme'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -8,7 +11,6 @@ const site = isProd ? 'https://js-from-routes.netlify.app' : 'http://localhost:3
 const image = `${site}/banner.png`
 
 const head = [
-  ['style', {}, 'img { border-radius: 10px }' + 'h1.title { margin-left: 0.5em }'],
   ['meta', { name: 'author', content: 'Máximo Mussini' }],
   ['meta', { name: 'keywords', content: 'rails, ruby, routes, codegen, js, typescript, vitejs' }],
 
@@ -36,11 +38,9 @@ const head = [
 if (isProd)
   head.push(['script', { src: 'https://unpkg.com/thesemetrics@latest', async: '' }])
 
-/**
- * @type {import('vitepress').UserConfig}
- */
-module.exports = {
-  title: 'JS From Routes',
+export default defineConfigWithTheme({
+  extends: baseConfig as () => UserConfig<Config>,
+  title,
   description,
   head,
   themeConfig: {
@@ -49,12 +49,27 @@ module.exports = {
       apiKey: 'cdb4a3df8ecf73fadf6bde873fc1b0d2',
       indexName: 'js_from_routes',
     },
-    repo: 'ElMassimo/js_from_routes',
+
     logo: '/logo.svg',
-    docsDir: 'docs',
-    docsBranch: 'main',
-    editLinks: true,
-    editLinkText: 'Suggest changes to this page',
+
+    author: {
+      name: 'Maximo Mussini',
+      link: 'https://maximomussini.com',
+    },
+
+    socialLinks: [
+      { icon: 'github', link: 'https://github.com/ElMassimo/js_from_routes' },
+      { icon: 'twitter', link: 'https://twitter.com/MaximoMussini' },
+      { icon: 'discord', link: 'https://discord.gg/9sSq53jxb4' },
+    ],
+
+    footer: {
+      license: {
+        text: 'MIT License',
+        link: 'https://opensource.org/licenses/MIT',
+      },
+      copyright: 'Copyright © 2021-2022',
+    },
 
     nav: [
       { text: 'Guide', link: '/guide/' },
@@ -66,12 +81,10 @@ module.exports = {
     ],
 
     sidebar: {
-      '/config/': 'auto',
-      // catch-all fallback
       '/': [
         {
           text: 'Guide',
-          children: [
+          items: [
             { text: 'Introduction', link: '/guide/introduction' },
             { text: 'Getting Started', link: '/guide/' },
             { text: 'Code Generation', link: '/guide/codegen' },
@@ -79,21 +92,29 @@ module.exports = {
         },
         {
           text: 'Client',
-          children: [
+          items: [
             { text: 'Integrations', link: '/client/' },
           ],
         },
         {
           text: 'FAQs',
-          children: [
+          items: [
             { text: 'Troubleshooting', link: '/faqs/' },
           ],
         },
         {
           text: 'Config',
           link: '/config/',
+          items: [
+            { text: 'Code Generation', link: '/config/' },
+          ],
         },
       ],
     },
   },
-}
+  vite: {
+    optimizeDeps: {
+      exclude: ['@mussi/vitepress-theme'],
+    },
+  },
+})

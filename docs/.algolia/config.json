@@ -96,5 +96,6 @@
     "attributesForFaceting": [
       "lang"
     ]
-  }
+  },
+  "js_render": true
 }
