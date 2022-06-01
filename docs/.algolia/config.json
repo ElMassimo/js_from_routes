@@ -25,9 +25,6 @@
       "page_rank": 1
     }
   ],
-  "stop_urls": [
-    ".html$"
-  ],
   "selectors": {
     "default": {
       "lvl0": {
@@ -72,7 +69,8 @@
         "default_value": "FAQs"
       },
       "lvl1": ".content h1",
-      "lvl2": ".content h2"
+      "lvl2": ".content h2",
+      "text": ".content p, .content li"
     },
     "config": {
       "lvl0": {

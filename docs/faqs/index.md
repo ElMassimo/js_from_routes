@@ -10,7 +10,7 @@ This section lists a few common gotchas, and bugs introduced in the past.
 
 Please skim through __before__ opening an [issue][GitHub Issues].
 
-### Could not resolve "@js-from-routes/core"
+## Could not resolve "@js-from-routes/core"
 
 Some package managers do not install `peerDependencies`, while others [do](https://github.com/npm/rfcs/blob/latest/implemented/0025-install-peer-deps.md).
 
@@ -20,11 +20,11 @@ Try adding the missing package explicitly:
 npm install @js-from-routes/core # yarn add @js-from-routes/core
 ```
 
-### Imports in the generated code are not working
+## Imports in the generated code are not working
 
 Make sure that you have added one of the [client libraries][client] to your `package.json` and that the packages are installed.
 
-### Changes to my custom templates are not being picked up
+## Changes to my custom templates are not being picked up
 
 Modifying the template should change the [cache key], so you might have introduced additional dependencies in your custom template.
 
