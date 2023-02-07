@@ -37,7 +37,7 @@ module JsFromRoutes
 
     # Public: Name of the JS file with helpers for the the given controller.
     def import_filename
-      @config.output_folder.basename.join((basename.split(".")[0]).to_s)
+      filename.relative_path_from(@config.output_folder).to_s.sub(/\.\w+$/, "")
     end
 
     # Public: Name of the file as a valid JS variable.
