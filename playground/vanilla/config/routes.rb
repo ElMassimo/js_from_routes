@@ -17,10 +17,12 @@ Rails.application.routes.draw do
     resources :comments, only: [:show, :index], shallow: true
   end
 
-  resources :user_preferences, only: [], export: true do
-    patch :switch_to_classic_navbar, on: :collection
-    get :switch_to_beta_navbar, on: :collection, export: false
-    get "/switch_to_classic/:page", action: :switch_to_classic, on: :collection
-    get "/switch_to_beta/:page", action: :switch_to_beta, on: :collection, as: :switch_to_beta_page
+  namespace :settings, path: "/" do
+    resources :user_preferences, only: [], export: true do
+      patch :switch_to_classic_navbar, on: :collection
+      get :switch_to_beta_navbar, on: :collection, export: false
+      get "/switch_to_classic/:page", action: :switch_to_classic, on: :collection
+      get "/switch_to_beta/:page", action: :switch_to_beta, on: :collection, as: :switch_to_beta_page
+    end
   end
 end
