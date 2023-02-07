@@ -1,3 +1,12 @@
+# [2.1.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.6...js_from_routes@2.1.0) (2023-02-07)
+
+
+### Bug Fixes
+
+* use relative paths in auto-generated files ([#36](https://github.com/ElMassimo/js_from_routes/issues/36)) ([0440c50](https://github.com/ElMassimo/js_from_routes/commit/0440c505b1b4d3cca6c390004234faacd10b9480)), closes [#35](https://github.com/ElMassimo/js_from_routes/issues/35)
+
+
+
 ## [2.0.6](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.5...js_from_routes@2.0.6) (2022-05-25)
 
 
