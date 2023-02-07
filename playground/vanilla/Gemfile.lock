@@ -1,7 +1,7 @@
 PATH
   remote: ../../js_from_routes
   specs:
-    js_from_routes (2.0.5)
+    js_from_routes (2.0.6)
       railties (>= 5.1, < 8)
 
 GEM
@@ -193,8 +193,5 @@ DEPENDENCIES
   rspec-rails
   vite_rails
 
-RUBY VERSION
-   ruby 3.1.0p0
-
 BUNDLED WITH
-   2.1.4
+   2.3.22
