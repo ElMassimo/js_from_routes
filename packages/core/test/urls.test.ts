@@ -1,3 +1,4 @@
+import { URL } from 'url'
 import { describe, it, expect } from 'vitest'
 import { interpolateUrl, formatUrl } from '../src'
 

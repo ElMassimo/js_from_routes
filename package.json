@@ -23,13 +23,13 @@
     "eslint": "^7.17.0",
     "eslint-plugin-jest": "^24.1.5",
     "execa": "^5.0.0",
-    "happy-dom": "^2.50.0",
+    "happy-dom": "7.7.2",
     "husky": "^5.1.1",
     "lint-staged": "^10.5.4",
     "minimist": "^1.2.5",
     "semver": "^7.3.4",
     "typescript": "^4.0.5",
-    "vitest": "^0.7.12"
+    "vitest": "^0.29.8"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx,vue}": [

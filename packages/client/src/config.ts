@@ -122,8 +122,14 @@ export const Config = {
    * Convenience hook to extract headers from the response.
    */
   withResponse (response: Response) {
-    // Extract a CSRF token provided in the headers.
     const headers = response.headers || {}
-    Config.csrfToken = headers.get('x-csrf-token') || Config.csrfToken
+
+    // Extract a CSRF token provided in the headers.
+    const updatedToken = 'get' in headers
+      ? headers.get('x-csrf-token')
+      : headers['x-csrf-token']
+
+    if (updatedToken)
+      Config.csrfToken = updatedToken
   },
 }
