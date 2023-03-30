@@ -1,3 +1,12 @@
+## [1.0.4](https://github.com/ElMassimo/js_from_routes/compare/client@1.0.3...client@1.0.4) (2023-03-30)
+
+
+### Bug Fixes
+
+* obtaining csrf token from response headers ([#38](https://github.com/ElMassimo/js_from_routes/issues/38)) ([76ee563](https://github.com/ElMassimo/js_from_routes/commit/76ee5631896e9e0190c9fac78e475cc2c77b2795))
+
+
+
 ## [1.0.3](https://github.com/ElMassimo/js_from_routes/compare/client@1.0.2...client@1.0.3) (2022-03-28)
 
 
