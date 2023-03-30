@@ -123,7 +123,7 @@ export const Config = {
    */
   withResponse (response: Response) {
     // Extract a CSRF token provided in the headers.
-    const headers: Record<string, any> = response.headers || {}
-    Config.csrfToken = headers['x-csrf-token'] || Config.csrfToken
+    const headers = response.headers || {}
+    Config.csrfToken = headers.get('x-csrf-token') || Config.csrfToken
   },
 }
