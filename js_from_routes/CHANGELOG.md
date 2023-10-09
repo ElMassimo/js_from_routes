@@ -1,3 +1,12 @@
+
+If you want to preserve the old behavior:
+
+```ruby
+JsFromRoutes.config do |config|
+  config.helper_mappings = {"index" => "list", "show" => "get"}
+end
+```
+
 # [2.1.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.0.6...js_from_routes@2.1.0) (2023-02-07)
 
 

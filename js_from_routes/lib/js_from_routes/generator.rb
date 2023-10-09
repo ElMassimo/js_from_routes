@@ -176,7 +176,7 @@ module JsFromRoutes
         client_library: "@js-from-routes/client",
         export_if: ->(route) { route.defaults.fetch(:export, nil) },
         file_suffix: "Api.js",
-        helper_mappings: {"index" => "list", "show" => "get"},
+        helper_mappings: {},
         output_folder: root.join("app", dir, "api"),
         template_path: File.expand_path("template.js.erb", __dir__),
         template_all_path: File.expand_path("template_all.js.erb", __dir__),
