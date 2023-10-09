@@ -4,6 +4,6 @@ import { definePathHelper } from '<%= client_library %>'
 
 export default {
 <% routes.each do |route| %>
-  <%= route.helper %>: definePathHelper('<%= route.verb %>', '<%= route.path %>'),
+  <%= route.helper %>: /* #__PURE__ */ definePathHelper('<%= route.verb %>', '<%= route.path %>'),
 <% end %>
 }
