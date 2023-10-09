@@ -1,7 +1,7 @@
 PATH
   remote: ../../js_from_routes
   specs:
-    js_from_routes (2.0.6)
+    js_from_routes (2.1.0)
       railties (>= 5.1, < 8)
 
 GEM
@@ -92,12 +92,12 @@ GEM
     nokogiri (1.13.3)
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
-    pry (0.13.1)
+    pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    pry-byebug (3.9.0)
+    pry-byebug (3.10.1)
       byebug (~> 11.0)
-      pry (~> 0.13.0)
+      pry (>= 0.13, < 0.15)
     puma (4.3.11)
       nio4r (~> 2.0)
     racc (1.6.0)
