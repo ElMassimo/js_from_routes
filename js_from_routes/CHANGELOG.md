@@ -3,11 +3,9 @@
 
 ### Features
 
-* **breaking:** no longer map `index` to `list` and `show` to `get` ([5eb3f48](https://github.com/ElMassimo/js_from_routes/commit/5eb3f48de71fe38ee1c67d9b91a81d71a437e1a8))
 * add `export_if` to allow using custom `:export` values ([fd1776c](https://github.com/ElMassimo/js_from_routes/commit/fd1776cc91402f1e9a9003031cb9fd6c3a0d63f9))
 
-
-
+* **breaking:** no longer map `index` to `list` and `show` to `get` ([5eb3f48](https://github.com/ElMassimo/js_from_routes/commit/5eb3f48de71fe38ee1c67d9b91a81d71a437e1a8))
 
 If you want to preserve the old behavior:
 
