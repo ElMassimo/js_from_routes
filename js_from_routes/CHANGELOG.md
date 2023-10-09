@@ -1,3 +1,12 @@
+## [3.0.1](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@3.0.0...js_from_routes@3.0.1) (2023-10-09)
+
+
+### Features
+
+* allow rollup to tree-shake unused path helpers ([150ccd9](https://github.com/ElMassimo/js_from_routes/commit/150ccd9dd616ce448b50ae6c2807dd7f5678479d))
+
+
+
 # [3.0.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@2.1.0...js_from_routes@3.0.0) (2023-10-09)
 
 
