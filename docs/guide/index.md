@@ -53,6 +53,11 @@ Rails.application.routes.draw do
   resources :video_clips, only: [:show], export: true do
     get :download, on: :member
   end
+
+  # Or:
+  defaults export: true do
+    # All routes defined inside this block will be exported.
+  end
 end
 ```
 

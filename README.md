@@ -97,6 +97,11 @@ Rails.application.routes.draw do
   resources :video_clips, export: true do
     get :download, on: :member
   end
+
+  # Or:
+  defaults export: true do
+    # All routes defined inside this block will be exported.
+  end
 end
 ```
 
@@ -107,7 +112,7 @@ Path helpers will be [automatically generated][codegen] when refreshing the page
 ```js
 import { videoClips } from '~/api'
 
-const video = await videoClips.get({ id: 'oHg5SJYRHA0' })
+const video = await videoClips.show({ id: 'oHg5SJYRHA0' })
 
 const downloadPath = videoClips.download.path(video)
 ```

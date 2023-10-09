@@ -174,6 +174,7 @@ module JsFromRoutes
       {
         all_helpers_file: true,
         client_library: "@js-from-routes/client",
+        export_if: ->(route) { route.defaults.fetch(:export, nil) },
         file_suffix: "Api.js",
         helper_mappings: {"index" => "list", "show" => "get"},
         output_folder: root.join("app", dir, "api"),
@@ -186,7 +187,7 @@ module JsFromRoutes
     # Internal: Returns exported routes grouped by controller name.
     def exported_routes_by_controller(routes)
       routes.select { |route|
-        route.defaults.fetch(:export, false) && route.requirements[:controller]
+        config.export_if.call(route) && route.requirements[:controller]
       }.group_by { |route|
         route.requirements.fetch(:controller)
       }

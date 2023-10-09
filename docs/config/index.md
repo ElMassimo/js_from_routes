@@ -62,6 +62,19 @@ The following [config options] are available:
   config.client_library = '~/services/ApiService'
   ```
 
+### `export_if`
+
+  Allows to configure which routes should be exported.
+
+  Enables advanced usages, such as exporting different routes to different paths,
+  which is helpful for monoliths with several apps inside them.
+
+  __Default__: `->(route) { route.defaults.fetch(:export, nil) }`
+
+  ```ruby
+  config.export_if = ->(route) { route.defaults[:export] == :main }
+  ```
+
 ### `file_suffix`
   
   This suffix is added by default to all generated files. You can modify it if
