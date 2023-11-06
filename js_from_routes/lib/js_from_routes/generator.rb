@@ -16,7 +16,7 @@ module JsFromRoutes
       @controller, @config = controller, config
       @routes = routes
         .uniq { |route| route.requirements.fetch(:action) }
-        .map { |route| Route.new(route, config.helper_mappings) }
+        .map { |route| Route.new(route, config.helper_mappings, relative_url_root: config.relative_url_root) }
     end
 
     # Public: Used to check whether the file should be generated again, changes
@@ -53,8 +53,9 @@ module JsFromRoutes
 
   # Internal: A presenter for an individual Rails action.
   class Route
-    def initialize(route, mappings = {})
+    def initialize(route, mappings = {}, relative_url_root: "/")
       @route, @mappings = route, mappings
+      @relative_url_root = relative_url_root.to_s.gsub(/\/$/, "")
     end
 
     # Public: The `export` setting specified for the action.
@@ -69,7 +70,7 @@ module JsFromRoutes
 
     # Public: The path for the action. Example: '/users/:id/edit'
     def path
-      @route.path.spec.to_s.chomp("(.:format)")
+      [@relative_url_root, @route.path.spec.to_s.chomp("(.:format)")].join
     end
 
     # Public: The name of the JS helper for the action. Example: 'destroyAll'
@@ -181,6 +182,7 @@ module JsFromRoutes
         template_path: File.expand_path("template.js.erb", __dir__),
         template_all_path: File.expand_path("template_all.js.erb", __dir__),
         template_index_path: File.expand_path("template_index.js.erb", __dir__),
+        relative_url_root: Rails.configuration.relative_url_root
       }
     end
 
