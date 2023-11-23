@@ -2,6 +2,7 @@ import { Inertia } from '@inertiajs/inertia'
 
 import { formatUrl } from '@js-from-routes/core'
 import { FormHelper, Method, Options, PathHelper, VisitOptions, UrlOptions } from './types'
+import { Config } from './config'
 
 export * from './types'
 
@@ -35,15 +36,19 @@ function isFormHelper (val: any, method: Method): val is FormHelper {
  * @return {Promise} The result of the request
  */
 async function request (_method: Method, url: string, options: Options = {}): Promise<any> {
-  const { params = (options.data || options), data, form = data, ...otherOptions } = options
+  const { params = (options.data || options), data, form = data, serializeData = Config.serializeData, ...otherOptions } = options
 
+  const serializedData = serializeData(data)
   const config = otherOptions as VisitOptions
   const method = (options.method || _method).toLowerCase() as Method
   url = formatUrl(url, params)
 
-  if (isFormHelper(form, method)) return form[method](url, config)
+  if (isFormHelper(form, method)) {
+    form.transform(serializeData)
+    return form[method](url, config)
+  }
 
-  const args = method === 'delete' ? [{ ...options, data }] : [data, options]
+  const args = method === 'delete' ? [{ ...options, data: serializedData }] : [serializedData, options]
   return Inertia[method](url, ...args)
 }
 

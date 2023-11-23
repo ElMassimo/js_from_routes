@@ -1,0 +1,6 @@
+{
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": true },
+  "[typescript]": {
+    "editor.defaultFormatter": null // disable prettier if present. Let eslint handle it.
+  }
+}

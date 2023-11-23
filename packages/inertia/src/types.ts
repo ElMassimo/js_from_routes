@@ -21,6 +21,7 @@ export interface FormHelper {
   post: RequestMethod
   put: RequestMethod
   patch: RequestMethod
+  transform: (data: any) => any
 }
 
 /**
@@ -41,6 +42,12 @@ export interface RequestOptions extends VisitOptions {
    * An Inertia.js form to submit in the request.
    */
   form?: FormHelper
+
+  /**
+   * The function used to convert the data before sending it to the server.
+   * @default snakeCaseKeys
+   */
+  serializeData?: (data: any) => any
 }
 
 export type Options = RequestOptions | UrlOptions
