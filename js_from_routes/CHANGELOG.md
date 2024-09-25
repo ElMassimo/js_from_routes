@@ -1,3 +1,12 @@
+## [3.0.2](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@3.0.1...js_from_routes@3.0.2) (2024-09-25)
+
+
+### Bug Fixes
+
+* remove references to OpenStruct ([#49](https://github.com/ElMassimo/js_from_routes/issues/49)) ([6c0d8de](https://github.com/ElMassimo/js_from_routes/commit/6c0d8ded2bf82ccc2f8f35508dc256c3b301069a)), closes [#47](https://github.com/ElMassimo/js_from_routes/issues/47)
+
+
+
 ## [3.0.1](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@3.0.0...js_from_routes@3.0.1) (2023-10-09)
 
 
