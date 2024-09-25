@@ -126,10 +126,29 @@ module JsFromRoutes
     end
   end
 
+  class Configuration
+    attr_accessor :all_helpers_file, :client_library, :export_if, :file_suffix,
+      :helper_mappings, :output_folder, :template_path,
+      :template_all_path, :template_index_path
+
+    def initialize(root)
+      dir = %w[frontend packs javascript assets].find { |dir| root.join("app", dir).exist? }
+      @all_helpers_file = true
+      @client_library = "@js-from-routes/client"
+      @export_if = ->(route) { route.defaults.fetch(:export, nil) }
+      @file_suffix = "Api.js"
+      @helper_mappings = {}
+      @output_folder = root.join("app", dir, "api")
+      @template_path = File.expand_path("template.js.erb", __dir__)
+      @template_all_path = File.expand_path("template_all.js.erb", __dir__)
+      @template_index_path = File.expand_path("template_index.js.erb", __dir__)
+    end
+  end
+
   class << self
     # Public: Configuration of the code generator.
     def config
-      @config ||= OpenStruct.new(default_config(::Rails.root || Pathname.new(Dir.pwd)))
+      @config ||= Configuration.new(::Rails.root || Pathname.new(Dir.pwd))
       yield(@config) if block_given?
       @config
     end
@@ -156,7 +175,7 @@ module JsFromRoutes
       return unless config.all_helpers_file && !routes.empty?
 
       preferred_extension = File.extname(config.file_suffix)
-      index_file = config.all_helpers_file == true ? "index#{preferred_extension}" : config.all_helpers_file
+      index_file = (config.all_helpers_file == true) ? "index#{preferred_extension}" : config.all_helpers_file
 
       Template.new(config.template_all_path).write_if_changed OpenStruct.new(
         cache_key: routes.map(&:import_filename).join + File.read(config.template_all_path),
@@ -167,21 +186,6 @@ module JsFromRoutes
         cache_key: File.read(config.template_index_path),
         filename: config.output_folder.join(index_file),
       )
-    end
-
-    def default_config(root)
-      dir = %w[frontend packs javascript assets].find { |dir| root.join("app", dir).exist? }
-      {
-        all_helpers_file: true,
-        client_library: "@js-from-routes/client",
-        export_if: ->(route) { route.defaults.fetch(:export, nil) },
-        file_suffix: "Api.js",
-        helper_mappings: {},
-        output_folder: root.join("app", dir, "api"),
-        template_path: File.expand_path("template.js.erb", __dir__),
-        template_all_path: File.expand_path("template_all.js.erb", __dir__),
-        template_index_path: File.expand_path("template_index.js.erb", __dir__),
-      }
     end
 
     # Internal: Returns exported routes grouped by controller name.
