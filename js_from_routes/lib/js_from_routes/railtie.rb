@@ -30,7 +30,7 @@ class JsFromRoutes::Railtie < Rails::Railtie
   initializer "js_from_routes.required_defaults" do |app|
     ActionDispatch::Journey::Route.prepend Module.new {
       def required_default?(key)
-        key == :export ? false : super
+        (key == :export) ? false : super
       end
     }
   end

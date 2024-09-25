@@ -175,7 +175,7 @@ module JsFromRoutes
       return unless config.all_helpers_file && !routes.empty?
 
       preferred_extension = File.extname(config.file_suffix)
-      index_file = config.all_helpers_file == true ? "index#{preferred_extension}" : config.all_helpers_file
+      index_file = (config.all_helpers_file == true) ? "index#{preferred_extension}" : config.all_helpers_file
 
       Template.new(config.template_all_path).write_if_changed OpenStruct.new(
         cache_key: routes.map(&:import_filename).join + File.read(config.template_all_path),
