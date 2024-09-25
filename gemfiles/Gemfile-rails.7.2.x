@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'rails', '~> 6.1.0'
+gem 'rails', '~> 7.2.1'
 
 gemspec path: '../js_from_routes'
