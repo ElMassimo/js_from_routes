@@ -128,8 +128,8 @@ module JsFromRoutes
 
   class Configuration
     attr_accessor :all_helpers_file, :client_library, :export_if, :file_suffix,
-                  :helper_mappings, :output_folder, :template_path,
-                  :template_all_path, :template_index_path
+      :helper_mappings, :output_folder, :template_path,
+      :template_all_path, :template_index_path
 
     def initialize(root)
       dir = %w[frontend packs javascript assets].find { |dir| root.join("app", dir).exist? }
@@ -175,7 +175,7 @@ module JsFromRoutes
       return unless config.all_helpers_file && !routes.empty?
 
       preferred_extension = File.extname(config.file_suffix)
-      index_file = config.all_helpers_file == true ? "index#{preferred_extension}" : config.all_helpers_file
+      index_file = (config.all_helpers_file == true) ? "index#{preferred_extension}" : config.all_helpers_file
 
       Template.new(config.template_all_path).write_if_changed OpenStruct.new(
         cache_key: routes.map(&:import_filename).join + File.read(config.template_all_path),
