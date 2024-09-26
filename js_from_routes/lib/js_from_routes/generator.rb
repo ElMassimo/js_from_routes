@@ -47,7 +47,14 @@ module JsFromRoutes
 
     # Internal: The base name of the JS file to be written.
     def basename
-      "#{@controller.camelize}#{@config.file_suffix}".tr_s(":", "/")
+      case @config.filename_style
+      when :kebab
+        "#{@controller.underscore.tr("_", "-")}-#{@config.file_suffix.downcase}"
+      when :camel
+        "#{@controller.camelize(:upper).tr_s(":", "/")}#{@config.file_suffix}"
+      else
+        "#{@controller.camelize(:upper).tr_s(":", "/")}#{@config.file_suffix}"
+      end
     end
   end
 
@@ -129,7 +136,7 @@ module JsFromRoutes
   class Configuration
     attr_accessor :all_helpers_file, :client_library, :export_if, :file_suffix,
       :helper_mappings, :output_folder, :template_path,
-      :template_all_path, :template_index_path
+      :template_all_path, :template_index_path, :filename_style
 
     def initialize(root)
       dir = %w[frontend packs javascript assets].find { |dir| root.join("app", dir).exist? }
@@ -137,6 +144,7 @@ module JsFromRoutes
       @client_library = "@js-from-routes/client"
       @export_if = ->(route) { route.defaults.fetch(:export, nil) }
       @file_suffix = "Api.js"
+      @filename_style = :camel
       @helper_mappings = {}
       @output_folder = root.join("app", dir, "api")
       @template_path = File.expand_path("template.js.erb", __dir__)

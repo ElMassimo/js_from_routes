@@ -86,6 +86,20 @@ The following [config options] are available:
   config.file_suffix = 'Api.ts'
   ```
 
+### `filename_style`
+  
+  Allows to configure filename style for the generated files. You can modify it if you want to use a different filename convention. 
+  
+  `:kebab` - Converts the controller name to kebab-case and appends the file suffix in lowercase.
+  
+  `:camel` - Converts the controller name to CamelCase and appends the file suffix.
+
+  __Default__: `:camel`
+
+  ```ruby
+  config.filename_style = :kebab
+  ```
+
 ### `helper_mappings`
   
   Defines how to obtain a path helper name from the name of a route (controller action).
