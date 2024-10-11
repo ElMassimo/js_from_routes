@@ -187,18 +187,15 @@ module JsFromRoutes
       preferred_extension = File.extname(config.file_suffix)
       index_file = (config.all_helpers_file == true) ? "index#{preferred_extension}" : config.all_helpers_file
 
-      template_all_path_config = TemplateConfig.new(
+      Template.new(config.template_all_path).write_if_changed TemplateConfig.new(
         cache_key: routes.map(&:import_filename).join + File.read(config.template_all_path),
         filename: config.output_folder.join("all#{preferred_extension}"),
-        helpers: routes
+        helpers: routes,
       )
-      template_index_path_config = TemplateConfig.new(
+      Template.new(config.template_index_path).write_if_changed TemplateConfig.new(
         cache_key: File.read(config.template_index_path),
         filename: config.output_folder.join(index_file)
       )
-
-      Template.new(config.template_all_path).write_if_changed template_all_path_config
-      Template.new(config.template_index_path).write_if_changed template_index_path_config
     end
 
     # Internal: Returns exported routes grouped by controller name.
