@@ -1,3 +1,12 @@
+# [4.0.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@3.0.2...js_from_routes@4.0.0) (2024-10-11)
+
+
+### Features
+
+* allow customizing the namespace for path helpers ([#50](https://github.com/ElMassimo/js_from_routes/issues/50)) ([9d38c83](https://github.com/ElMassimo/js_from_routes/commit/9d38c8312ef1275b3b8c18c1129bc936da08bcd0))
+
+
+
 ## [3.0.2](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@3.0.1...js_from_routes@3.0.2) (2024-09-25)
 
 
