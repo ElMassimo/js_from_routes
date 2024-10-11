@@ -194,7 +194,7 @@ module JsFromRoutes
       )
       Template.new(config.template_index_path).write_if_changed TemplateConfig.new(
         cache_key: File.read(config.template_index_path),
-        filename: config.output_folder.join(index_file)
+        filename: config.output_folder.join(index_file),
       )
     end
 
