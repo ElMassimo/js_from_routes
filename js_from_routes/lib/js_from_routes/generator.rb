@@ -154,6 +154,16 @@ module JsFromRoutes
     end
   end
 
+  class TemplateConfig
+    attr_reader :cache_key, :filename, :helpers
+
+    def initialize(cache_key:, filename:, helpers: nil)
+      @cache_key = cache_key
+      @filename = filename
+      @helpers = helpers
+    end
+  end
+
   class << self
     # Public: Configuration of the code generator.
     def config
@@ -187,12 +197,12 @@ module JsFromRoutes
       preferred_extension = File.extname(config.file_suffix)
       index_file = (config.all_helpers_file == true) ? "index#{preferred_extension}" : config.all_helpers_file
 
-      Template.new(config.template_all_path).write_if_changed OpenStruct.new(
+      Template.new(config.template_all_path).write_if_changed TemplateConfig.new(
         cache_key: routes.map(&:import_filename).join + File.read(config.template_all_path),
         filename: config.output_folder.join("all#{preferred_extension}"),
         helpers: routes,
       )
-      Template.new(config.template_index_path).write_if_changed OpenStruct.new(
+      Template.new(config.template_index_path).write_if_changed TemplateConfig.new(
         cache_key: File.read(config.template_index_path),
         filename: config.output_folder.join(index_file),
       )
