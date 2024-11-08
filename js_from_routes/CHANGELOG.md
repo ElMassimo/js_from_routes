@@ -1,3 +1,12 @@
+## [4.0.1](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.0.0...js_from_routes@4.0.1) (2024-11-08)
+
+
+### Features
+
+* allow using with rails 8 ([ffcefb9](https://github.com/ElMassimo/js_from_routes/commit/ffcefb9c4eda530cec107b0e74e71d318f6e76a0)), closes [#53](https://github.com/ElMassimo/js_from_routes/issues/53)
+
+
+
 # [4.0.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@3.0.2...js_from_routes@4.0.0) (2024-10-11)
 
 
