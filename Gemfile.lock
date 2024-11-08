@@ -2,7 +2,7 @@ PATH
   remote: js_from_routes
   specs:
     js_from_routes (4.0.0)
-      railties (>= 5.1, < 8)
+      railties (>= 5.1, < 9)
 
 GEM
   remote: https://rubygems.org/
