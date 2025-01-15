@@ -174,7 +174,7 @@ module JsFromRoutes
 
     # Public: Generates code for the specified routes with { export: true }.
     def generate!(app_or_routes = Rails.application)
-      raise ArgumentError, "A Rails app must be defined, or you must specify a custom `output_folder`" if config.output_folder.blank?
+      raise ArgumentError, "A Rails app must be defined, or you must specify a custom `output_folder`" if config.output_folder.to_s.blank?
       rails_routes = app_or_routes.is_a?(::Rails::Engine) ? app_or_routes.routes.routes : app_or_routes
       generate_files exported_routes_by_controller(rails_routes)
     end
