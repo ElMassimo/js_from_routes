@@ -1,3 +1,12 @@
+## [4.0.2](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.0.1...js_from_routes@4.0.2) (2025-01-15)
+
+
+### Bug Fixes
+
+* `output_dir` check fails for empty directories in some environments ([#55](https://github.com/ElMassimo/js_from_routes/issues/55)) ([f2ec889](https://github.com/ElMassimo/js_from_routes/commit/f2ec889bcbadad2d15864ab130ff4a118d99f1da))
+
+
+
 ## [4.0.1](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.0.0...js_from_routes@4.0.1) (2024-11-08)
 
 
