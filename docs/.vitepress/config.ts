@@ -112,6 +112,7 @@ export default defineConfigWithTheme({
       ],
     },
   },
+
   vite: {
     optimizeDeps: {
       exclude: ['@mussi/vitepress-theme'],
