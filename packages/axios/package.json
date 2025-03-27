@@ -27,11 +27,11 @@
   },
   "peerDependencies": {
     "@js-from-routes/client": "^1.0.0",
-    "axios": "^0.21"
+    "axios": "^1.8.3"
   },
   "devDependencies": {
     "@js-from-routes/client": "^1.0.0",
-    "axios": "^0.21",
+    "axios": "^1.8.3",
     "tsup": "^5.12.1",
     "typescript": "^4.2.2"
   }
