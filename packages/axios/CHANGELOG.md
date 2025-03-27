@@ -1,3 +1,7 @@
+## [1.0.5](https://github.com/ElMassimo/js_from_routes/compare/axios@1.0.4...axios@1.0.5) (2025-03-27)
+
+
+
 ## [1.0.4](https://github.com/ElMassimo/js_from_routes/compare/axios@1.0.3...axios@1.0.4) (2021-03-16)
 
 
