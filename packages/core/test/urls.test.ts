@@ -30,6 +30,42 @@ describe('interpolateUrl', () => {
 
     expect(interpolateUrl('/users/:id(/:page)', { id: '5' }))
       .toEqual('/users/5')
+
+    expect(interpolateUrl('/users/:id(/:page/:search)', { id: '5', page: '1', search: 'items' }))
+      .toEqual('/users/5/1/items')
+
+    expect(interpolateUrl('/users/:id(/:page/:search)', { id: '5' }))
+      .toEqual('/users/5')
+
+    expect(interpolateUrl('/users/:id(/:page/:search(/:subquery))', { id: '5', page: '1', search: 'test' }))
+      .toEqual('/users/5/1/test')
+
+    expect(interpolateUrl('/calendar(/:view(/:year(/:month(/:day))))', {}))
+      .toEqual('/calendar')
+
+    expect(interpolateUrl('/calendar(/:view(/:year(/:month(/:day))))', { view: 'month' }))
+      .toEqual('/calendar/month')
+
+    expect(interpolateUrl('/calendar(/:view(/:year(/:month(/:day))))', { view: 'month', year: '2025' }))
+      .toEqual('/calendar/month/2025')
+
+    expect(interpolateUrl('/calendar(/:view(/:year(/:month(/:day))))', { view: 'month', year: '2025', month: '7' }))
+      .toEqual('/calendar/month/2025/7')
+
+    expect(interpolateUrl('/calendar(/:view(/:year(/:month(/:day))))', { view: 'month', year: '2025', month: '7', day: '30' }))
+      .toEqual('/calendar/month/2025/7/30')
+
+    // Missing :search if :page is provided should throw missing parameter
+    expect(() => interpolateUrl('/users/:id(/:page/:search)', { id: '5', page: '1' }))
+      .toThrow(/Missing URL Parameter :search/)
+
+    // Missing :subquery if :page and :search is provided should throw missing parameter
+    expect(() => interpolateUrl('/users/:id(/:page/:search/:subquery)', { id: '5', page: '1', search: 'test' }))
+      .toThrow(/Missing URL Parameter :subquery/)
+
+    // Missing :year if :view is provided should throw missing parameter
+    expect(() => interpolateUrl('/calendar(/:view(/:year(/:month(/:day))))', { view: 'month', month: '7', day: '30' }))
+      .toThrow(/Missing URL Parameter :year/)
   })
 })
 

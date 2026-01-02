@@ -9,7 +9,7 @@ export type UrlOptions = {
 }
 
 const REQUIRED_PARAMETER = /:[^\W\d]+/g
-const OPTIONAL_PARAMETER = /\(\/:[^\W\d]+\)/g
+const OPTIONAL_PARAMETER = /\(\/:\w+[^()]*\)/g
 
 // Internal: Encodes a value to be used as an URL query parameter.
 function encode (val: any): string {
@@ -88,11 +88,15 @@ export function interpolateUrl (template: string, params: Params): string {
     paramName = snakeCase(paramName)
     value = value
       .replace(new RegExp(escapeRegExp(`(/:${paramName})`), 'g'), `/${paramValue}`)
-      .replace(new RegExp(`:${escapeRegExp(paramName)}(\\/|\\.|\\(|$)`, 'g'), `${paramValue}$1`)
+      .replace(new RegExp(`:${escapeRegExp(paramName)}(\\/|\\.|\\(|\\)|$)`, 'g'), `${paramValue}$1`)
   })
 
-  // Remove any optional path if the parameters were not provided.
-  value = value.replace(OPTIONAL_PARAMETER, '')
+  // Remove optional parameters (loops to handle nested optional parameters)
+  while (OPTIONAL_PARAMETER.test(value))
+    value = value.replace(OPTIONAL_PARAMETER, '')
+
+  // Replace remaining parenthesis
+  value = value.replace(/[()]/g, '')
 
   const missingParams = value.match(REQUIRED_PARAMETER)
   if (missingParams) {
