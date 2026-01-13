@@ -1,3 +1,30 @@
+## [4.0.2](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.0.1...js_from_routes@4.0.2) (2025-01-15)
+
+
+### Bug Fixes
+
+* `output_dir` check fails for empty directories in some environments ([#55](https://github.com/ElMassimo/js_from_routes/issues/55)) ([f2ec889](https://github.com/ElMassimo/js_from_routes/commit/f2ec889bcbadad2d15864ab130ff4a118d99f1da))
+
+
+
+## [4.0.1](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.0.0...js_from_routes@4.0.1) (2024-11-08)
+
+
+### Features
+
+* allow using with rails 8 ([ffcefb9](https://github.com/ElMassimo/js_from_routes/commit/ffcefb9c4eda530cec107b0e74e71d318f6e76a0)), closes [#53](https://github.com/ElMassimo/js_from_routes/issues/53)
+
+
+
+# [4.0.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@3.0.2...js_from_routes@4.0.0) (2024-10-11)
+
+
+### Features
+
+* allow customizing the namespace for path helpers ([#50](https://github.com/ElMassimo/js_from_routes/issues/50)) ([9d38c83](https://github.com/ElMassimo/js_from_routes/commit/9d38c8312ef1275b3b8c18c1129bc936da08bcd0))
+
+
+
 ## [3.0.2](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@3.0.1...js_from_routes@3.0.2) (2024-09-25)
 
 

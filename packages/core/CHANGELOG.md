@@ -1,3 +1,12 @@
+## [1.0.3](https://github.com/ElMassimo/js_from_routes/compare/core@1.0.2...core@1.0.3) (2026-01-02)
+
+
+### Bug Fixes
+
+* handle nested optional params ([#61](https://github.com/ElMassimo/js_from_routes/issues/61)) ([9a4b030](https://github.com/ElMassimo/js_from_routes/commit/9a4b030f4540570d2c27274bf08a3bc92c4fd46d))
+
+
+
 ## [1.0.2](https://github.com/ElMassimo/js_from_routes/compare/core@1.0.1...core@1.0.2) (2022-03-28)
 
 

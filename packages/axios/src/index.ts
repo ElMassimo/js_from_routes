@@ -1,4 +1,5 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, ResponseType } from 'axios'
+import axios from 'axios'
+import type { AxiosRequestConfig, AxiosInstance, ResponseType, AxiosResponse } from 'axios'
 import { definePathHelper, formatUrl, request, Config } from '@js-from-routes/client'
 import type { ResponseAs, FetchOptions, ResponseError } from '@js-from-routes/client'
 
@@ -24,9 +25,9 @@ async function unwrapResponse (response: AxiosResponse, responseAs: ResponseAs) 
 async function fetch (args: FetchOptions) {
   const { responseAs, ...options } = args
   const responseType = responseAs === 'response' ? undefined : responseAs.toLowerCase() as ResponseType
-  const config: AxiosRequestConfig = { responseType, ...options }
+  const config = { responseType, ...options }
 
-  return AxiosConfig.instance.request(config)
+  return AxiosConfig.instance.request(config as AxiosRequestConfig)
     .catch(error => Config.onResponseError(error as ResponseError))
 }
 

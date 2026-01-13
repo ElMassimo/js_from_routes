@@ -1,7 +1,7 @@
 {
   "name": "@js-from-routes/axios",
   "description": "Make API requests to a Rails apps with ease.",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -27,11 +27,11 @@
   },
   "peerDependencies": {
     "@js-from-routes/client": "^1.0.0",
-    "axios": "^0.21"
+    "axios": "^1.8.3"
   },
   "devDependencies": {
     "@js-from-routes/client": "^1.0.0",
-    "axios": "^0.21",
+    "axios": "^1.8.3",
     "tsup": "^5.12.1",
     "typescript": "^4.2.2"
   }

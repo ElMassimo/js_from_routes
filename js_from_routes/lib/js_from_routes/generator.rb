@@ -15,8 +15,13 @@ module JsFromRoutes
     def initialize(controller, routes, config)
       @controller, @config = controller, config
       @routes = routes
-        .uniq { |route| route.requirements.fetch(:action) }
-        .map { |route| Route.new(route, config.helper_mappings) }
+        .reject { |route| route.requirements[:action] == "update" && route.verb == "PUT" }
+        .group_by { |route| route.requirements.fetch(:action) }
+        .flat_map { |action, routes|
+          routes.each_with_index.map { |route, index|
+            Route.new(route, mappings: config.helper_mappings, index:, controller:)
+          }
+        }
     end
 
     # Public: Used to check whether the file should be generated again, changes
@@ -60,8 +65,8 @@ module JsFromRoutes
 
   # Internal: A presenter for an individual Rails action.
   class Route
-    def initialize(route, mappings = {})
-      @route, @mappings = route, mappings
+    def initialize(route, mappings:, controller:, index: 0)
+      @route, @mappings, @controller, @index = route, mappings, controller, index
     end
 
     # Public: The `export` setting specified for the action.
@@ -71,7 +76,7 @@ module JsFromRoutes
 
     # Public: The HTTP verb for the action. Example: 'patch'
     def verb
-      @route.verb.downcase
+      @route.verb.split("|").last.downcase
     end
 
     # Public: The path for the action. Example: '/users/:id/edit'
@@ -81,8 +86,12 @@ module JsFromRoutes
 
     # Public: The name of the JS helper for the action. Example: 'destroyAll'
     def helper
-      action = @route.requirements.fetch(:action).camelize(:lower)
-      @mappings.fetch(action, action)
+      action = @route.requirements.fetch(:action)
+      if @index > 0
+        action = @route.name&.sub(@controller.tr(":/", "_"), "") || "#{action}#{verb.titleize}"
+      end
+      helper = action.camelize(:lower)
+      @mappings.fetch(helper, helper)
     end
 
     # Internal: Useful as a cache key for the route, and for debugging purposes.
@@ -153,6 +162,16 @@ module JsFromRoutes
     end
   end
 
+  class TemplateConfig
+    attr_reader :cache_key, :filename, :helpers
+
+    def initialize(cache_key:, filename:, helpers: nil)
+      @cache_key = cache_key
+      @filename = filename
+      @helpers = helpers
+    end
+  end
+
   class << self
     # Public: Configuration of the code generator.
     def config
@@ -163,7 +182,7 @@ module JsFromRoutes
 
     # Public: Generates code for the specified routes with { export: true }.
     def generate!(app_or_routes = Rails.application)
-      raise ArgumentError, "A Rails app must be defined, or you must specify a custom `output_folder`" if config.output_folder.blank?
+      raise ArgumentError, "A Rails app must be defined, or you must specify a custom `output_folder`" if config.output_folder.to_s.blank?
       rails_routes = app_or_routes.is_a?(::Rails::Engine) ? app_or_routes.routes.routes : app_or_routes
       generate_files exported_routes_by_controller(rails_routes)
     end
@@ -172,7 +191,8 @@ module JsFromRoutes
 
     def generate_files(exported_routes)
       template = Template.new(config.template_path)
-      generate_file_for_all exported_routes.map { |controller, routes|
+      generate_file_for_all exported_routes.filter_map { |controller, routes|
+        next unless controller
         ControllerRoutes.new(controller, routes, config).tap do |routes|
           template.write_if_changed routes
         end
@@ -185,24 +205,28 @@ module JsFromRoutes
       preferred_extension = File.extname(config.file_suffix)
       index_file = (config.all_helpers_file == true) ? "index#{preferred_extension}" : config.all_helpers_file
 
-      Template.new(config.template_all_path).write_if_changed OpenStruct.new(
+      Template.new(config.template_all_path).write_if_changed TemplateConfig.new(
         cache_key: routes.map(&:import_filename).join + File.read(config.template_all_path),
         filename: config.output_folder.join("all#{preferred_extension}"),
         helpers: routes,
       )
-      Template.new(config.template_index_path).write_if_changed OpenStruct.new(
+      Template.new(config.template_index_path).write_if_changed TemplateConfig.new(
         cache_key: File.read(config.template_index_path),
         filename: config.output_folder.join(index_file),
       )
     end
 
+    def namespace_for_route(route)
+      if (export = route.defaults[:export]).is_a?(Hash)
+        export[:namespace]
+      end || route.requirements[:controller]
+    end
+
     # Internal: Returns exported routes grouped by controller name.
     def exported_routes_by_controller(routes)
-      routes.select { |route|
-        config.export_if.call(route) && route.requirements[:controller]
-      }.group_by { |route|
-        route.requirements.fetch(:controller)
-      }
+      routes
+        .select { |route| config.export_if.call(route) }
+        .group_by { |route| namespace_for_route(route)&.to_s }
     end
   end
 end
