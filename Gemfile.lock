@@ -120,6 +120,8 @@ GEM
       ffi (~> 1.0)
     rdoc (6.10.0)
       psych (>= 4.0.0)
+    readline (0.0.4)
+      reline
     regexp_parser (2.9.2)
     reline (0.6.0)
       io-console (~> 0.5)
@@ -189,14 +191,15 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 2)
+  bundler (>= 2, < 5)
   js_from_routes!
   listen (~> 3.2)
   pry-byebug (~> 3.9)
   rake (~> 13)
+  readline
   rspec-given (~> 3.8)
   simplecov (< 0.18)
   standard (~> 1.0)
 
 BUNDLED WITH
-   2.3.22
+  4.0.3
