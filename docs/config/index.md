@@ -86,18 +86,19 @@ The following [config options] are available:
   config.file_suffix = 'Api.ts'
   ```
 
-### `filename_style`
+### `filename_for_controller`
   
-  Allows to configure filename style for the generated files. You can modify it if you want to use a different filename convention. 
+  Allows full control over filename generation for the generated files. You can modify it if you want to use a different filename convention.
   
-  `:kebab` - Converts the controller name to kebab-case and appends the file suffix in lowercase.
+  The proc receives a hash with `controller` (the controller name as a string) and `config` (the configuration object) as arguments.
   
-  `:camel` - Converts the controller name to CamelCase and appends the file suffix.
-
-  __Default__: `:camel`
+  __Default__: CamelCase filename convention using `->(controller:, config:) { "#{controller.camelize}#{config.file_suffix}".tr_s(":", "/") }`
 
   ```ruby
-  config.filename_style = :kebab
+  # Example: Use kebab-case filenames
+  config.filename_for_controller = ->(controller:, config:) {
+    "#{controller.underscore.tr('_', '-')}-#{config.file_suffix.downcase}"
+  }
   ```
 
 ### `helper_mappings`
