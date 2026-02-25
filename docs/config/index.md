@@ -86,6 +86,21 @@ The following [config options] are available:
   config.file_suffix = 'Api.ts'
   ```
 
+### `filename_for_controller`
+  
+  Allows full control over filename generation for the generated files. You can modify it if you want to use a different filename convention.
+  
+  The proc receives a hash with `controller` (the controller name as a string) and `config` (the configuration object) as arguments.
+  
+  __Default__: CamelCase filename convention using `->(controller:, config:) { "#{controller.camelize}#{config.file_suffix}".tr_s(":", "/") }`
+
+  ```ruby
+  # Example: Use kebab-case filenames
+  config.filename_for_controller = ->(controller:, config:) {
+    "#{controller.underscore.tr('_', '-')}-#{config.file_suffix.downcase}"
+  }
+  ```
+
 ### `helper_mappings`
   
   Defines how to obtain a path helper name from the name of a route (controller action).
