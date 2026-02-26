@@ -79,6 +79,9 @@ module JsFromRoutes
 
     # Public: The name of the JS helper for the action. Example: 'destroyAll'
     def helper
+      js_helper_name = @route.defaults[:js_helper_name]
+      return js_helper_name if js_helper_name.present?
+
       action = @route.requirements.fetch(:action)
       if @index > 0
         action = @route.name&.sub(@controller.tr(":/", "_"), "") || "#{action}#{verb.titleize}"
