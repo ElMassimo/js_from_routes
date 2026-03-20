@@ -14,20 +14,47 @@ module JsFromRoutes
 
     def initialize(controller, routes, config)
       @controller, @config = controller, config
-      @routes = routes
+      filtered = routes
         .reject { |route| route.requirements[:action] == "update" && route.verb == "PUT" }
+
+      @routes = if config.helper_naming == :route_name
+        build_routes_by_name(filtered, controller, config)
+      else
+        build_routes_by_action(filtered, controller, config)
+      end
+    end
+
+    private
+
+    def build_routes_by_action(filtered, controller, config)
+      filtered
         .group_by { |route| route.requirements.fetch(:action) }
-        .flat_map { |action, routes|
+        .flat_map { |_action, routes|
           routes.each_with_index.map { |route, index|
             Route.new(route, mappings: config.helper_mappings, index:, controller:)
           }
         }
     end
 
+    def build_routes_by_name(filtered, controller, config)
+      named, unnamed = filtered.partition { |r| r.name.present? }
+
+      named_routes = named.map { |route|
+        Route.new(route, mappings: config.helper_mappings, index: 0, controller:,
+          naming: :route_name)
+      }
+
+      unnamed_routes = build_routes_by_action(unnamed, controller, config)
+
+      named_routes + unnamed_routes
+    end
+
+    public
+
     # Public: Used to check whether the file should be generated again, changes
     # based on the configuration, and route definition.
     def cache_key
-      routes.map(&:inspect).join + [File.read(@config.template_path), @config.helper_mappings.inspect, @config.client_library].join
+      routes.map(&:inspect).join + [File.read(@config.template_path), @config.helper_mappings.inspect, @config.client_library, @config.helper_naming.to_s].join
     end
 
     # Public: Exposes the preferred import library to the generator.
@@ -58,8 +85,8 @@ module JsFromRoutes
 
   # Internal: A presenter for an individual Rails action.
   class Route
-    def initialize(route, mappings:, controller:, index: 0)
-      @route, @mappings, @controller, @index = route, mappings, controller, index
+    def initialize(route, mappings:, controller:, index: 0, naming: :action)
+      @route, @mappings, @controller, @index, @naming = route, mappings, controller, index, naming
     end
 
     # Public: The `export` setting specified for the action.
@@ -79,12 +106,24 @@ module JsFromRoutes
 
     # Public: The name of the JS helper for the action. Example: 'destroyAll'
     def helper
-      action = @route.requirements.fetch(:action)
-      if @index > 0
-        action = @route.name&.sub(@controller.tr(":/", "_"), "") || "#{action}#{verb.titleize}"
+      export_opts = @route.defaults[:export]
+      local_naming = (export_opts.is_a?(Hash) && export_opts[:name]) || @naming
+
+      action = if local_naming == :route_name && @route.name.present?
+        @route.name.sub(/\A#{Regexp.escape(@controller.tr(":/", "_"))}_?/, "")
+      elsif @index > 0
+        @route.name&.sub(@controller.tr(":/", "_"), "") || "#{@route.requirements.fetch(:action)}#{verb.titleize}"
+      else
+        @route.requirements.fetch(:action)
       end
       helper = action.camelize(:lower)
       @mappings.fetch(helper, helper)
+    end
+
+    # Public: The Rails route name (e.g., 'download_clip', 'fetch_clip').
+    # Returns nil for unnamed routes.
+    def name
+      @route.name
     end
 
     # Internal: Useful as a cache key for the route, and for debugging purposes.
@@ -137,7 +176,7 @@ module JsFromRoutes
 
   class Configuration
     attr_accessor :all_helpers_file, :client_library, :export_if, :file_suffix,
-      :helper_mappings, :output_folder, :template_path,
+      :helper_mappings, :helper_naming, :output_folder, :template_path,
       :template_all_path, :template_index_path
 
     def initialize(root)
@@ -147,6 +186,7 @@ module JsFromRoutes
       @export_if = ->(route) { route.defaults.fetch(:export, nil) }
       @file_suffix = "Api.js"
       @helper_mappings = {}
+      @helper_naming = :action
       @output_folder = root.join("app", dir, "api")
       @template_path = File.expand_path("template.js.erb", __dir__)
       @template_all_path = File.expand_path("template_all.js.erb", __dir__)
