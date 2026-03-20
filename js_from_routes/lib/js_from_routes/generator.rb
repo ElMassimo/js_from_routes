@@ -110,7 +110,8 @@ module JsFromRoutes
       local_naming = (export_opts.is_a?(Hash) && export_opts[:name]) || @naming
 
       action = if local_naming == :route_name && @route.name.present?
-        @route.name.sub(/\A#{Regexp.escape(@controller.tr(":/", "_"))}_?/, "")
+        stripped = @route.name.sub(/_?#{Regexp.escape(@controller.tr(":/", "_"))}/, "").sub(/\A_|_\z/, "")
+        stripped.presence || @route.requirements.fetch(:action)
       elsif @index > 0
         @route.name&.sub(@controller.tr(":/", "_"), "") || "#{@route.requirements.fetch(:action)}#{verb.titleize}"
       else
