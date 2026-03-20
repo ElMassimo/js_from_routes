@@ -115,4 +115,129 @@ describe JsFromRoutes do
     expect_templates.to be_rendered.exactly(3).times
     expect { Rake::Task["js_from_routes:generate"].invoke }.not_to raise_error
   end
+
+  context "with helper_naming: :route_name" do
+    before do
+      JsFromRoutes.config do |config|
+        config.helper_naming = :route_name
+      end
+    end
+
+    after do
+      JsFromRoutes.config do |config|
+        config.helper_naming = :action
+      end
+    end
+
+    it "uses route names for JS helper names" do
+      JsFromRoutes.generate!
+
+      video_clips_content = output_file_for("VideoClips").read
+
+      # Named routes use the route name with controller prefix stripped and camelCased.
+      # "download_video_clip" → strips "video_clips" (no match, singular) → "downloadVideoClip"
+      expect(video_clips_content).to include("downloadVideoClip:")
+      expect(video_clips_content).to include("addToPlaylistVideoClip:")
+      expect(video_clips_content).to include("thumbnailVideoClip:")
+      expect(video_clips_content).to include("newVideoClip:")
+      expect(video_clips_content).to include("editVideoClip:")
+
+      # "latest_video_clips" → strips "video_clips" → "latest"
+      expect(video_clips_content).to include("latest:")
+
+      # "video_clips" (create) → strips "video_clips" → empty → falls back to action name
+      expect(video_clips_content).to include("create:")
+
+      # Unnamed routes fall back to action-based naming.
+      expect(video_clips_content).to include("destroy:")
+    end
+
+    it "handles namespaced controllers" do
+      JsFromRoutes.generate!
+
+      user_prefs_content = output_file_for("Settings/UserPreferences").read
+
+      # "switch_to_classic_navbar_settings_user_preferences" → strips "settings_user_preferences" → "switch_to_classic_navbar"
+      expect(user_prefs_content).to include("switchToClassicNavbar:")
+
+      # "switch_to_beta_page_settings_user_preferences" → strips "settings_user_preferences" → "switch_to_beta_page"
+      expect(user_prefs_content).to include("switchToBetaPage:")
+
+      # Unnamed route falls back to action-based naming.
+      expect(user_prefs_content).to include("switchToClassic:")
+    end
+
+    it "exposes route names via Route#name" do
+      JsFromRoutes.generate!
+
+      routes = Rails.application.routes.routes
+      exported = routes.select { |r| r.defaults[:export] && r.requirements[:controller] == "video_clips" }
+      download_route = exported.find { |r| r.requirements[:action] == "download" }
+      expect(download_route.name).to eq("download_video_clip")
+
+      presenter = JsFromRoutes::Route.new(download_route, mappings: {}, controller: "video_clips", naming: :route_name)
+      expect(presenter.name).to eq("download_video_clip")
+      expect(presenter.helper).to eq("downloadVideoClip")
+    end
+
+    it "invalidates cache when switching helper_naming" do
+      # Generate with default :action naming first.
+      JsFromRoutes.config { |c| c.helper_naming = :action }
+      JsFromRoutes.generate!
+      action_content = output_file_for("VideoClips").read
+
+      # Now switch to :route_name and regenerate.
+      JsFromRoutes.config { |c| c.helper_naming = :route_name }
+      JsFromRoutes.generate!
+      route_name_content = output_file_for("VideoClips").read
+
+      # Cache keys differ so files are regenerated with different helper names.
+      expect(action_content).not_to eq(route_name_content)
+      expect(action_content).to include("download:")
+      expect(route_name_content).to include("downloadVideoClip:")
+    end
+  end
+
+  context "with per-route export: { name: :route_name } override" do
+    before do
+      # Ensure global naming is :action (default).
+      JsFromRoutes.config do |config|
+        config.helper_naming = :action
+      end
+    end
+
+    it "uses route name for individually opted-in routes" do
+      routes = Rails.application.routes.routes
+      exported_video = routes.select { |r| r.defaults[:export] && r.requirements[:controller] == "video_clips" }
+      download_route = exported_video.find { |r| r.requirements[:action] == "download" }
+
+      # Simulate per-route override by creating a Route with export: { name: :route_name }.
+      original_export = download_route.defaults[:export]
+      begin
+        download_route.defaults[:export] = {name: :route_name}
+
+        presenter = JsFromRoutes::Route.new(download_route, mappings: {}, controller: "video_clips")
+        expect(presenter.helper).to eq("downloadVideoClip")
+      ensure
+        download_route.defaults[:export] = original_export
+      end
+    end
+
+    it "ignores per-route override when route has no name" do
+      routes = Rails.application.routes.routes
+      exported_video = routes.select { |r| r.defaults[:export] && r.requirements[:controller] == "video_clips" }
+      destroy_route = exported_video.find { |r| r.requirements[:action] == "destroy" }
+
+      # Unnamed route with per-route override falls back to action name.
+      original_export = destroy_route.defaults[:export]
+      begin
+        destroy_route.defaults[:export] = {name: :route_name}
+
+        presenter = JsFromRoutes::Route.new(destroy_route, mappings: {}, controller: "video_clips")
+        expect(presenter.helper).to eq("destroy")
+      ensure
+        destroy_route.defaults[:export] = original_export
+      end
+    end
+  end
 end
