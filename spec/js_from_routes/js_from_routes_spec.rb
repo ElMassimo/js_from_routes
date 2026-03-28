@@ -120,11 +120,8 @@ describe JsFromRoutes do
 
     before do
       [admin_output_dir, public_output_dir].each do |dir|
-        begin
-          FileUtils.remove_dir(dir)
-        rescue
-          nil
-        end
+        expect(dir.to_s).to start_with(output_dir.to_s)
+        FileUtils.rm_rf(dir)
       end
 
       JsFromRoutes.config(:admin) do |config|
@@ -145,13 +142,13 @@ describe JsFromRoutes do
     it "generates only matching route subsets for each instance" do
       JsFromRoutes.generate!
 
-      expect(file_for(admin_output_dir, "Settings/UserPreferences").exist?).to eq true
-      expect(file_for(admin_output_dir, "Comments").exist?).to eq false
-      expect(file_for(admin_output_dir, "VideoClips").exist?).to eq false
+      expect(file_for(admin_output_dir, "Settings/UserPreferences").exist?).to be true
+      expect(file_for(admin_output_dir, "Comments").exist?).to be false
+      expect(file_for(admin_output_dir, "VideoClips").exist?).to be false
 
-      expect(file_for(public_output_dir, "Settings/UserPreferences").exist?).to eq false
-      expect(file_for(public_output_dir, "Comments").exist?).to eq true
-      expect(file_for(public_output_dir, "VideoClips").exist?).to eq true
+      expect(file_for(public_output_dir, "Settings/UserPreferences").exist?).to be false
+      expect(file_for(public_output_dir, "Comments").exist?).to be true
+      expect(file_for(public_output_dir, "VideoClips").exist?).to be true
     end
   end
 
