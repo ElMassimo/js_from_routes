@@ -168,12 +168,12 @@ module JsFromRoutes
   # routes separately for different sub-apps in a Rails monolith.
   #
   # Example:
-  #   JsFromRoutes.instance(:admin) do |config|
+  #   JsFromRoutes.config(:admin) do |config|
   #     config.output_folder = Rails.root.join("app/javascript/admin/api")
   #     config.export_if = ->(route) { route.defaults[:export] == :admin }
   #   end
   #
-  #   JsFromRoutes.instance(:public) do |config|
+  #   JsFromRoutes.config(:public) do |config|
   #     config.output_folder = Rails.root.join("app/javascript/public/api")
   #     config.export_if = ->(route) { route.defaults[:export] == :public }
   #   end
@@ -237,25 +237,29 @@ module JsFromRoutes
 
   class << self
     # Public: Configuration of the code generator.
-    def config
-      @config ||= Configuration.new(::Rails.root || Pathname.new(Dir.pwd))
-      yield(@config) if block_given?
-      @config
-    end
-
-    # Public: Defines a named generator instance with its own configuration.
-    # Each instance can target different routes and output to different folders.
     #
-    # Example:
-    #   JsFromRoutes.instance(:admin) do |config|
+    # Without a name, returns/yields the default global configuration:
+    #   JsFromRoutes.config do |config|
+    #     config.file_suffix = "Api.ts"
+    #   end
+    #
+    # With a name, defines a named generator instance with its own configuration,
+    # allowing separate route generation for different sub-apps:
+    #   JsFromRoutes.config(:admin) do |config|
     #     config.output_folder = Rails.root.join("app/javascript/admin/api")
     #     config.export_if = ->(route) { route.defaults[:export] == :admin }
     #   end
-    def instance(name, &block)
-      root = ::Rails.root || Pathname.new(Dir.pwd)
-      new_config = Configuration.new(root)
-      yield(new_config) if block_given?
-      instances[name] = Instance.new(name, new_config)
+    def config(name = nil)
+      if name
+        root = ::Rails.root || Pathname.new(Dir.pwd)
+        new_config = Configuration.new(root)
+        yield(new_config) if block_given?
+        instances[name] = Instance.new(name, new_config)
+      else
+        @config ||= Configuration.new(::Rails.root || Pathname.new(Dir.pwd))
+        yield(@config) if block_given?
+        @config
+      end
     end
 
     # Public: Returns all registered named instances.
