@@ -164,19 +164,32 @@ module JsFromRoutes
     end
   end
 
-  class << self
-    # Public: Configuration of the code generator.
-    def config
-      @config ||= Configuration.new(::Rails.root || Pathname.new(Dir.pwd))
-      yield(@config) if block_given?
-      @config
+  # Public: A generator instance with its own configuration. Allows generating
+  # routes separately for different sub-apps in a Rails monolith.
+  #
+  # Example:
+  #   JsFromRoutes.instance(:admin) do |config|
+  #     config.output_folder = Rails.root.join("app/javascript/admin/api")
+  #     config.export_if = ->(route) { route.defaults[:export] == :admin }
+  #   end
+  #
+  #   JsFromRoutes.instance(:public) do |config|
+  #     config.output_folder = Rails.root.join("app/javascript/public/api")
+  #     config.export_if = ->(route) { route.defaults[:export] == :public }
+  #   end
+  class Instance
+    attr_reader :name, :config
+
+    def initialize(name, config)
+      @name = name
+      @config = config
     end
 
     # Public: Generates code for the specified routes with { export: true }.
     def generate!(app_or_routes = Rails.application)
       raise ArgumentError, "A Rails app must be defined, or you must specify a custom `output_folder`" if config.output_folder.to_s.blank?
       rails_routes = app_or_routes.is_a?(::Rails::Engine) ? app_or_routes.routes.routes : app_or_routes
-      generate_files exported_routes_by_controller(rails_routes)
+      generate_files(exported_routes_by_controller(rails_routes))
     end
 
     private
@@ -219,6 +232,47 @@ module JsFromRoutes
       routes
         .select { |route| config.export_if.call(route) }
         .group_by { |route| namespace_for_route(route)&.to_s }
+    end
+  end
+
+  class << self
+    # Public: Configuration of the code generator.
+    def config
+      @config ||= Configuration.new(::Rails.root || Pathname.new(Dir.pwd))
+      yield(@config) if block_given?
+      @config
+    end
+
+    # Public: Defines a named generator instance with its own configuration.
+    # Each instance can target different routes and output to different folders.
+    #
+    # Example:
+    #   JsFromRoutes.instance(:admin) do |config|
+    #     config.output_folder = Rails.root.join("app/javascript/admin/api")
+    #     config.export_if = ->(route) { route.defaults[:export] == :admin }
+    #   end
+    def instance(name, &block)
+      root = ::Rails.root || Pathname.new(Dir.pwd)
+      new_config = Configuration.new(root)
+      yield(new_config) if block_given?
+      instances[name] = Instance.new(name, new_config)
+    end
+
+    # Public: Returns all registered named instances.
+    def instances
+      @instances ||= {}
+    end
+
+    # Public: Generates code for the specified routes with { export: true }.
+    # When named instances are defined, generates for each instance.
+    # Otherwise, falls back to the default global config.
+    def generate!(app_or_routes = Rails.application)
+      if instances.any?
+        instances.each_value { |inst| inst.generate!(app_or_routes) }
+      else
+        raise ArgumentError, "A Rails app must be defined, or you must specify a custom `output_folder`" if config.output_folder.to_s.blank?
+        Instance.new(:default, config).generate!(app_or_routes)
+      end
     end
   end
 end
