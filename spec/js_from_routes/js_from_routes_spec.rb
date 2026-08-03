@@ -50,6 +50,10 @@ describe JsFromRoutes do
     end
   end
 
+  after do
+    JsFromRoutes.instances.clear
+  end
+
   # NOTE: We do a manual snapshot test for now, more tests coming in the future.
   it "should generate the files as expected" do
     expect_templates.to be_rendered.exactly(3).times.and_call_original
@@ -107,6 +111,86 @@ describe JsFromRoutes do
       # Should not trigger another render.
       expect_templates.not_to be_rendered
       JsFromRoutes.generate!
+    end
+  end
+
+  context "with multiple named instances" do
+    let(:admin_output_dir) { output_dir.join("admin") }
+    let(:public_output_dir) { output_dir.join("public") }
+
+    before do
+      [admin_output_dir, public_output_dir].each do |dir|
+        expect(dir.to_s).to start_with(output_dir.to_s)
+        FileUtils.rm_rf(dir)
+      end
+
+      JsFromRoutes.config(:admin) do |config|
+        config.output_folder = admin_output_dir
+        config.all_helpers_file = false
+        config.file_suffix = "Api.ts"
+        config.export_if = ->(route) { route.defaults[:export] == true && route.requirements[:controller]&.start_with?("settings/") }
+      end
+
+      JsFromRoutes.config(:public) do |config|
+        config.output_folder = public_output_dir
+        config.all_helpers_file = false
+        config.file_suffix = "Api.ts"
+        config.export_if = ->(route) { route.defaults[:export] == true && !route.requirements[:controller]&.start_with?("settings/") }
+      end
+    end
+
+    it "generates only matching route subsets for each instance" do
+      JsFromRoutes.generate!
+
+      expect(file_for(admin_output_dir, "Settings/UserPreferences").exist?).to be true
+      expect(file_for(admin_output_dir, "Comments").exist?).to be false
+      expect(file_for(admin_output_dir, "VideoClips").exist?).to be false
+
+      expect(file_for(public_output_dir, "Settings/UserPreferences").exist?).to be false
+      expect(file_for(public_output_dir, "Comments").exist?).to be true
+      expect(file_for(public_output_dir, "VideoClips").exist?).to be true
+    end
+
+    it "still generates the explicitly configured global config alongside named instances" do
+      JsFromRoutes.generate!
+
+      # Registering named instances must not silently disable a global config
+      # the app already relies on: its output is still generated to output_dir.
+      controllers_with_exported_routes.each do |file_name|
+        expect(output_file_for(file_name).exist?).to be true
+      end
+    end
+  end
+
+  context "with only named instances and an untouched global config" do
+    let(:only_output_dir) { output_dir.join("only") }
+
+    before do
+      expect(only_output_dir.to_s).to start_with(output_dir.to_s)
+      FileUtils.rm_rf(only_output_dir)
+
+      JsFromRoutes.config(:only) do |config|
+        config.output_folder = only_output_dir
+        config.all_helpers_file = false
+        config.file_suffix = "Api.ts"
+        config.export_if = ->(route) { route.defaults[:export] == true }
+      end
+    end
+
+    it "does not generate the default global config when it was never explicitly configured" do
+      # The shared setup customizes the global config, so simulate an app that
+      # only ever registered named instances by resetting that flag.
+      JsFromRoutes.instance_variable_set(:@config_customized, false)
+
+      JsFromRoutes.generate!
+
+      # The named instance generates its own output...
+      expect(file_for(only_output_dir, "Comments").exist?).to be true
+
+      # ...but no stray default output is written to the global output_folder.
+      controllers_with_exported_routes.each do |file_name|
+        expect(output_file_for(file_name).exist?).to be false
+      end
     end
   end
 
