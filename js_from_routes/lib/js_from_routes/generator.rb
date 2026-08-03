@@ -257,7 +257,10 @@ module JsFromRoutes
         instances[name] = Instance.new(name, new_config)
       else
         @config ||= Configuration.new(::Rails.root || Pathname.new(Dir.pwd))
-        yield(@config) if block_given?
+        if block_given?
+          @config_customized = true
+          yield(@config)
+        end
         @config
       end
     end
@@ -268,15 +271,15 @@ module JsFromRoutes
     end
 
     # Public: Generates code for the specified routes with { export: true }.
-    # When named instances are defined, generates for each instance.
-    # Otherwise, falls back to the default global config.
+    #
+    # Runs every named instance, plus the default global config whenever it was
+    # explicitly configured (or when no named instances exist at all). This keeps
+    # mixed usage working: adding a named instance never silently disables the
+    # global config that an existing app already relies on.
     def generate!(app_or_routes = Rails.application)
-      if instances.any?
-        instances.each_value { |inst| inst.generate!(app_or_routes) }
-      else
-        raise ArgumentError, "A Rails app must be defined, or you must specify a custom `output_folder`" if config.output_folder.to_s.blank?
-        Instance.new(:default, config).generate!(app_or_routes)
-      end
+      runnable = instances.values
+      runnable.unshift(Instance.new(:default, config)) if @config_customized || runnable.empty?
+      runnable.each { |inst| inst.generate!(app_or_routes) }
     end
   end
 end
