@@ -1,3 +1,12 @@
+# [4.1.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.0.2...js_from_routes@4.1.0) (2026-08-03)
+
+
+### Features
+
+* support multiple generator instances for sub-app routing ([#70](https://github.com/ElMassimo/js_from_routes/issues/70)) ([49d944b](https://github.com/ElMassimo/js_from_routes/commit/49d944b7fcde885f1e8b26312738450a4a3f9136))
+
+
+
 ## [4.0.2](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.0.1...js_from_routes@4.0.2) (2025-01-15)
 
 
