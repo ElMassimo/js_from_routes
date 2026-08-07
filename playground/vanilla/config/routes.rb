@@ -17,6 +17,17 @@ Rails.application.routes.draw do
     resources :comments, only: [:show, :index], shallow: true
   end
 
+  # Two resources nested under different parents both resolve to
+  # DiscussionsController, exercising helper disambiguation (see #42).
+  defaults export: true do
+    resources :sections, path: "s", param: :slug, only: [] do
+      resources :discussions
+    end
+    resources :custom_sections, path: "cs", param: :slug, only: [] do
+      resources :discussions
+    end
+  end
+
   namespace :settings, path: "/" do
     resources :user_preferences, only: [], export: true do
       patch :switch_to_classic_navbar, on: :collection

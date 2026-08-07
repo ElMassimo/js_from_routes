@@ -7,7 +7,7 @@ describe JsFromRoutes do
   let(:output_dir) { Pathname.new File.expand_path("../support/generated", __dir__) }
   let(:sample_dir) { Rails.root.join("app", "javascript", "api") }
   let(:different_template_path) { File.expand_path("../support/jquery_template.js.erb", __dir__) }
-  let(:controllers_with_exported_routes) { %w[Comments Settings/UserPreferences VideoClips] }
+  let(:controllers_with_exported_routes) { %w[Comments CustomSectionDiscussions Discussions Settings/UserPreferences VideoClips] }
 
   def file_for(dir, name)
     dir.join("#{name}Api.ts")
@@ -56,7 +56,7 @@ describe JsFromRoutes do
 
   # NOTE: We do a manual snapshot test for now, more tests coming in the future.
   it "should generate the files as expected" do
-    expect_templates.to be_rendered.exactly(3).times.and_call_original
+    expect_templates.to be_rendered.exactly(5).times.and_call_original
     JsFromRoutes.generate!
 
     # It does not generate routes that don't have `export: true`.
@@ -81,7 +81,7 @@ describe JsFromRoutes do
     end
 
     it "detects changes and re-renders" do
-      expect_templates.to be_rendered.exactly(3).times.and_call_original
+      expect_templates.to be_rendered.exactly(5).times.and_call_original
       JsFromRoutes.generate!
 
       # These files should no longer match the sample ones.
@@ -194,9 +194,67 @@ describe JsFromRoutes do
     end
   end
 
+  # Regression tests for #42: a resource reached through several parent nestings
+  # resolves to a single controller. When those nestings are parallel siblings
+  # (the whole resource duplicated) each gets its own file with clean names;
+  # a lone parallel route instead stays in one file with a disambiguated helper.
+  context "when a controller is reached through several parent nestings (#42)" do
+    def draw(&block)
+      ActionDispatch::Routing::RouteSet.new.tap { |set| set.draw(&block) }.routes
+    end
+
+    def generate(routes)
+      JsFromRoutes.config { |config| config.output_folder = output_dir }
+      JsFromRoutes.generate!(routes)
+    end
+
+    it "gives each parallel nesting its own file with clean action names" do
+      generate(draw do
+        defaults export: true do
+          resources :sections, path: "s", param: :slug do
+            resources :discussions
+          end
+          resources :custom_sections, path: "cs", param: :slug do
+            resources :discussions
+          end
+        end
+      end)
+
+      # The first nesting keeps the plain controller name, the second is named
+      # after its scope — and both files use clean, unqualified action names.
+      %w[index create new edit show update destroy].each do |action|
+        expect(output_file_for("Discussions").read).to include("#{action.camelize(:lower)}:")
+        expect(output_file_for("CustomSectionDiscussions").read).to include("#{action.camelize(:lower)}:")
+      end
+      expect(output_file_for("Discussions").read).to include("/s/:section_slug/discussions'")
+      expect(output_file_for("CustomSectionDiscussions").read).to include("/cs/:custom_section_slug/discussions'")
+    end
+
+    it "keeps a lone parallel route in one file, disambiguating its helper" do
+      # Only `show` is reachable through two parents — not a full parallel
+      # resource — so the controller stays a single file and the second helper
+      # falls back to a route-name-derived name instead of being split out.
+      generate(draw do
+        defaults export: true do
+          resources :sections, path: "s", param: :slug do
+            resources :discussions, only: :show
+          end
+          resources :custom_sections, path: "cs", param: :slug do
+            resources :discussions, only: :show
+          end
+        end
+      end)
+
+      expect(output_file_for("CustomSectionDiscussions").exist?).to be false
+      contents = output_file_for("Discussions").read
+      expect(contents).to include("show:")
+      expect(contents).to include("customSectionDiscussion:")
+    end
+  end
+
   it "should have a rake task available" do
     Rails.application.load_tasks
-    expect_templates.to be_rendered.exactly(3).times
+    expect_templates.to be_rendered.exactly(5).times
     expect { Rake::Task["js_from_routes:generate"].invoke }.not_to raise_error
   end
 end

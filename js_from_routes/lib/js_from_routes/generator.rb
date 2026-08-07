@@ -14,14 +14,24 @@ module JsFromRoutes
 
     def initialize(controller, routes, config)
       @controller, @config = controller, config
-      @routes = routes
-        .reject { |route| route.requirements[:action] == "update" && route.verb == "PUT" }
+      filtered = routes.reject { |route| route.requirements[:action] == "update" && route.verb == "PUT" }
+
+      # Rails only names one route per path (e.g. `index` but not `create`,
+      # `show` but not `update`/`destroy`). Borrow the named sibling on the same
+      # path so a collision can be resolved with a meaningful prefix.
+      names_by_path = filtered.each_with_object({}) { |route, map|
+        map[Route.path_for(route)] ||= route.name if route.name
+      }
+
+      @routes = filtered
         .group_by { |route| route.requirements.fetch(:action) }
-        .flat_map { |action, routes|
-          routes.each_with_index.map { |route, index|
-            Route.new(route, mappings: config.helper_mappings, index:, controller:)
+        .flat_map { |action, action_routes|
+          action_routes.each_with_index.map { |route, index|
+            Route.new(route, mappings: config.helper_mappings, index:, controller:, names_by_path:)
           }
         }
+
+      ensure_unique_helpers!
     end
 
     # Public: Used to check whether the file should be generated again, changes
@@ -54,12 +64,47 @@ module JsFromRoutes
     def basename
       "#{@controller.camelize}#{@config.file_suffix}".tr_s(":", "/")
     end
+
+    private
+
+    # Internal: Guarantees helper names are unique within the file, so no route
+    # is silently dropped when several resolve to the same controller#action
+    # (e.g. a resource nested under two parents, see #42). Names that are already
+    # unique are left untouched — only a genuine collision is escalated, to the
+    # cleanest available alternative.
+    def ensure_unique_helpers!
+      seen = {}
+      @routes.each do |route|
+        name = route.helper
+        if seen[name]
+          name = route.alternate_helpers.find { |candidate| !seen[candidate] } || uniquify(name, seen)
+          route.helper = name
+        end
+        seen[name] = true
+      end
+    end
+
+    # Internal: Appends the smallest numeric suffix that makes `name` unique.
+    def uniquify(name, seen)
+      suffix = 2
+      suffix += 1 while seen["#{name}#{suffix}"]
+      "#{name}#{suffix}"
+    end
   end
 
   # Internal: A presenter for an individual Rails action.
   class Route
-    def initialize(route, mappings:, controller:, index: 0)
-      @route, @mappings, @controller, @index = route, mappings, controller, index
+    # Allows the collision pass in ControllerRoutes to override the helper name.
+    attr_writer :helper
+
+    def initialize(route, mappings:, controller:, index: 0, names_by_path: {})
+      @route, @mappings, @controller, @index, @names_by_path =
+        route, mappings, controller, index, names_by_path
+    end
+
+    # Internal: The path for a raw Journey route, without the format suffix.
+    def self.path_for(route)
+      route.path.spec.to_s.chomp("(.:format)")
     end
 
     # Public: The `export` setting specified for the action.
@@ -74,22 +119,46 @@ module JsFromRoutes
 
     # Public: The path for the action. Example: '/users/:id/edit'
     def path
-      @route.path.spec.to_s.chomp("(.:format)")
+      self.class.path_for(@route)
     end
 
     # Public: The name of the JS helper for the action. Example: 'destroyAll'
+    #
+    # The first route for an action uses the plain action name (`index`, `show`,
+    # `create`, ...); additional routes for the same action fall back to the
+    # Rails route name. ControllerRoutes may override this (see `helper=`) only
+    # when two routes would otherwise collide.
     def helper
-      action = @route.requirements.fetch(:action)
-      if @index > 0
-        action = @route.name&.sub(@controller.tr(":/", "_"), "") || "#{action}#{verb.titleize}"
+      @helper ||= begin
+        action = @route.requirements.fetch(:action)
+        if @index > 0
+          action = @route.name&.sub(@controller.tr(":/", "_"), "") || "#{action}#{verb.titleize}"
+        end
+        mapped(action.camelize(:lower))
       end
-      helper = action.camelize(:lower)
-      @mappings.fetch(helper, helper)
+    end
+
+    # Internal: Meaningful alternatives, cleanest first, used only to resolve a
+    # helper-name collision. Prefers the full route name, then a named sibling on
+    # the same path qualified by the action, then the action qualified by verb.
+    def alternate_helpers
+      action = @route.requirements.fetch(:action)
+      [
+        @route.name && mapped(@route.name.camelize(:lower)),
+        (sibling = @names_by_path[path]) && mapped("#{sibling}_#{action}".camelize(:lower)),
+        mapped("#{action}_#{verb}".camelize(:lower))
+      ].compact
     end
 
     # Internal: Useful as a cache key for the route, and for debugging purposes.
     def inspect
       "#{verb} #{helper} #{path}"
+    end
+
+    private
+
+    def mapped(name)
+      @mappings.fetch(name, name)
     end
   end
 
@@ -227,11 +296,57 @@ module JsFromRoutes
       end || route.requirements[:controller]
     end
 
-    # Internal: Returns exported routes grouped by controller name.
+    # Internal: Returns exported routes grouped into files. Normally one file
+    # per controller, but a controller reached through several parent nestings
+    # is split into one file per nesting (see #split_by_nesting).
     def exported_routes_by_controller(routes)
       routes
         .select { |route| config.export_if.call(route) }
         .group_by { |route| namespace_for_route(route)&.to_s }
+        .flat_map { |controller, controller_routes| split_by_nesting(controller, controller_routes) }
+    end
+
+    # Internal: Splits a controller that is reached through several parent
+    # nestings into one file per nesting, so each file keeps clean action names
+    # (`index`, `show`, ...) instead of a single file full of disambiguated
+    # collisions (see #42). Example: a `discussions` resource nested under both
+    # `sections` and `custom_sections` yields DiscussionsApi and
+    # CustomSectionDiscussionsApi rather than one file with mangled helpers.
+    #
+    # Only triggers when the routes partition into parallel sibling resources —
+    # two or more nestings that expose the exact same set of *several* actions.
+    # A resource with just a stray parallel route or two (a single shared action)
+    # stays a single file and relies on helper-name disambiguation instead.
+    def split_by_nesting(controller, routes)
+      return [[controller, routes]] unless controller
+
+      resource = controller.split("/").last
+      names_by_path = routes.each_with_object({}) { |route, map|
+        (map[Route.path_for(route)] ||= route.name) if route.name
+      }
+      groups = routes.group_by { |route| parent_scope(route, resource, names_by_path) }
+
+      actions_per_group = groups.values.map { |group_routes|
+        group_routes.map { |route| route.requirements[:action] }.uniq.sort
+      }
+      parallel_siblings = groups.size > 1 && actions_per_group.uniq.size == 1 && actions_per_group.first.size > 1
+      return [[controller, routes]] unless parallel_siblings
+
+      namespace = controller.rpartition("/").first
+      groups.each_with_index.map { |(scope, group_routes), index|
+        file = (index.zero? || scope.empty?) ? controller : [namespace, "#{scope}_#{resource}"].reject(&:empty?).join("/")
+        [file, group_routes]
+      }
+    end
+
+    # Internal: Derives the parent-nesting scope of a route from its Rails route
+    # name (borrowing a named sibling on the same path for unnamed routes such as
+    # create/update/destroy), e.g. `custom_section_discussions` -> `custom_section`
+    # for a `discussions` resource. Returns "" for a route with no parent scope.
+    def parent_scope(route, resource, names_by_path)
+      name = route.name || names_by_path[Route.path_for(route)]
+      return "" unless name
+      name.sub(/\A(?:new|edit)_/, "").sub(/_?#{Regexp.union(resource, resource.singularize)}\z/, "")
     end
   end
 

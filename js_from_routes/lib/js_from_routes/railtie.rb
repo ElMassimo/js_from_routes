@@ -27,6 +27,7 @@ class JsFromRoutes::Railtie < Rails::Railtie
 
   # Prevents Rails from interpreting the :export option as a required default,
   # which would cause controller tests to fail.
+  # Verified working through Rails 8.1 / edge; see spec/js_from_routes/railtie_spec.rb.
   initializer "js_from_routes.required_defaults" do |app|
     ActionDispatch::Journey::Route.prepend Module.new {
       def required_default?(key)
