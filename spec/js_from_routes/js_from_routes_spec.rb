@@ -7,7 +7,7 @@ describe JsFromRoutes do
   let(:output_dir) { Pathname.new File.expand_path("../support/generated", __dir__) }
   let(:sample_dir) { Rails.root.join("app", "javascript", "api") }
   let(:different_template_path) { File.expand_path("../support/jquery_template.js.erb", __dir__) }
-  let(:controllers_with_exported_routes) { %w[Comments Settings/UserPreferences VideoClips] }
+  let(:controllers_with_exported_routes) { %w[Comments Discussions Settings/UserPreferences VideoClips] }
 
   def file_for(dir, name)
     dir.join("#{name}Api.ts")
@@ -56,7 +56,7 @@ describe JsFromRoutes do
 
   # NOTE: We do a manual snapshot test for now, more tests coming in the future.
   it "should generate the files as expected" do
-    expect_templates.to be_rendered.exactly(3).times.and_call_original
+    expect_templates.to be_rendered.exactly(4).times.and_call_original
     JsFromRoutes.generate!
 
     # It does not generate routes that don't have `export: true`.
@@ -81,7 +81,7 @@ describe JsFromRoutes do
     end
 
     it "detects changes and re-renders" do
-      expect_templates.to be_rendered.exactly(3).times.and_call_original
+      expect_templates.to be_rendered.exactly(4).times.and_call_original
       JsFromRoutes.generate!
 
       # These files should no longer match the sample ones.
@@ -194,9 +194,83 @@ describe JsFromRoutes do
     end
   end
 
+  # Regression test for #42: several `discussions` resources nested under
+  # different parents all resolve to DiscussionsController, so they land in one
+  # file. Every route must keep its own helper — none may be silently dropped by
+  # a name collision — without dirtying the names when there is no collision.
+  context "when multiple routes share a controller#action (#42)" do
+    def draw(&block)
+      ActionDispatch::Routing::RouteSet.new.tap { |set| set.draw(&block) }.routes
+    end
+
+    def discussion_routes(routes)
+      config = JsFromRoutes.config
+      exported = routes.select { |route| config.export_if.call(route) }
+      grouped = exported.group_by { |route| route.requirements[:controller] }
+      JsFromRoutes::ControllerRoutes.new("discussions", grouped.fetch("discussions"), config).routes
+    end
+
+    let(:two_parents) do
+      draw do
+        defaults export: true do
+          resources :sections, path: "s", param: :slug do
+            resources :discussions
+          end
+          resources :custom_sections, path: "cs", param: :slug do
+            resources :discussions
+          end
+        end
+      end
+    end
+
+    let(:three_parents) do
+      draw do
+        defaults export: true do
+          resources :sections, path: "s", param: :slug do
+            resources :discussions
+          end
+          resources :custom_sections, path: "cs", param: :slug do
+            resources :discussions
+          end
+          resources :special_sections, path: "sp", param: :slug do
+            resources :discussions
+          end
+        end
+      end
+    end
+
+    it "keeps a distinct helper for every route (no route is dropped)" do
+      routes = discussion_routes(two_parents)
+      names = routes.map(&:helper)
+      expect(names.uniq.length).to eq names.length
+
+      # Every declared path remains reachable through some helper.
+      expect(routes.map(&:path)).to include(
+        "/s/:section_slug/discussions",
+        "/cs/:custom_section_slug/discussions"
+      )
+    end
+
+    it "does not dirty helper names when there is no collision" do
+      # The first route of each action keeps the plain, clean action name; only
+      # the extra routes fall back to a route-name-derived helper.
+      names = discussion_routes(two_parents).map(&:helper)
+      expect(names).to include("index", "show", "create", "new", "edit")
+    end
+
+    it "escalates only the routes that would actually collide" do
+      # A third parent makes create/update/destroy collide; only those get a
+      # qualified name, while the untouched ones keep their clean helper.
+      names = discussion_routes(three_parents).map(&:helper)
+      expect(names.uniq.length).to eq names.length
+      expect(names).to include("index", "show", "create")
+      expect(names).to include("specialSectionDiscussionsCreate")
+    end
+  end
+
   it "should have a rake task available" do
     Rails.application.load_tasks
-    expect_templates.to be_rendered.exactly(3).times
+    expect_templates.to be_rendered.exactly(4).times
     expect { Rake::Task["js_from_routes:generate"].invoke }.not_to raise_error
   end
 end

@@ -14,14 +14,24 @@ module JsFromRoutes
 
     def initialize(controller, routes, config)
       @controller, @config = controller, config
-      @routes = routes
-        .reject { |route| route.requirements[:action] == "update" && route.verb == "PUT" }
+      filtered = routes.reject { |route| route.requirements[:action] == "update" && route.verb == "PUT" }
+
+      # Rails only names one route per path (e.g. `index` but not `create`,
+      # `show` but not `update`/`destroy`). Borrow the named sibling on the same
+      # path so a collision can be resolved with a meaningful prefix.
+      names_by_path = filtered.each_with_object({}) { |route, map|
+        map[Route.path_for(route)] ||= route.name if route.name
+      }
+
+      @routes = filtered
         .group_by { |route| route.requirements.fetch(:action) }
-        .flat_map { |action, routes|
-          routes.each_with_index.map { |route, index|
-            Route.new(route, mappings: config.helper_mappings, index:, controller:)
+        .flat_map { |action, action_routes|
+          action_routes.each_with_index.map { |route, index|
+            Route.new(route, mappings: config.helper_mappings, index:, controller:, names_by_path:)
           }
         }
+
+      ensure_unique_helpers!
     end
 
     # Public: Used to check whether the file should be generated again, changes
@@ -54,12 +64,47 @@ module JsFromRoutes
     def basename
       "#{@controller.camelize}#{@config.file_suffix}".tr_s(":", "/")
     end
+
+    private
+
+    # Internal: Guarantees helper names are unique within the file, so no route
+    # is silently dropped when several resolve to the same controller#action
+    # (e.g. a resource nested under two parents, see #42). Names that are already
+    # unique are left untouched — only a genuine collision is escalated, to the
+    # cleanest available alternative.
+    def ensure_unique_helpers!
+      seen = {}
+      @routes.each do |route|
+        name = route.helper
+        if seen[name]
+          name = route.alternate_helpers.find { |candidate| !seen[candidate] } || uniquify(name, seen)
+          route.helper = name
+        end
+        seen[name] = true
+      end
+    end
+
+    # Internal: Appends the smallest numeric suffix that makes `name` unique.
+    def uniquify(name, seen)
+      suffix = 2
+      suffix += 1 while seen["#{name}#{suffix}"]
+      "#{name}#{suffix}"
+    end
   end
 
   # Internal: A presenter for an individual Rails action.
   class Route
-    def initialize(route, mappings:, controller:, index: 0)
-      @route, @mappings, @controller, @index = route, mappings, controller, index
+    # Allows the collision pass in ControllerRoutes to override the helper name.
+    attr_writer :helper
+
+    def initialize(route, mappings:, controller:, index: 0, names_by_path: {})
+      @route, @mappings, @controller, @index, @names_by_path =
+        route, mappings, controller, index, names_by_path
+    end
+
+    # Internal: The path for a raw Journey route, without the format suffix.
+    def self.path_for(route)
+      route.path.spec.to_s.chomp("(.:format)")
     end
 
     # Public: The `export` setting specified for the action.
@@ -74,22 +119,46 @@ module JsFromRoutes
 
     # Public: The path for the action. Example: '/users/:id/edit'
     def path
-      @route.path.spec.to_s.chomp("(.:format)")
+      self.class.path_for(@route)
     end
 
     # Public: The name of the JS helper for the action. Example: 'destroyAll'
+    #
+    # The first route for an action uses the plain action name (`index`, `show`,
+    # `create`, ...); additional routes for the same action fall back to the
+    # Rails route name. ControllerRoutes may override this (see `helper=`) only
+    # when two routes would otherwise collide.
     def helper
-      action = @route.requirements.fetch(:action)
-      if @index > 0
-        action = @route.name&.sub(@controller.tr(":/", "_"), "") || "#{action}#{verb.titleize}"
+      @helper ||= begin
+        action = @route.requirements.fetch(:action)
+        if @index > 0
+          action = @route.name&.sub(@controller.tr(":/", "_"), "") || "#{action}#{verb.titleize}"
+        end
+        mapped(action.camelize(:lower))
       end
-      helper = action.camelize(:lower)
-      @mappings.fetch(helper, helper)
+    end
+
+    # Internal: Meaningful alternatives, cleanest first, used only to resolve a
+    # helper-name collision. Prefers the full route name, then a named sibling on
+    # the same path qualified by the action, then the action qualified by verb.
+    def alternate_helpers
+      action = @route.requirements.fetch(:action)
+      [
+        @route.name && mapped(@route.name.camelize(:lower)),
+        (sibling = @names_by_path[path]) && mapped("#{sibling}_#{action}".camelize(:lower)),
+        mapped("#{action}_#{verb}".camelize(:lower))
+      ].compact
     end
 
     # Internal: Useful as a cache key for the route, and for debugging purposes.
     def inspect
       "#{verb} #{helper} #{path}"
+    end
+
+    private
+
+    def mapped(name)
+      @mappings.fetch(name, name)
     end
   end
 
