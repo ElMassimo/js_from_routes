@@ -296,11 +296,57 @@ module JsFromRoutes
       end || route.requirements[:controller]
     end
 
-    # Internal: Returns exported routes grouped by controller name.
+    # Internal: Returns exported routes grouped into files. Normally one file
+    # per controller, but a controller reached through several parent nestings
+    # is split into one file per nesting (see #split_by_nesting).
     def exported_routes_by_controller(routes)
       routes
         .select { |route| config.export_if.call(route) }
         .group_by { |route| namespace_for_route(route)&.to_s }
+        .flat_map { |controller, controller_routes| split_by_nesting(controller, controller_routes) }
+    end
+
+    # Internal: Splits a controller that is reached through several parent
+    # nestings into one file per nesting, so each file keeps clean action names
+    # (`index`, `show`, ...) instead of a single file full of disambiguated
+    # collisions (see #42). Example: a `discussions` resource nested under both
+    # `sections` and `custom_sections` yields DiscussionsApi and
+    # CustomSectionDiscussionsApi rather than one file with mangled helpers.
+    #
+    # Only triggers when the routes partition into parallel sibling resources —
+    # two or more nestings that expose the exact same set of *several* actions.
+    # A resource with just a stray parallel route or two (a single shared action)
+    # stays a single file and relies on helper-name disambiguation instead.
+    def split_by_nesting(controller, routes)
+      return [[controller, routes]] unless controller
+
+      resource = controller.split("/").last
+      names_by_path = routes.each_with_object({}) { |route, map|
+        (map[Route.path_for(route)] ||= route.name) if route.name
+      }
+      groups = routes.group_by { |route| parent_scope(route, resource, names_by_path) }
+
+      actions_per_group = groups.values.map { |group_routes|
+        group_routes.map { |route| route.requirements[:action] }.uniq.sort
+      }
+      parallel_siblings = groups.size > 1 && actions_per_group.uniq.size == 1 && actions_per_group.first.size > 1
+      return [[controller, routes]] unless parallel_siblings
+
+      namespace = controller.rpartition("/").first
+      groups.each_with_index.map { |(scope, group_routes), index|
+        file = (index.zero? || scope.empty?) ? controller : [namespace, "#{scope}_#{resource}"].reject(&:empty?).join("/")
+        [file, group_routes]
+      }
+    end
+
+    # Internal: Derives the parent-nesting scope of a route from its Rails route
+    # name (borrowing a named sibling on the same path for unnamed routes such as
+    # create/update/destroy), e.g. `custom_section_discussions` -> `custom_section`
+    # for a `discussions` resource. Returns "" for a route with no parent scope.
+    def parent_scope(route, resource, names_by_path)
+      name = route.name || names_by_path[Route.path_for(route)]
+      return "" unless name
+      name.sub(/\A(?:new|edit)_/, "").sub(/_?#{Regexp.union(resource, resource.singularize)}\z/, "")
     end
   end
 

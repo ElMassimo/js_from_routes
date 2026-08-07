@@ -7,7 +7,7 @@ describe JsFromRoutes do
   let(:output_dir) { Pathname.new File.expand_path("../support/generated", __dir__) }
   let(:sample_dir) { Rails.root.join("app", "javascript", "api") }
   let(:different_template_path) { File.expand_path("../support/jquery_template.js.erb", __dir__) }
-  let(:controllers_with_exported_routes) { %w[Comments Discussions Settings/UserPreferences VideoClips] }
+  let(:controllers_with_exported_routes) { %w[Comments CustomSectionDiscussions Discussions Settings/UserPreferences VideoClips] }
 
   def file_for(dir, name)
     dir.join("#{name}Api.ts")
@@ -56,7 +56,7 @@ describe JsFromRoutes do
 
   # NOTE: We do a manual snapshot test for now, more tests coming in the future.
   it "should generate the files as expected" do
-    expect_templates.to be_rendered.exactly(4).times.and_call_original
+    expect_templates.to be_rendered.exactly(5).times.and_call_original
     JsFromRoutes.generate!
 
     # It does not generate routes that don't have `export: true`.
@@ -81,7 +81,7 @@ describe JsFromRoutes do
     end
 
     it "detects changes and re-renders" do
-      expect_templates.to be_rendered.exactly(4).times.and_call_original
+      expect_templates.to be_rendered.exactly(5).times.and_call_original
       JsFromRoutes.generate!
 
       # These files should no longer match the sample ones.
@@ -194,24 +194,22 @@ describe JsFromRoutes do
     end
   end
 
-  # Regression test for #42: several `discussions` resources nested under
-  # different parents all resolve to DiscussionsController, so they land in one
-  # file. Every route must keep its own helper — none may be silently dropped by
-  # a name collision — without dirtying the names when there is no collision.
-  context "when multiple routes share a controller#action (#42)" do
+  # Regression tests for #42: a resource reached through several parent nestings
+  # resolves to a single controller. When those nestings are parallel siblings
+  # (the whole resource duplicated) each gets its own file with clean names;
+  # a lone parallel route instead stays in one file with a disambiguated helper.
+  context "when a controller is reached through several parent nestings (#42)" do
     def draw(&block)
       ActionDispatch::Routing::RouteSet.new.tap { |set| set.draw(&block) }.routes
     end
 
-    def discussion_routes(routes)
-      config = JsFromRoutes.config
-      exported = routes.select { |route| config.export_if.call(route) }
-      grouped = exported.group_by { |route| route.requirements[:controller] }
-      JsFromRoutes::ControllerRoutes.new("discussions", grouped.fetch("discussions"), config).routes
+    def generate(routes)
+      JsFromRoutes.config { |config| config.output_folder = output_dir }
+      JsFromRoutes.generate!(routes)
     end
 
-    let(:two_parents) do
-      draw do
+    it "gives each parallel nesting its own file with clean action names" do
+      generate(draw do
         defaults export: true do
           resources :sections, path: "s", param: :slug do
             resources :discussions
@@ -220,57 +218,43 @@ describe JsFromRoutes do
             resources :discussions
           end
         end
+      end)
+
+      # The first nesting keeps the plain controller name, the second is named
+      # after its scope — and both files use clean, unqualified action names.
+      %w[index create new edit show update destroy].each do |action|
+        expect(output_file_for("Discussions").read).to include("#{action.camelize(:lower)}:")
+        expect(output_file_for("CustomSectionDiscussions").read).to include("#{action.camelize(:lower)}:")
       end
+      expect(output_file_for("Discussions").read).to include("/s/:section_slug/discussions'")
+      expect(output_file_for("CustomSectionDiscussions").read).to include("/cs/:custom_section_slug/discussions'")
     end
 
-    let(:three_parents) do
-      draw do
+    it "keeps a lone parallel route in one file, disambiguating its helper" do
+      # Only `show` is reachable through two parents — not a full parallel
+      # resource — so the controller stays a single file and the second helper
+      # falls back to a route-name-derived name instead of being split out.
+      generate(draw do
         defaults export: true do
           resources :sections, path: "s", param: :slug do
-            resources :discussions
+            resources :discussions, only: :show
           end
           resources :custom_sections, path: "cs", param: :slug do
-            resources :discussions
-          end
-          resources :special_sections, path: "sp", param: :slug do
-            resources :discussions
+            resources :discussions, only: :show
           end
         end
-      end
-    end
+      end)
 
-    it "keeps a distinct helper for every route (no route is dropped)" do
-      routes = discussion_routes(two_parents)
-      names = routes.map(&:helper)
-      expect(names.uniq.length).to eq names.length
-
-      # Every declared path remains reachable through some helper.
-      expect(routes.map(&:path)).to include(
-        "/s/:section_slug/discussions",
-        "/cs/:custom_section_slug/discussions"
-      )
-    end
-
-    it "does not dirty helper names when there is no collision" do
-      # The first route of each action keeps the plain, clean action name; only
-      # the extra routes fall back to a route-name-derived helper.
-      names = discussion_routes(two_parents).map(&:helper)
-      expect(names).to include("index", "show", "create", "new", "edit")
-    end
-
-    it "escalates only the routes that would actually collide" do
-      # A third parent makes create/update/destroy collide; only those get a
-      # qualified name, while the untouched ones keep their clean helper.
-      names = discussion_routes(three_parents).map(&:helper)
-      expect(names.uniq.length).to eq names.length
-      expect(names).to include("index", "show", "create")
-      expect(names).to include("specialSectionDiscussionsCreate")
+      expect(output_file_for("CustomSectionDiscussions").exist?).to be false
+      contents = output_file_for("Discussions").read
+      expect(contents).to include("show:")
+      expect(contents).to include("customSectionDiscussion:")
     end
   end
 
   it "should have a rake task available" do
     Rails.application.load_tasks
-    expect_templates.to be_rendered.exactly(4).times
+    expect_templates.to be_rendered.exactly(5).times
     expect { Rake::Task["js_from_routes:generate"].invoke }.not_to raise_error
   end
 end
