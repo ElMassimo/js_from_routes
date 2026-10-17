@@ -1,3 +1,13 @@
+# [4.2.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.1.0...js_from_routes@4.2.0) (2026-10-17)
+
+
+### Features
+
+* generated files no longer start with a `// JsFromRoutes CacheKey` header. Files are compared by content and only written when they changed, which removes a frequent source of merge conflicts. Run `bin/rake js_from_routes:generate` once after upgrading to drop the header from existing files.
+* in development, helpers are generated at boot and then only when a routes file or a template changes, instead of on every reload.
+* `JS_FROM_ROUTES_FORCE` is no longer needed and has been removed.
+
+
 # [4.1.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.0.2...js_from_routes@4.1.0) (2026-08-03)
 
 

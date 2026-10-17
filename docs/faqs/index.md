@@ -2,7 +2,6 @@
 [GitHub Issues]: https://github.com/ElMassimo/js_from_routes/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc
 [GitHub Discussions]: https://github.com/ElMassimo/js_from_routes/discussions
 [client]: /client/
-[cache key]: /guide/codegen.html#caching-📦
 
 # Troubleshooting
 
@@ -26,12 +25,10 @@ Make sure that you have added one of the [client libraries][client] to your `pac
 
 ## Changes to my custom templates are not being picked up
 
-Modifying the template should change the [cache key], so you might have introduced additional dependencies in your custom template.
-
-Try forcing regeneration by running:
+Templates are watched in development, so editing one regenerates the helpers on the next reload. If a template reads from other files, those are not watched: regenerate everything by running:
 
 ```bash
-JS_FROM_ROUTES_FORCE=true bin/rake js_from_routes:generate
+bin/rake js_from_routes:generate
 ```
 
 ## Contact ✉️

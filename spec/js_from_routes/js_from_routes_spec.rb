@@ -29,6 +29,12 @@ describe JsFromRoutes do
     receive(:render_template)
   end
 
+  def expect_no_rewrites
+    mtimes = output_dir.glob("**/*.ts").to_h { |file| [file, file.mtime] }
+    yield
+    expect(output_dir.glob("**/*.ts").to_h { |file| [file, file.mtime] }).to eq(mtimes)
+  end
+
   before do
     # Sanity checks
     expect(sample_dir.exist?).to eq true
@@ -56,19 +62,28 @@ describe JsFromRoutes do
 
   # NOTE: We do a manual snapshot test for now, more tests coming in the future.
   it "should generate the files as expected" do
-    expect_templates.to be_rendered.exactly(3).times.and_call_original
     JsFromRoutes.generate!
 
-    # It does not generate routes that don't have `export: true`.
-    expect(output_file_for("Welcome").exist?).to eq false
+    # It generates one file per controller with exported routes, and nothing else.
+    expect(output_dir.glob("**/*.ts")).to match_array(controllers_with_exported_routes.map { |name| output_file_for(name) })
 
     # It generates one file per controller with exported routes.
     controllers_with_exported_routes.each do |file_name|
       expect(output_file_for(file_name).read).to eq sample_file_for(file_name).read
     end
 
-    # It does not render if generating again.
+    # It does not write files whose content did not change.
+    expect_no_rewrites { JsFromRoutes.generate! }
+  end
+
+  it "rewrites files whose content no longer matches" do
     JsFromRoutes.generate!
+
+    comments_file = output_file_for("Comments")
+    comments_file.write("// edited by hand\n")
+
+    JsFromRoutes.generate!
+    expect(comments_file.read).to eq sample_file_for("Comments").read
   end
 
   context "changing the template" do
@@ -81,7 +96,6 @@ describe JsFromRoutes do
     end
 
     it "detects changes and re-renders" do
-      expect_templates.to be_rendered.exactly(3).times.and_call_original
       JsFromRoutes.generate!
 
       # These files should no longer match the sample ones.
@@ -89,8 +103,8 @@ describe JsFromRoutes do
         expect(output_file_for(file_name).read).not_to eq sample_file_for(file_name).read
       end
 
-      # It should not rewrite the files if the cache key has not changed.
-      JsFromRoutes.generate!
+      # It does not write files whose content did not change.
+      expect_no_rewrites { JsFromRoutes.generate! }
     end
   end
 
@@ -108,9 +122,8 @@ describe JsFromRoutes do
       expect(output_dir.join("all.ts").exist?).to eq true
       expect(output_dir.join("index.ts").exist?).to eq true
 
-      # Should not trigger another render.
-      expect_templates.not_to be_rendered
-      JsFromRoutes.generate!
+      # It does not write files whose content did not change.
+      expect_no_rewrites { JsFromRoutes.generate! }
     end
   end
 
@@ -194,9 +207,47 @@ describe JsFromRoutes do
     end
   end
 
+  describe "generate_if_changed" do
+    let(:routes_file) { Rails.root.join("config/routes.rb").to_s }
+
+    before do
+      JsFromRoutes.instance_variable_set(:@routes_watcher, nil)
+      Rails.application.routes_reloader.paths.push(routes_file) unless Rails.application.routes_reloader.paths.include?(routes_file)
+    end
+
+    it "generates on the first call, then only when a routes file changes" do
+      expect_templates.to be_rendered.exactly(3).times.and_call_original
+      JsFromRoutes.generate_if_changed
+      expect(output_file_for("Comments").exist?).to eq true
+
+      expect_templates.not_to be_rendered
+      JsFromRoutes.generate_if_changed
+    end
+
+    it "regenerates after a routes file was modified" do
+      JsFromRoutes.generate_if_changed
+
+      FileUtils.touch(routes_file)
+      expect_templates.to be_rendered.exactly(3).times.and_call_original
+      JsFromRoutes.generate_if_changed
+    end
+
+    it "regenerates after a template was modified" do
+      JsFromRoutes.generate_if_changed
+
+      FileUtils.touch(JsFromRoutes.config.template_path)
+      expect_templates.to be_rendered.exactly(3).times.and_call_original
+      JsFromRoutes.generate_if_changed
+    end
+  end
+
   it "should have a rake task available" do
     Rails.application.load_tasks
-    expect_templates.to be_rendered.exactly(3).times
+    expect(JsFromRoutes).to receive(:generate!).with(Rails.application).at_least(:once).and_call_original
     expect { Rake::Task["js_from_routes:generate"].invoke }.not_to raise_error
+
+    controllers_with_exported_routes.each do |file_name|
+      expect(output_file_for(file_name).exist?).to be true
+    end
   end
 end

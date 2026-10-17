@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "digest"
 require "erubi"
 require "fileutils"
 require "pathname"
@@ -22,12 +21,6 @@ module JsFromRoutes
             Route.new(route, mappings: config.helper_mappings, index:, controller:)
           }
         }
-    end
-
-    # Public: Used to check whether the file should be generated again, changes
-    # based on the configuration, and route definition.
-    def cache_key
-      routes.map(&:inspect).join + [File.read(@config.template_path), @config.helper_mappings.inspect, @config.client_library].join
     end
 
     # Public: Exposes the preferred import library to the generator.
@@ -87,7 +80,7 @@ module JsFromRoutes
       @mappings.fetch(helper, helper)
     end
 
-    # Internal: Useful as a cache key for the route, and for debugging purposes.
+    # Internal: Useful for debugging purposes.
     def inspect
       "#{verb} #{helper} #{path}"
     end
@@ -100,10 +93,10 @@ module JsFromRoutes
       @compiled_template = Erubi::Engine.new(File.read(template_path), filename: template_path).src
     end
 
-    # Public: Checks if the cache is fresh, or renders the template with the
-    # specified variables, and writes the updated result to a file.
+    # Public: Renders the template with the specified variables, and writes the
+    # result to a file unless it already has the same content.
     def write_if_changed(object)
-      write_file_if_changed(object.filename, object.cache_key) { render_template(object) }
+      write_file_if_changed(object.filename) { render_template(object) }
     end
 
     private
@@ -113,25 +106,16 @@ module JsFromRoutes
       object.instance_eval(@compiled_template)
     end
 
-    # Internal: Returns true if the cache key has changed since the last codegen.
-    def stale?(file, cache_key_comment)
-      ENV["JS_FROM_ROUTES_FORCE"] || file.gets != cache_key_comment
-    end
-
-    # Internal: Writes if the file does not exist or the cache key has changed.
-    # The cache strategy consists of a comment on the first line of the file.
+    # Internal: Writes the file unless it already has the same content, which
+    # keeps mtimes stable so file watchers don't react to no-op generations.
     #
-    # Yields to receive the rendered file content when it needs to.
-    def write_file_if_changed(name, cache_key)
+    # Yields to receive the rendered file content.
+    def write_file_if_changed(name)
+      content = yield
+      return if name.exist? && name.read == content
+
       FileUtils.mkdir_p(name.dirname)
-      cache_key_comment = "// JsFromRoutes CacheKey #{Digest::MD5.hexdigest(cache_key)}\n"
-      File.open(name, "a+") { |file|
-        if stale?(file, cache_key_comment)
-          file.truncate(0)
-          file.write(cache_key_comment)
-          file.write(yield)
-        end
-      }
+      name.write(content)
     end
   end
 
@@ -155,10 +139,9 @@ module JsFromRoutes
   end
 
   class TemplateConfig
-    attr_reader :cache_key, :filename, :helpers
+    attr_reader :filename, :helpers
 
-    def initialize(cache_key:, filename:, helpers: nil)
-      @cache_key = cache_key
+    def initialize(filename:, helpers: nil)
       @filename = filename
       @helpers = helpers
     end
@@ -211,12 +194,10 @@ module JsFromRoutes
       index_file = (config.all_helpers_file == true) ? "index#{preferred_extension}" : config.all_helpers_file
 
       Template.new(config.template_all_path).write_if_changed TemplateConfig.new(
-        cache_key: routes.map(&:import_filename).join + File.read(config.template_all_path),
         filename: config.output_folder.join("all#{preferred_extension}"),
         helpers: routes,
       )
       Template.new(config.template_index_path).write_if_changed TemplateConfig.new(
-        cache_key: File.read(config.template_index_path),
         filename: config.output_folder.join(index_file),
       )
     end
@@ -277,9 +258,37 @@ module JsFromRoutes
     # mixed usage working: adding a named instance never silently disables the
     # global config that an existing app already relies on.
     def generate!(app_or_routes = Rails.application)
+      runnable_instances.each { |inst| inst.generate!(app_or_routes) }
+    end
+
+    # Public: Generates code on the first call, and afterwards only when a
+    # routes file or a template changed, so that reloads unrelated to routes
+    # don't pay for iterating every route.
+    def generate_if_changed(app = Rails.application)
+      @routes_watcher ||= app.config.file_watcher.new(watched_files(app), watched_dirs(app)) { generate!(app) }
+        .tap { generate!(app) }
+      @routes_watcher.execute_if_updated
+    end
+
+    private
+
+    def runnable_instances
       runnable = instances.values
       runnable.unshift(Instance.new(:default, config)) if @config_customized || runnable.empty?
-      runnable.each { |inst| inst.generate!(app_or_routes) }
+      runnable
+    end
+
+    # Internal: The files Rails loads routes from, plus the templates, which
+    # also determine the generated output.
+    def watched_files(app)
+      templates = runnable_instances.flat_map { |inst|
+        [inst.config.template_path, inst.config.template_all_path, inst.config.template_index_path]
+      }
+      (app.routes_reloader.paths + templates).map(&:to_s).uniq
+    end
+
+    def watched_dirs(app)
+      app.routes_reloader.external_routes.to_h { |dir| [dir.to_s, %w[rb]] }
     end
   end
 end
