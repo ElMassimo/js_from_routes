@@ -1,4 +1,9 @@
-# [4.2.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.1.0...js_from_routes@4.2.0) (2026-10-17)
+# [5.0.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.1.0...js_from_routes@5.0.0) (2026-10-17)
+
+
+### BREAKING CHANGES
+
+* requires Rails 7.2 or newer, which is what CI has been testing against. The development reloader relies on `RoutesReloader#external_routes` and `config.file_watcher`.
 
 
 ### Features

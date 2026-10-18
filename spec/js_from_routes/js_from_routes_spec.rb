@@ -211,7 +211,7 @@ describe JsFromRoutes do
     let(:routes_file) { Rails.root.join("config/routes.rb").to_s }
 
     before do
-      JsFromRoutes.instance_variable_set(:@routes_watcher, nil)
+      JsFromRoutes.instance_variable_set(:@watcher, nil)
       Rails.application.routes_reloader.paths.push(routes_file) unless Rails.application.routes_reloader.paths.include?(routes_file)
     end
 
@@ -239,6 +239,14 @@ describe JsFromRoutes do
       expect_templates.to be_rendered.exactly(3).times.and_call_original
       JsFromRoutes.generate_if_changed
     end
+
+    it "exposes a watcher that reports template changes to the Rails reloader" do
+      watcher = JsFromRoutes.watcher
+      expect(watcher.updated?).to be false
+
+      FileUtils.touch(JsFromRoutes.config.template_path)
+      expect(watcher.updated?).to be true
+    end
   end
 
   it "should have a rake task available" do
@@ -249,5 +257,8 @@ describe JsFromRoutes do
     controllers_with_exported_routes.each do |file_name|
       expect(output_file_for(file_name).exist?).to be true
     end
+
+    # Initializing the app registers the watcher, so template edits reload.
+    expect(Rails.application.reloaders).to include(JsFromRoutes.watcher)
   end
 end

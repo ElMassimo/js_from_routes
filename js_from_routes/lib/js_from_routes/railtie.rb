@@ -12,6 +12,10 @@ class JsFromRoutes::Railtie < Rails::Railtie
       app.config.to_prepare do
         JsFromRoutes.generate_if_changed(app)
       end
+
+      app.config.after_initialize do
+        app.reloaders << JsFromRoutes.watcher(app)
+      end
     end
   end
 

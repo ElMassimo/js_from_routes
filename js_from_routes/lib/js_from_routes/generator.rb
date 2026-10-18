@@ -265,9 +265,17 @@ module JsFromRoutes
     # routes file or a template changed, so that reloads unrelated to routes
     # don't pay for iterating every route.
     def generate_if_changed(app = Rails.application)
-      @routes_watcher ||= app.config.file_watcher.new(watched_files(app), watched_dirs(app)) { generate!(app) }
+      watcher(app).execute_if_updated
+    end
+
+    # Public: Watches the files Rails loads routes from, and the templates.
+    # Generates once when created, so that helpers are fresh after boot.
+    #
+    # Registered as a Rails reloader by the railtie, so that editing a
+    # template triggers a reload even when no autoloaded file changed.
+    def watcher(app = Rails.application)
+      @watcher ||= app.config.file_watcher.new(watched_files(app), watched_dirs(app)) { generate!(app) }
         .tap { generate!(app) }
-      @routes_watcher.execute_if_updated
     end
 
     private
