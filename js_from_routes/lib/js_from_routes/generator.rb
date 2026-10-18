@@ -2,7 +2,6 @@
 
 require "erubi"
 require "fileutils"
-require "pathname"
 
 # Public: Automatically generates JS for Rails routes with { export: true }.
 # Generates one file per controller, and one function per route.
