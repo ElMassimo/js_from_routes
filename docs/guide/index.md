@@ -63,6 +63,38 @@ end
 
 It will cascade to any nested action or resource, but you can [opt out][export false] with `export: false`.
 
+### Customize helper names
+
+By default, helper names are automatically generated from the controller action name (e.g., `index` becomes `index`, `show` becomes `show`). You can customize the generated helper name for any route using `js_helper_name`:
+
+```ruby {2}
+Rails.application.routes.draw do
+  resources :admin_update_logs, only: [:index], export: true, js_helper_name: "filteredIndex"
+
+  # For specific actions in resources:
+  resources :video_clips, only: [:show], export: true do
+    get :download, on: :member, js_helper_name: "downloadVideo"
+  end
+end
+```
+
+This generates helpers with your custom names:
+
+```js
+// app/frontend/api/AdminUpdateLogsApi.ts
+export default {
+  filteredIndex: definePathHelper('get', '/admin_update_logs'),
+}
+
+// app/frontend/api/VideoClipsApi.ts
+export default {
+  show: definePathHelper('get', '/video_clips/:id'),
+  downloadVideo: definePathHelper('get', '/video_clips/:id/download'),
+}
+```
+
+This is particularly useful for routes that have generic action names but specific purposes, or when you want more descriptive helper names in your JavaScript code.
+
 ### Refresh the page
 
 Rails' reloader will detect the changes, and path helpers will be [generated][codegen] for the exported actions.
