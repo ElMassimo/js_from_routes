@@ -1,3 +1,12 @@
+# [5.0.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.1.0...js_from_routes@5.0.0) (2026-10-19)
+
+
+### Features
+
+* remove cache-key headers and watch route changes ([#72](https://github.com/ElMassimo/js_from_routes/issues/72)) ([2d34fc1](https://github.com/ElMassimo/js_from_routes/commit/2d34fc1015157339ce9c39bd0c30cf30a34abdb1))
+
+
+
 # [5.0.0](https://github.com/ElMassimo/js_from_routes/compare/js_from_routes@4.1.0...js_from_routes@5.0.0) (2026-10-17)
 
 
