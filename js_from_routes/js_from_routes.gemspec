@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.files = Dir.glob("{lib,exe,templates}/**/*") + %w[README.md CHANGELOG.md LICENSE.txt]
   s.require_path = "lib"
 
-  s.add_dependency "railties", ">= 5.1", "< 9"
+  s.add_dependency "railties", ">= 7.2", "< 9"
 
   s.add_development_dependency "bundler", ">= 2", "< 5"
   s.add_development_dependency "listen", "~> 3.2"
@@ -23,6 +23,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "readline"
   s.add_development_dependency "rake", "~> 13"
   s.add_development_dependency "rspec-given", "~> 3.8"
-  s.add_development_dependency "simplecov", "< 0.18"
+  s.add_development_dependency "simplecov", "~> 0.17.1"
   s.add_development_dependency "standard", "~> 1.0"
 end
